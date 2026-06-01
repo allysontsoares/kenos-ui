@@ -1,12 +1,23 @@
 # Kairo
 
-Headless, accessible DatePicker primitive for React by AT5 — zero runtime dependencies.
+Headless date & scheduling primitives for React. Built on top of the native Intl API, timescape and Floating UI — with full keyboard navigation and WAI-ARIA compliance.
 
-- **Zero deps** — only React + TypeScript + native browser APIs (`Intl`, `Date`)
 - **Truly headless** — no default styles; bring your own CSS (Tailwind, Panda CSS, CSS modules, inline styles)
+- **`floating-ui`** — for popover positioning.
+- **`timescape`** — for segmented input and.
 - **Fully accessible** — WAI-ARIA date picker pattern, keyboard navigation, screen reader support
-- **State machine powered** — predictable behavior via plain `useReducer` (no Zag JS)
+- **State machine powered** — predictable behavior via plain `useReducer`
 - **Simpler API** — `<DatePicker.Calendar />` shorthand for the common case; escape hatches for full control
+
+## Features
+
+- **Calendar** — WAI-ARIA grid pattern with roving focus and full keyboard navigation
+- **Date Picker** — Input + popover calendar, semantic HTML only
+- **Date Range Picker** — Dual-endpoint selection with live hover preview and optional presets
+- **Date Field** — Segmented spinbutton input (day/month/year), no calendar required
+- Locale-aware: respects week start day, date format order, and RTL scripts
+- Unstyled — bring your own CSS
+- React 19+, TypeScript-first
 
 ---
 
@@ -318,7 +329,7 @@ Every component is unstyled. Use any approach:
 
 | Concern             | Approach                                           |
 | ------------------- | -------------------------------------------------- |
-| State management    | Pure `useReducer` — no Zag JS                      |
+| State management    | No external state management libraries             |
 | Date arithmetic     | Native `Date` API                                  |
 | Locale / formatting | `Intl.DateTimeFormat`, `Intl.Locale`               |
 | Styling             | Zero — `data-*` attributes + className passthrough |
@@ -326,12 +337,6 @@ Every component is unstyled. Use any approach:
 
 ---
 
-## Development
+## License
 
-```bash
-pnpm install
-pnpm test          # vitest
-pnpm type-check    # tsc --noEmit
-pnpm build         # tsup → dist/
-pnpm storybook     # visual demos + a11y audit
-```
+MIT
