@@ -2,6 +2,11 @@
   "name": "@at5/kairo",
   "version": "0.2.0",
   "description": "Headless date & scheduling primitives for React",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/allysontsoares/primitives",
+    "directory": "packages/kairo"
+  },
   "files": [
     "dist",
     "README.md",
@@ -18,11 +23,6 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     }
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/allysontsoares/primitives",
-    "directory": "packages/kairo"
   },
   "publishConfig": {
     "access": "public",
