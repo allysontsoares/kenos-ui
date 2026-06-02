@@ -13,21 +13,27 @@ export const metadata: Metadata = {
     template: "%s · Kairo",
   },
   description:
-    "A composable React library for date and scheduling UI. Zero CSS, no styling opinions, built on the WAI-ARIA grid pattern.",
+    "Unstyled, accessible React primitives for calendars, date pickers, range selection, and locale-aware date fields. Zero CSS, WAI-ARIA grid pattern, Intl-ready.",
   keywords: [
-    "react",
-    "date picker",
-    "calendar",
-    "headless ui",
-    "accessibility",
-    "WAI-ARIA",
+    "react date picker",
+    "headless calendar",
+    "date range picker",
+    "WAI-ARIA date grid",
+    "locale date field",
+    "design system dates",
     "kairo",
   ],
   openGraph: {
     title: "Kairo — Headless date primitives for React",
     description:
-      "A composable React library for date and scheduling UI. Zero CSS, no styling opinions, built on the WAI-ARIA grid pattern.",
+      "Unstyled, accessible React primitives for calendars, date pickers, range selection, and locale-aware date fields.",
     type: "website",
+    siteName: "Kairo",
+    locale: "en_US",
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
