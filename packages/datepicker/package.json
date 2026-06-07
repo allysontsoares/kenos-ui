@@ -4,7 +4,7 @@
   "description": "Headless date & scheduling primitives for React — Kenos UI DatePicker",
   "repository": {
     "type": "git",
-    "url": "https://github.com/allysontsoares/primitives",
+    "url": "https://github.com/allysontsoares/kenos-ui",
     "directory": "packages/datepicker"
   },
   "files": [

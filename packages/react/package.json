@@ -4,7 +4,7 @@
   "description": "Kenos UI headless primitives for React — aggregator",
   "repository": {
     "type": "git",
-    "url": "https://github.com/allysontsoares/primitives",
+    "url": "https://github.com/allysontsoares/kenos-ui",
     "directory": "packages/react"
   },
   "files": [
