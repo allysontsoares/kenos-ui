@@ -24,7 +24,7 @@ const FOOTER_LINKS = {
     { label: "Styling", href: "/docs/styling" },
   ],
   Links: [
-    { label: "GitHub", href: "https://github.com/allysontsoares/primitives" },
+    { label: "GitHub", href: "https://github.com/allysontsoares/kenos-ui" },
     { label: "npm", href: "https://www.npmjs.com/org/kenos-ui" },
   ],
 };
@@ -95,7 +95,7 @@ export function LandingCtaFooter() {
                 Get started
               </Link>
               <a
-                href="https://github.com/allysontsoares/primitives"
+                href="https://github.com/allysontsoares/kenos-ui"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 rounded-md border border-white/[0.07] px-6 py-3 text-sm font-semibold text-zinc-100 transition-all duration-200 hover:border-white/20 hover:bg-zinc-900"
@@ -123,7 +123,7 @@ export function LandingCtaFooter() {
               </p>
               <div className="flex gap-4">
                 <a
-                  href="https://github.com/allysontsoares/primitives"
+                  href="https://github.com/allysontsoares/kenos-ui"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="GitHub"

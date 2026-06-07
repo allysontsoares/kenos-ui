@@ -11,7 +11,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/allysontsoares/primitives",
+    "url": "https://github.com/allysontsoares/kenos-ui",
     "directory": "packages/kairo"
   },
   "files": [

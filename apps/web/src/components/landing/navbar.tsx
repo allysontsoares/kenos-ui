@@ -17,7 +17,7 @@ export function LandingNavbar() {
   const navItems = [
     { label: "Primitives", href: "/#primitives" },
     { label: "Docs", href: "/docs" },
-    { label: "GitHub", href: "https://github.com/allysontsoares/primitives" },
+    { label: "GitHub", href: "https://github.com/allysontsoares/kenos-ui" },
   ];
 
   return (

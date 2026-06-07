@@ -267,7 +267,7 @@ function Topbar({
       <nav className="hidden items-center justify-center gap-1 md:flex">
         {[
           { label: "Docs", href: "/docs" },
-          { label: "GitHub", href: "https://github.com/allysontsoares/primitives" },
+          { label: "GitHub", href: "https://github.com/allysontsoares/kenos-ui" },
           { label: "npm", href: "https://www.npmjs.com/org/kenos-ui" },
         ].map((l) => (
           <Link
@@ -303,7 +303,7 @@ function Topbar({
           {themeReady ? (theme === "dark" ? <Sun /> : <Moon />) : <Sun />}
         </button>
         <a
-          href="https://github.com/allysontsoares/primitives"
+          href="https://github.com/allysontsoares/kenos-ui"
           target="_blank"
           rel="noopener noreferrer"
           className={topbarGithubLinkCls}
