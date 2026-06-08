@@ -60,6 +60,9 @@ importers:
       '@kenos-ui/react-datepicker':
         specifier: workspace:*
         version: link:../../packages/datepicker
+      '@kenos-ui/react-select':
+        specifier: workspace:*
+        version: link:../../packages/select
       react:
         specifier: ^19.0.0
         version: 19.2.6

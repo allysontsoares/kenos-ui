@@ -32,6 +32,10 @@ export type ComponentDocFeatures = {
   dialogInterop?: boolean;
   /** Native form + HiddenSelect example. */
   forms?: boolean;
+  /** Multiple selection example section. */
+  multiple?: boolean;
+  /** Portal + custom container example section. */
+  portal?: boolean;
 };
 
 export type ComponentMeta = {
@@ -183,11 +187,11 @@ export const COMPONENTS: Record<string, ComponentMeta> = {
   select: {
     name: "Select",
     eyebrow: "Primitive",
-    desc: "A headless single-select with combobox + listbox pattern. Interop-first defaults: modal={false}, portal={false}. Use Select.HiddenSelect for native form submission.",
+    desc: "A headless select with combobox + listbox pattern. Interop-first defaults: modal={false}, portal={false}. Supports single and multiple selection, items prop for label maps, and Select.HiddenSelect for native form submission.",
     demo: "select",
     npmPackage: "@kenos-ui/react-select",
     importName: "Select",
-    features: { dialogInterop: true, forms: true },
+    features: { dialogInterop: true, forms: true, multiple: true, portal: true },
     parts: [
       {
         tag: "Select.Root",
@@ -198,12 +202,14 @@ export const COMPONENTS: Record<string, ComponentMeta> = {
             children: [
               { tag: "Select.Value", leaf: true },
               { tag: "Select.Icon", leaf: true },
+              { tag: "Select.ClearTrigger", note: "clears value (Tier 2)" },
             ],
           },
           {
             tag: "Select.Content",
             note: "listbox container (inline default)",
             children: [
+              { tag: "Select.Backdrop", note: "only when modal={true}" },
               {
                 tag: "Select.List",
                 children: [{ tag: "Select.Item value=…", note: "registers in store" }],
@@ -320,19 +326,59 @@ export const API: Record<string, ApiGroup[]> = {
     {
       ...rootGroup,
       props: [
-        { name: "value / defaultValue / onValueChange", type: "string | null", desc: "Controlled/uncontrolled selected value." },
+        {
+          name: "value / defaultValue / onValueChange",
+          type: "string | null | string[]",
+          desc: "Controlled/uncontrolled selected value. string[] when multiple={true}.",
+        },
         { name: "open / defaultOpen / onOpenChange", type: "boolean", desc: "Listbox open state." },
         { name: "name", type: "string", desc: "Forwarded to Select.HiddenSelect for form submit." },
         { name: "disabled / required / readOnly", type: "boolean", desc: "Root constraints." },
-        { name: "modal", type: "boolean", def: "false", desc: "Opt-in focus trap + aria-modal on Content." },
+        { name: "modal", type: "boolean", def: "false", desc: "Opt-in focus trap + aria-modal on Content. Renders Select.Backdrop." },
+        {
+          name: "multiple",
+          type: "boolean",
+          def: "false",
+          desc: "Multi-select mode. Toggle items on click; listbox stays open.",
+        },
+        {
+          name: "items",
+          type: "Record<string, string>",
+          desc: "Value → label map. Resolves Select.Value labels without rendering every Item.",
+        },
+        {
+          name: "isItemEqualToValue",
+          type: "(item: string, value: string) => boolean",
+          desc: "Custom comparator for non-string or object-like values.",
+        },
       ],
     },
     {
       group: "Content props",
       props: [
         { name: "portal", type: "boolean", def: "false", desc: "Portal to document.body — avoid inside Dialogs." },
+        {
+          name: "container",
+          type: "HTMLElement | RefObject<HTMLElement>",
+          desc: "Custom portal target (e.g. Dialog.Content ref). Requires portal={true}.",
+        },
         { name: "side / align / sameWidth", desc: "Floating UI positioning via @kenos-ui/utils." },
         { name: "lazyMount", type: "boolean", def: "true", desc: "Skip DOM until first open." },
+        {
+          name: "onOpenChangeComplete",
+          type: "(open: boolean) => void",
+          desc: "Fires when open transitions finish, including presence exit.",
+        },
+      ],
+    },
+    {
+      group: "ClearTrigger props",
+      props: [
+        {
+          name: "Select.ClearTrigger",
+          type: "button",
+          desc: "Clears the current value without opening the listbox. Place inside Trigger.",
+        },
       ],
     },
     {
