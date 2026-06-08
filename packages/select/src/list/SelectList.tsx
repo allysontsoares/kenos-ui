@@ -4,7 +4,7 @@ import { useSelectContext } from "../context";
 export type ListProps = React.HTMLAttributes<HTMLUListElement>;
 
 export function List({ children, ...props }: ListProps) {
-  const { ids, refs } = useSelectContext();
+  const { ids, refs, config } = useSelectContext();
 
   return (
     <ul
@@ -12,6 +12,7 @@ export function List({ children, ...props }: ListProps) {
       role="listbox"
       id={`${ids.content}-list`}
       aria-labelledby={ids.label}
+      aria-multiselectable={config.multiple ? true : undefined}
       {...props}
     >
       {children}

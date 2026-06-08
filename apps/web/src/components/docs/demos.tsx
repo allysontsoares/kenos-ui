@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -776,6 +777,81 @@ export function SelectFormDemo() {
         Submit
       </button>
     </form>
+  );
+}
+
+const selectTagOptions = [
+  ["react", "React"],
+  ["vue", "Vue"],
+  ["svelte", "Svelte"],
+  ["solid", "Solid"],
+] as const;
+
+export function SelectMultipleDemo() {
+  return (
+    <KenosSelect.Root name="tags" multiple defaultValue={["react", "vue"]}>
+      <KenosSelect.Label className="mb-1.5 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
+        Frameworks
+      </KenosSelect.Label>
+      <KenosSelect.Trigger className={selectTriggerCls}>
+        <KenosSelect.Value placeholder="Choose frameworks…" />
+        <KenosSelect.Icon />
+      </KenosSelect.Trigger>
+      <KenosSelect.Content className={selectContentCls} sameWidth>
+        <KenosSelect.List>
+          {selectTagOptions.map(([value, text]) => (
+            <KenosSelect.Item key={value} value={value} className={selectItemCls}>
+              <KenosSelect.ItemText>{text}</KenosSelect.ItemText>
+              <KenosSelect.ItemIndicator value={value}>✓</KenosSelect.ItemIndicator>
+            </KenosSelect.Item>
+          ))}
+        </KenosSelect.List>
+      </KenosSelect.Content>
+      <KenosSelect.HiddenSelect />
+    </KenosSelect.Root>
+  );
+}
+
+export function SelectPortalDemo() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative w-full max-w-sm overflow-hidden rounded-xl border-2 border-indigo-400/60 bg-indigo-50/50 p-4 dark:border-indigo-500/40 dark:bg-indigo-950/20"
+    >
+      <p className="mb-3 text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+        Dialog.Content (portal container)
+      </p>
+      <KenosSelect.Root name="country">
+        <KenosSelect.Label className="mb-1.5 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
+          Country
+        </KenosSelect.Label>
+        <KenosSelect.Trigger className={selectTriggerCls}>
+          <KenosSelect.Value placeholder="Choose…" />
+          <KenosSelect.Icon />
+        </KenosSelect.Trigger>
+        <KenosSelect.Content
+          portal
+          container={containerRef}
+          className={selectContentCls}
+          sameWidth
+        >
+          <KenosSelect.List>
+            {[
+              ["pt", "Portugal"],
+              ["br", "Brazil"],
+              ["es", "Spain"],
+            ].map(([value, text]) => (
+              <KenosSelect.Item key={value} value={value} className={selectItemCls}>
+                <KenosSelect.ItemText>{text}</KenosSelect.ItemText>
+              </KenosSelect.Item>
+            ))}
+          </KenosSelect.List>
+        </KenosSelect.Content>
+        <KenosSelect.HiddenSelect />
+      </KenosSelect.Root>
+    </div>
   );
 }
 

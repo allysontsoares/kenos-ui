@@ -15,6 +15,8 @@ import {
   LiveDemo,
   SelectDialogDemo,
   SelectFormDemo,
+  SelectMultipleDemo,
+  SelectPortalDemo,
 } from "./demos";
 
 /* ---------------- shared typography ---------------- */
@@ -115,6 +117,39 @@ const SELECT_FORMS_SNIPPET = `import { Select } from "@kenos-ui/react-select";
   </Select.Root>
   <button type="submit">Save</button>
 </form>`;
+
+const SELECT_MULTIPLE_SNIPPET = `import { Select } from "@kenos-ui/react-select";
+
+<Select.Root name="tags" multiple defaultValue={["react"]}>
+  <Select.Trigger>
+    <Select.Value placeholder="Choose frameworks…" />
+  </Select.Trigger>
+  <Select.Content>
+    <Select.List>
+      <Select.Item value="react">React</Select.Item>
+      <Select.Item value="vue">Vue</Select.Item>
+    </Select.List>
+  </Select.Content>
+  <Select.HiddenSelect />
+</Select.Root>`;
+
+const SELECT_PORTAL_SNIPPET = `import { useRef } from "react";
+import { Select } from "@kenos-ui/react-select";
+
+const containerRef = useRef<HTMLDivElement>(null);
+
+<Dialog.Content ref={containerRef}>
+  <Select.Root name="country">
+    <Select.Trigger>
+      <Select.Value placeholder="Choose…" />
+    </Select.Trigger>
+    <Select.Content portal container={containerRef}>
+      <Select.List>
+        <Select.Item value="pt">Portugal</Select.Item>
+      </Select.List>
+    </Select.Content>
+  </Select.Root>
+</Dialog.Content>`;
 
 /* ================= COMPONENT PAGE ================= */
 export function ComponentPage({ slug }: { slug: string }) {
@@ -218,6 +253,39 @@ export function ComponentPage({ slug }: { slug: string }) {
           <Example code={SELECT_FORMS_SNIPPET} lang="tsx" previewTall>
             <DemoStage tall>
               <SelectFormDemo />
+            </DemoStage>
+          </Example>
+        </>
+      )}
+
+      {features.multiple && slug === "select" && (
+        <>
+          <H3 id="multiple">Multiple selection</H3>
+          <P>
+            Pass <InlineCode>multiple</InlineCode> on <InlineCode>Select.Root</InlineCode> to enable
+            multi-select. Items toggle on click and the listbox stays open. Value shape becomes{" "}
+            <InlineCode>string[]</InlineCode>.
+          </P>
+          <Example code={SELECT_MULTIPLE_SNIPPET} lang="tsx" previewTall>
+            <DemoStage tall>
+              <SelectMultipleDemo />
+            </DemoStage>
+          </Example>
+        </>
+      )}
+
+      {features.portal && slug === "select" && (
+        <>
+          <H3 id="portal">Portal &amp; container</H3>
+          <P>
+            Use <InlineCode>portal=&#123;true&#125;</InlineCode> on{" "}
+            <InlineCode>Select.Content</InlineCode> when clipping is an issue. Inside a Dialog,
+            pass a <InlineCode>container</InlineCode> ref to keep the listbox in the Dialog subtree
+            while escaping <InlineCode>overflow: hidden</InlineCode>.
+          </P>
+          <Example code={SELECT_PORTAL_SNIPPET} lang="tsx" previewTall>
+            <DemoStage tall>
+              <SelectPortalDemo />
             </DemoStage>
           </Example>
         </>
