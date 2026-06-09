@@ -1,7 +1,8 @@
 {
   "name": "@kenos-ui/react-select",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Headless Select primitive for React — Kenos UI",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/allysontsoares/kenos-ui",

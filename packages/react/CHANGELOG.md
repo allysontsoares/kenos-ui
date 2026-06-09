@@ -1,5 +1,29 @@
 # @kenos-ui/react
 
+## 0.3.4
+
+### Minor Changes
+
+- **Kenos UI React — aggregator release** (`@kenos-ui/react@0.3.4`)
+
+  Single install for all Kenos UI headless primitives.
+
+  **Re-exports**
+  - `DatePicker` from `@kenos-ui/react-datepicker`
+  - `Select` from `@kenos-ui/react-select`
+  - `Combobox` from `@kenos-ui/react-combobox`
+
+  **Packaging**
+  - Add `license: MIT` to `package.json` (fixes npm registry showing "no license")
+
+### Patch Changes
+
+- Updated dependencies
+  - @kenos-ui/react-datepicker@0.4.1
+  - @kenos-ui/react-select@0.2.2
+  - @kenos-ui/react-combobox@0.2.1
+  - @kenos-ui/utils@0.0.2
+
 ## 0.3.3
 
 ### Patch Changes

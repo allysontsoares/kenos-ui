@@ -1,7 +1,8 @@
 {
   "name": "@kenos-ui/react-datepicker",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Headless date & scheduling primitives for React — Kenos UI DatePicker",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/allysontsoares/kenos-ui",

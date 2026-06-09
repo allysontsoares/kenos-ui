@@ -1,5 +1,31 @@
 # @kenos-ui/utils
 
+## 0.0.2
+
+### Minor Changes
+
+- **Kenos UI Utils — shared primitives** (`@kenos-ui/utils@0.0.2`)
+
+  Internal hooks and helpers shared across Kenos UI headless components.
+
+  **Floating & presence**
+  - `useFloating` — Floating UI positioning (`side`, `align`, offsets, collision)
+  - `usePresence` — mount/unmount lifecycle for animated overlays
+
+  **Dismiss & focus**
+  - `useClickOutside`, `useEscapeKey` (with `stopPropagation` for dialog interop)
+  - `useFocusTrap`, `getFocusableElements`, `restoreFocus` with `OpenSource`
+
+  **Composite / collection**
+  - `useListNavigation`, `useTypeahead`
+  - `useSelectCollection` — type-to-filter for Combobox (and similar patterns)
+
+  **Popup policy**
+  - `POPUP_POLICY_DEFAULTS` — interop-first defaults (`modal={false}`, `portal={false}`)
+
+  **Packaging**
+  - Add `license: MIT` to `package.json` (fixes npm registry showing "no license")
+
 ## 0.0.1
 
 ### Patch Changes
