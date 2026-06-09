@@ -11,10 +11,10 @@ const preview: Preview = {
     docs: {
       source: { type: "dynamic" },
     },
-  },
-  options: {
-    storySort: {
-      order: ["DatePicker", ["Single", "Range", "Multiple", "Locales"]],
+    options: {
+      storySort: {
+        order: ["DatePicker", ["Single", "Range", "Multiple", "Locales"]],
+      },
     },
   },
 };

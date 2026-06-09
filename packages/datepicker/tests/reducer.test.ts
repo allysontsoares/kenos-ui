@@ -11,6 +11,7 @@ const config: DatePickerConfig = {
   locale: "en-US",
   readOnly: false,
   closeOnSelect: true,
+  modal: false,
 };
 
 function state(overrides?: Partial<DatePickerState>): DatePickerState {

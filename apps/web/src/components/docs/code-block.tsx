@@ -191,13 +191,16 @@ export function CodeBlock({
   styleTabsEnabled = true,
   onStyleTabsEnabledChange,
 }: CodeBlockProps) {
+  const allTabs = useMemo<CodeTab[]>(
+    () =>
+      tabs ?? [{ label: label || lang || "code", lang: lang ?? "", code: code ?? "" }],
+    [tabs, label, lang, code],
+  );
+
   const visibleTabs = useMemo(() => {
-    const allTabs: CodeTab[] = tabs ?? [
-      { label: label || lang || "code", lang: lang ?? "", code: code ?? "" },
-    ];
     if (!showStyleTabs || styleTabsEnabled) return allTabs;
     return allTabs.filter((t) => t.label === "Unstyled");
-  }, [tabs, label, lang, code, showStyleTabs, styleTabsEnabled]);
+  }, [allTabs, showStyleTabs, styleTabsEnabled]);
 
   const [active, setActive] = useState(0);
   const [copied, setCopied] = useState(false);
