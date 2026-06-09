@@ -110,6 +110,27 @@ export function useDatePicker(props: DatePickerRootProps) {
     }
   }, [state.selectedDate]);
 
+  // Sync controlled single value into reducer state (props → state only).
+  const controlledSingleValue =
+    (!props.mode || props.mode === "single") && "value" in props && props.value !== undefined
+      ? props.value
+      : undefined;
+  const propSelectedT = controlledSingleValue?.getTime() ?? null;
+  const lastSyncedPropSelectedRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (controlledSingleValue === undefined) return;
+
+    if (lastSyncedPropSelectedRef.current === propSelectedT) return;
+    lastSyncedPropSelectedRef.current = propSelectedT;
+
+    const stateT = state.selectedDate?.getTime() ?? null;
+    if (propSelectedT === stateT) return;
+
+    dispatch({ type: "SET_SELECTED_DATE", date: controlledSingleValue });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only sync when the controlled prop changes
+  }, [propSelectedT, dispatch]);
+
   // Sync controlled range value into reducer state (props → state only; never react to
   // internal state changes or stale parent value would overwrite in-flight updates).
   const controlledRangeValue =

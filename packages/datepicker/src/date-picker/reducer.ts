@@ -36,6 +36,7 @@ export type DatePickerAction =
   | { type: "TOGGLE_DATE"; date: Date }
   | { type: "HOVER_DATE"; date: Date | null }
   | { type: "SET_RANGE"; start: Date | null; end: Date | null }
+  | { type: "SET_SELECTED_DATE"; date: Date | null }
   | { type: "SET_INPUT"; value: string }
   | { type: "COMMIT_INPUT" }
   | { type: "SELECT_MONTH"; month: number }
@@ -225,6 +226,23 @@ export function datePickerReducer(
               focusedMonth: anchor.getMonth(),
               focusedYear: anchor.getFullYear(),
               yearPageStart: yearPageStart(anchor.getFullYear()),
+            }
+          : {}),
+      };
+    }
+
+    case "SET_SELECTED_DATE": {
+      const d = action.date ? startOfDay(action.date) : null;
+      return {
+        ...state,
+        selectedDate: d,
+        inputValue: d ? formatDate(d, config.locale) : "",
+        ...(d
+          ? {
+              focusedDate: d,
+              focusedMonth: d.getMonth(),
+              focusedYear: d.getFullYear(),
+              yearPageStart: yearPageStart(d.getFullYear()),
             }
           : {}),
       };
