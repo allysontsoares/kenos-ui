@@ -1,5 +1,12 @@
 # @kenos-ui/react
 
+## 0.3.2
+
+### Patch Changes
+
+- Updated dependencies
+  - @kenos-ui/react-datepicker@0.3.3
+
 ## 0.3.1
 
 ### Patch Changes
