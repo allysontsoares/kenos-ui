@@ -1,4 +1,3 @@
-import "./vitest-axe-types";
 import React from "react";
 import { render } from "@testing-library/react";
 import { axe } from "vitest-axe";

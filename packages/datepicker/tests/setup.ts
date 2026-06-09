@@ -1,7 +1,13 @@
 import "@testing-library/jest-dom";
-import "./vitest-axe-types";
+import "vitest";
+import type { AxeMatchers } from "vitest-axe";
 import * as matchers from "vitest-axe/dist/matchers";
 import { expect } from "vitest";
+
+declare module "vitest" {
+  interface Assertion<T = any> extends AxeMatchers {}
+  interface AsymmetricMatchersContaining extends AxeMatchers {}
+}
 
 expect.extend(matchers);
 
