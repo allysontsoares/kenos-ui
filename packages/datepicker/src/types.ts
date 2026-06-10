@@ -39,7 +39,10 @@ export interface DayCellMeta {
 
 export interface MonthItem {
   value: number;
+  /** Full localized month name (e.g. "January"). Useful for `title`/labels. */
   label: string;
+  /** Abbreviated localized month name (e.g. "Jan"). Used by the Calendar shorthand. */
+  shortLabel: string;
   isSelected: boolean;
   isDisabled: boolean;
 }

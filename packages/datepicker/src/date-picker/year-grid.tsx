@@ -74,7 +74,7 @@ export function YearGrid({ children, className }: YearGridProps) {
         role="grid"
         aria-label={`${state.yearPageStart}–${state.yearPageStart + 11}`}
         className={className}
-        onKeyDown={handleKeyDown}
+        onKeyDownCapture={handleKeyDown}
       >
         {children({ years })}
       </div>

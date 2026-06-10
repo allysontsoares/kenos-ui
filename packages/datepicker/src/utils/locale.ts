@@ -1,17 +1,12 @@
+import type { DateGranularity, HourCycle } from "../types";
+import { getCLDRWeekStartDay } from "./week-start-data";
+
 export function getWeekStartDay(locale: string, override?: 0 | 1 | 2 | 3 | 4 | 5 | 6): number {
   if (override !== undefined) return override;
-  try {
-    // weekInfo.firstDay: 1=Monday..7=Sunday (ISO) → JS: 0=Sunday..6=Saturday
-    // weekInfo is a stage-4 proposal, not yet in TS lib types
-    const weekInfo = (new Intl.Locale(locale) as unknown as { weekInfo: { firstDay: number } })
-      .weekInfo;
-    return weekInfo.firstDay === 7 ? 0 : weekInfo.firstDay;
-  } catch {
-    return 0;
-  }
+  // Intl.Locale.weekInfo differs between Node ICU and browser ICU (SSR hydration mismatch).
+  // CLDR region data is deterministic across environments.
+  return getCLDRWeekStartDay(locale);
 }
-
-import type { DateGranularity, HourCycle } from "../types";
 
 export function formatDate(date: Date, locale: string): string {
   return new Intl.DateTimeFormat(locale, {

@@ -65,10 +65,15 @@ export function useGridNavigation({
         case "ArrowUp":
         case "Home":
         case "End": {
-          const custom = getNextIndex?.(focusedIndex, event.key, event);
-          if (custom !== undefined && custom !== null) {
+          if (getNextIndex) {
+            const custom = getNextIndex(focusedIndex, event.key, event);
+            // A number moves to that index; `null` means the callback already
+            // handled the movement (e.g. navigated across a page boundary), so
+            // we stop without applying the default movement.
             event.preventDefault();
-            moveTo(custom);
+            if (custom !== null && custom !== undefined) {
+              moveTo(custom);
+            }
             return;
           }
           if (event.key === "ArrowRight") next = focusedIndex + (rtl ? -1 : 1);

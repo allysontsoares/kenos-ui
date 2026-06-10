@@ -1,10 +1,11 @@
 import React, { useRef, useEffect, useMemo, useCallback } from "react";
 import { focusWithoutScrolling, useGridNavigation } from "@kenos-ui/utils";
 import type { GridNavigationKey } from "@kenos-ui/utils";
-import { useDatePickerContext } from "./context";
+import { useDatePickerContext, RangeDragContext, type RangeDragState } from "./context";
 import { buildCalendarGrid } from "../utils/calendar";
 import { getWeekStartDay, formatMonthYear } from "../utils/locale";
 import { addMonths, findNextFocusableDate, isSameDay, isSameMonth } from "../utils/date";
+import { preventGridScrollOnKeyDown } from "../utils/grid-keyboard";
 import { Day } from "./day";
 
 export interface GridProps {
@@ -26,6 +27,7 @@ function defaultRender(ws: Date[][]) {
 export function Grid({ children, header, className }: GridProps) {
   const { state, dispatch, config } = useDatePickerContext();
   const gridRef = useRef<HTMLTableElement>(null);
+  const rangeDragRef = useRef<RangeDragState>({ startDate: null, active: false });
 
   const weekStartDay = getWeekStartDay(config.locale, config.weekStartsOn);
   const weeks = buildCalendarGrid(state.focusedYear, state.focusedMonth, weekStartDay);
@@ -83,9 +85,16 @@ export function Grid({ children, header, className }: GridProps) {
       }
 
       const idx = flatDates.findIndex((d) => isSameDay(d, nextDate));
-      return idx >= 0 ? idx : current;
+      if (idx >= 0) return idx;
+
+      // Target falls outside the visible grid (crossing a month boundary).
+      // Navigate directly to the date — FOCUS_DATE recomputes focusedMonth/Year,
+      // re-rendering the grid on the new month, and the focus effect moves DOM
+      // focus to the new cell. Return null so the hook treats it as handled.
+      dispatch({ type: "FOCUS_DATE", date: nextDate });
+      return null;
     },
-    [flatDates, state.focusedDate, rtl, config, weekStartDay],
+    [flatDates, state.focusedDate, rtl, config, weekStartDay, dispatch],
   );
 
   const focusDateByPage = useCallback(
@@ -146,6 +155,7 @@ export function Grid({ children, header, className }: GridProps) {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTableElement>) => {
+      preventGridScrollOnKeyDown(e);
       if (!state.focusedDate) return;
       if (e.key === "Escape") {
         if (config.mode === "range" && state.rangeStart && !state.rangeEnd) {
@@ -183,10 +193,12 @@ export function Grid({ children, header, className }: GridProps) {
       aria-readonly={config.readOnly || undefined}
       aria-multiselectable={ariaMulti}
       className={className}
-      onKeyDown={handleKeyDown}
+      onKeyDownCapture={handleKeyDown}
     >
-      {header && <thead>{header}</thead>}
-      <tbody>{children ? children({ weeks }) : defaultRender(weeks)}</tbody>
+      <RangeDragContext.Provider value={rangeDragRef}>
+        {header && <thead>{header}</thead>}
+        <tbody>{children ? children({ weeks }) : defaultRender(weeks)}</tbody>
+      </RangeDragContext.Provider>
     </table>
   );
 }

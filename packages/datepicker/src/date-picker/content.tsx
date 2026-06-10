@@ -167,6 +167,13 @@ export function Content({
     return () => cancelAnimationFrame(raf);
   }, [isOpen, isPositioned]);
 
+  // Portal targets document.body, which is unavailable during SSR. Rendering inline on
+  // the server and portaling on the client causes hydration mismatches in popover content.
+  const [portalReady, setPortalReady] = useState(!portal);
+  useEffect(() => {
+    if (portal) setPortalReady(true);
+  }, [portal]);
+
   useEffect(() => {
     if (!isOpen || !contentRef.current) return;
     if (state.openSource === "input") return;
@@ -181,7 +188,7 @@ export function Content({
 
   const liveRegionProps = useDatePickerAnnouncer(state, config, isOpen);
 
-  if (!shouldRender) return null;
+  if (!shouldRender || (portal && !portalReady)) return null;
 
   const content = (
     <div
@@ -220,7 +227,7 @@ export function Content({
     </div>
   );
 
-  if (portal && typeof document !== "undefined") {
+  if (portal) {
     return createPortal(content, document.body);
   }
   return content;

@@ -64,7 +64,7 @@ export function MonthGrid({ children, className }: MonthGridProps) {
         role="grid"
         aria-label={String(state.focusedYear)}
         className={className}
-        onKeyDown={handleKeyDown}
+        onKeyDownCapture={handleKeyDown}
       >
         {children({ months })}
       </div>

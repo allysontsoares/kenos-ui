@@ -109,9 +109,7 @@ export function useDatePicker(props: DatePickerRootProps) {
     errorMessage,
   } = props;
   const allowsNonContiguousRanges =
-    mode === "range"
-      ? (props as DatePickerRangeProps).allowsNonContiguousRanges
-      : undefined;
+    mode === "range" ? (props as DatePickerRangeProps).allowsNonContiguousRanges : undefined;
   const config = useMemo(
     () =>
       resolveConfig({
@@ -282,7 +280,8 @@ export function useDatePicker(props: DatePickerRootProps) {
   const propMultipleSignature = useMemo(
     () =>
       controlledMultipleValue
-        ? [...controlledMultipleValue.map((d) => d.getTime())]
+        ? controlledMultipleValue
+            .map((d) => d.getTime())
             .sort((a, b) => a - b)
             .join(",")
         : "",
@@ -296,7 +295,8 @@ export function useDatePicker(props: DatePickerRootProps) {
     if (lastSyncedPropMultipleRef.current === propMultipleSignature) return;
     lastSyncedPropMultipleRef.current = propMultipleSignature;
 
-    const stateSignature = [...state.selectedDates.map((d) => d.getTime())]
+    const stateSignature = state.selectedDates
+      .map((d) => d.getTime())
       .sort((a, b) => a - b)
       .join(",");
     if (propMultipleSignature === stateSignature) return;

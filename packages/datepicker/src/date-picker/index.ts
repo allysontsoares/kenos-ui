@@ -17,6 +17,8 @@ export { MonthGrid } from "./month-grid";
 export { MonthCell } from "./month-cell";
 export { YearGrid } from "./year-grid";
 export { YearCell } from "./year-cell";
+export { ErrorMessage } from "./error-message";
+export type { ErrorMessageProps } from "./error-message";
 export { HiddenInput } from "./hidden-input";
 export type { HiddenInputProps } from "./hidden-input";
 export { Presets } from "./presets";
