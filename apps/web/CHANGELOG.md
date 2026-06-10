@@ -1,5 +1,11 @@
 # @kenos-ui/web
 
+## 0.0.5
+
+### Minor Changes
+
+- Date Picker docs: Tier 4 API (granularity, pageBehavior, allowsNonContiguousRanges, Presets, controlled multiple), new demos, and updated snippets.
+
 ## 0.0.4
 
 ### Patch Changes

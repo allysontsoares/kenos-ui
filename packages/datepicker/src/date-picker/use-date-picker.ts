@@ -108,6 +108,10 @@ export function useDatePicker(props: DatePickerRootProps) {
     invalid,
     errorMessage,
   } = props;
+  const allowsNonContiguousRanges =
+    mode === "range"
+      ? (props as DatePickerRangeProps).allowsNonContiguousRanges
+      : undefined;
   const config = useMemo(
     () =>
       resolveConfig({
@@ -126,9 +130,7 @@ export function useDatePicker(props: DatePickerRootProps) {
         granularity,
         hourCycle,
         pageBehavior,
-        ...(mode === "range" && {
-          allowsNonContiguousRanges: (props as DatePickerRangeProps).allowsNonContiguousRanges,
-        }),
+        ...(allowsNonContiguousRanges !== undefined && { allowsNonContiguousRanges }),
         messages,
         name,
         required,
@@ -151,6 +153,7 @@ export function useDatePicker(props: DatePickerRootProps) {
       granularity,
       hourCycle,
       pageBehavior,
+      allowsNonContiguousRanges,
       messages,
       name,
       required,
@@ -279,9 +282,8 @@ export function useDatePicker(props: DatePickerRootProps) {
   const propMultipleSignature = useMemo(
     () =>
       controlledMultipleValue
-        ? controlledMultipleValue
-            .map((d) => d.getTime())
-            .toSorted((a, b) => a - b)
+        ? [...controlledMultipleValue.map((d) => d.getTime())]
+            .sort((a, b) => a - b)
             .join(",")
         : "",
     [controlledMultipleValue],
@@ -294,9 +296,8 @@ export function useDatePicker(props: DatePickerRootProps) {
     if (lastSyncedPropMultipleRef.current === propMultipleSignature) return;
     lastSyncedPropMultipleRef.current = propMultipleSignature;
 
-    const stateSignature = state.selectedDates
-      .map((d) => d.getTime())
-      .toSorted((a, b) => a - b)
+    const stateSignature = [...state.selectedDates.map((d) => d.getTime())]
+      .sort((a, b) => a - b)
       .join(",");
     if (propMultipleSignature === stateSignature) return;
 

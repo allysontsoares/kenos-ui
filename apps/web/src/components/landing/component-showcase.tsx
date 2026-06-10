@@ -7,7 +7,7 @@ const COMPONENTS = [
     slug: "date-picker",
     tag: "input",
     description:
-      "Input + popover calendar with segmented fields, floating positioning, and full keyboard navigation. The common case ships as DatePicker.Calendar.",
+      "Input + popover calendar with segmented date/time fields, range and multiple modes, presets, and full keyboard navigation. Ships as DatePicker.Calendar.",
     accent: "#fafafa",
     art: "/streak-amber.png",
     code: `import { DatePicker } from "@kenos-ui/react-datepicker";

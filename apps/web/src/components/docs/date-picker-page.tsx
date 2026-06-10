@@ -20,9 +20,11 @@ import {
   DatePickerControlledDemo,
   DatePickerDisabledDemo,
   DatePickerFormNativeDemo,
+  DatePickerGranularityDemo,
   DatePickerInvalidDemo,
   DatePickerMinMaxDemo,
   DatePickerMultipleDemo,
+  DatePickerNonContiguousRangeDemo,
   DatePickerRangeEscapeDemo,
   DatePickerRTLDemo,
   DatePickerUnavailableDemo,
@@ -209,8 +211,10 @@ export function DatePickerPage() {
       </Example>
       <H3 id="multiple">Multiple Dates</H3>
       <P>
-        <InlineCode>mode="multiple"</InlineCode> toggles dates on click. Keep the popover open with{" "}
-        <InlineCode>closeOnSelect=&#123;false&#125;</InlineCode>.
+        <InlineCode>mode="multiple"</InlineCode> toggles dates on click. Pass{" "}
+        <InlineCode>value</InlineCode> and <InlineCode>onValueChange</InlineCode> for fully
+        controlled sync — programmatic updates and form resets stay in step with the calendar. Keep
+        the popover open with <InlineCode>closeOnSelect=&#123;false&#125;</InlineCode>.
       </P>
       <Example code={DATE_PICKER_SNIPPETS.multiple} lang="tsx" previewTall>
         <DatePickerMultipleDemo />
@@ -292,15 +296,43 @@ export function DatePickerPage() {
       <Example code={DATE_PICKER_SNIPPETS.rtl} lang="tsx" previewTall>
         <DatePickerRTLDemo />
       </Example>
-      <H3 id="presets">Range Presets</H3>
+      <H3 id="presets">Presets</H3>
       <P>
-        Presets are custom UI you compose inside <InlineCode>Content</InlineCode>. Use{" "}
-        <InlineCode>useDatePickerContext</InlineCode> and <InlineCode>dispatch</InlineCode> to apply
-        a range programmatically.
+        Wrap shortcut buttons in <InlineCode>DatePicker.Presets</InlineCode> inside{" "}
+        <InlineCode>Content</InlineCode>. Use <InlineCode>useDatePickerActions()</InlineCode> for{" "}
+        <InlineCode>selectDate</InlineCode>, <InlineCode>selectRange</InlineCode>,{" "}
+        <InlineCode>selectToday</InlineCode>, and related helpers — no manual dispatch wiring.
       </P>
       <Example code={DATE_PICKER_SNIPPETS.presets} lang="tsx" previewTall>
         <DateRangePicker label="Stay" presets />
       </Example>
+      <H3 id="granularity">Time Granularity</H3>
+      <P>
+        Set <InlineCode>granularity</InlineCode> to <InlineCode>"hour"</InlineCode>,{" "}
+        <InlineCode>"minute"</InlineCode>, or <InlineCode>"second"</InlineCode> to add time segments
+        via timescape. Use <InlineCode>hourCycle=&#123;12 | 24&#125;</InlineCode> to force 12h or
+        24h display. Calendar selection updates the date portion and preserves the current time.
+      </P>
+      <Example code={DATE_PICKER_SNIPPETS.granularity} lang="tsx" previewTall>
+        <DatePickerGranularityDemo />
+      </Example>
+      <H3 id="non-contiguous-range">Non-contiguous Ranges</H3>
+      <P>
+        By default, completing a range fails when unavailable dates sit between start and end. Set{" "}
+        <InlineCode>allowsNonContiguousRanges</InlineCode> on <InlineCode>mode="range"</InlineCode>{" "}
+        to allow booking-style ranges that skip unavailable days (weekends, blocked slots).
+      </P>
+      <Example code={DATE_PICKER_SNIPPETS.nonContiguousRange} lang="tsx" previewTall>
+        <DatePickerNonContiguousRangeDemo />
+      </Example>
+      <H3 id="page-behavior">Page Behavior</H3>
+      <P>
+        <InlineCode>pageBehavior="visible"</InlineCode> (default) changes the visible month on
+        PageUp/PageDown. <InlineCode>pageBehavior="single"</InlineCode> moves focus by one month
+        without changing the month header while the target day is still rendered in the grid —
+        useful for future multi-month layouts.
+      </P>
+      <CodeBlock code={DATE_PICKER_SNIPPETS.pageBehavior} lang="tsx" />
       <H3 id="year-navigation">Year Navigation</H3>
       <P>
         In year view, <InlineCode>PrevTrigger</InlineCode> / <InlineCode>NextTrigger</InlineCode>{" "}

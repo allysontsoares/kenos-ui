@@ -12,6 +12,10 @@ export const DATE_PICKER_FEATURES = [
   "Unstyled — style with className, style, and data-* attributes.",
   "Localization via Intl (locale, weekStartsOn, dir) — no bundled locale data.",
   "Customizable screen-reader messages via messages prop.",
+  "Time segments via granularity (hour, minute, second) — powered by timescape.",
+  "DatePicker.Presets + useDatePickerActions for shortcut buttons.",
+  "pageBehavior for multi-month grids; allowsNonContiguousRanges for booking ranges.",
+  'Fully controlled mode="multiple" with value sync.',
 ] as const;
 
 export const DATE_PICKER_INSTALL = {
@@ -40,6 +44,10 @@ export const DATE_PICKER_ANATOMY: AnatomyNode[] = [
             tag: "DatePicker.Content",
             note: "dialog + portal + positioning",
             children: [
+              {
+                tag: "DatePicker.Presets",
+                note: "optional shortcut buttons (useDatePickerActions)",
+              },
               {
                 tag: "DatePicker.Calendar",
                 note: "shorthand — or ViewControl + Grid + Day",
@@ -124,6 +132,29 @@ export const DATE_PICKER_API: ApiGroup[] = [
       { name: "errorMessage", type: "string", desc: "Linked via aria-errormessage when invalid." },
       { name: "placeholderDate", type: "Date", desc: "Calendar opens focused on this date." },
       {
+        name: "granularity",
+        type: '"day" | "hour" | "minute" | "second"',
+        def: '"day"',
+        desc: "Lowest time unit in Input segments. day = date only; minute adds hour + minute.",
+      },
+      {
+        name: "hourCycle",
+        type: "12 | 24",
+        desc: "12h vs 24h time segments. Defaults from locale when omitted.",
+      },
+      {
+        name: "pageBehavior",
+        type: '"visible" | "single"',
+        def: '"visible"',
+        desc: "Day grid PageUp/Down: visible changes month view; single moves focus within the grid when possible.",
+      },
+      {
+        name: "allowsNonContiguousRanges",
+        type: "boolean",
+        def: "false",
+        desc: "Range mode only. Allow completing a range that spans unavailable dates between start and end.",
+      },
+      {
         name: "onFocusWithin / onBlurWithin / onFocusChange",
         type: "FocusEvent handlers",
         desc: "Focus-within callbacks on Root (popover excluded).",
@@ -140,6 +171,28 @@ export const DATE_PICKER_API: ApiGroup[] = [
         def: "false",
         desc: "Opt-in focus trap + aria-modal on Content.",
       },
+    ],
+  },
+  {
+    group: "Presets",
+    props: [
+      {
+        name: "children",
+        type: "ReactNode",
+        desc: "Shortcut buttons or links. Pair with useDatePickerActions for selectDate, selectRange, etc.",
+      },
+      { name: "className / style", desc: "Layout wrapper for preset controls." },
+    ],
+  },
+  {
+    group: "useDatePickerActions",
+    props: [
+      { name: "selectDate(date)", desc: "Dispatch SELECT_DATE — single or toggle in multiple." },
+      { name: "selectRange(start, end)", desc: "Dispatch SET_RANGE." },
+      { name: "selectDates(dates)", desc: "Dispatch SET_SELECTED_DATES — multiple mode." },
+      { name: "selectToday()", desc: "Select today's date." },
+      { name: "selectDaysFromToday(n)", desc: "Select today + n days." },
+      { name: "mode", type: "SelectionMode", desc: "Current Root mode from context." },
     ],
   },
   {
@@ -228,7 +281,10 @@ export const DATE_PICKER_API: ApiGroup[] = [
     keys: true,
     props: [
       { name: "Arrow keys", desc: "Move focus by day (roving tabindex)." },
-      { name: "PageUp / PageDown", desc: "Previous / next month. Shift + Page = year." },
+      {
+        name: "PageUp / PageDown",
+        desc: "Previous / next month (pageBehavior visible). single: move focus ±1 month within grid when the target day is visible. Shift + Page = year.",
+      },
       { name: "Home / End", desc: "First / last day of focused week." },
       { name: "Enter / Space", desc: "Select focused date." },
       {
@@ -296,10 +352,12 @@ const [range, setRange] = useState<DateRange>({ start: null, end: null });
     <DatePicker.Calendar />
   </DatePicker.Content>
 </DatePicker.Root>`,
-  multiple: `<DatePicker.Root mode="multiple" defaultValue={[]} onValueChange={setDates}>
+  multiple: `const [dates, setDates] = useState<Date[]>([]);
+
+<DatePicker.Root mode="multiple" value={dates} onValueChange={setDates} closeOnSelect={false}>
   <DatePicker.Input />
   <DatePicker.Trigger />
-  <DatePicker.Content closeOnSelect={false}>
+  <DatePicker.Content>
     <DatePicker.Calendar />
   </DatePicker.Content>
 </DatePicker.Root>`,
@@ -319,16 +377,45 @@ const max = new Date(2026, 11, 31);
   disabled: `<DatePicker.Root disabled={(date) => date.getDay() === 0 || date.getDay() === 6}>
   <DatePicker.Calendar />
 </DatePicker.Root>`,
-  presets: `import { useDatePickerContext } from "@kenos-ui/react-datepicker";
+  presets: `import { DatePicker, useDatePickerActions } from "@kenos-ui/react-datepicker";
 
-function Presets() {
-  const { dispatch } = useDatePickerContext();
+function PresetButtons() {
+  const { selectRange, selectToday } = useDatePickerActions();
+  const addDays = (n: number) => {
+    const start = new Date();
+    const end = new Date(start);
+    end.setDate(start.getDate() + n);
+    selectRange(start, end);
+  };
   return (
-    <button type="button" onClick={() => dispatch({ type: "SET_RANGE", start, end })}>
-      +1 week
-    </button>
+    <>
+      <button type="button" onClick={selectToday}>Today</button>
+      <button type="button" onClick={() => addDays(7)}>+1 week</button>
+    </>
   );
-}`,
+}
+
+<DatePicker.Root mode="range" closeOnSelect={false}>
+  <DatePicker.Content>
+    <DatePicker.Presets><PresetButtons /></DatePicker.Presets>
+    <DatePicker.Calendar />
+  </DatePicker.Content>
+</DatePicker.Root>`,
+  granularity: `<DatePicker.Root granularity="minute" hourCycle={24} defaultValue={new Date()}>
+  <DatePicker.Label>Appointment time</DatePicker.Label>
+  <DatePicker.Input />
+</DatePicker.Root>`,
+  nonContiguousRange: `<DatePicker.Root
+  mode="range"
+  unavailable={(date) => date.getDay() === 0}
+  allowsNonContiguousRanges
+  closeOnSelect={false}
+>
+  <DatePicker.Calendar />
+</DatePicker.Root>`,
+  pageBehavior: `<DatePicker.Root pageBehavior="single">
+  <DatePicker.Content><DatePicker.Calendar /></DatePicker.Content>
+</DatePicker.Root>`,
   formNative: `<form action="/api/booking" method="post">
   <DatePicker.Root name="checkIn" required>
     <DatePicker.Label>Check-in</DatePicker.Label>

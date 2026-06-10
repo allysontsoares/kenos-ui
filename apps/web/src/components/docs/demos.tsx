@@ -7,7 +7,7 @@ import { useForm as useTanStackForm } from "@tanstack/react-form";
 import { z } from "zod";
 import {
   DatePicker as KenosDatePicker,
-  useDatePickerContext,
+  useDatePickerActions,
   type DateRange,
 } from "@kenos-ui/react-datepicker";
 import {
@@ -269,20 +269,22 @@ function today() {
   return d;
 }
 
-function RangePresets() {
-  const { dispatch } = useDatePickerContext();
+const weekendUnavailable = (date: Date) => date.getDay() === 0 || date.getDay() === 6;
+
+const preventFocusSteal = (e: React.MouseEvent) => e.preventDefault();
+
+function RangePresetButtons() {
+  const { selectRange } = useDatePickerActions();
 
   const applyPreset = (nights: number) => {
     const start = today();
     const end = new Date(start);
     end.setDate(start.getDate() + nights);
-    dispatch({ type: "SET_RANGE", start, end });
+    selectRange(start, end);
   };
 
-  const preventFocusSteal = (e: React.MouseEvent) => e.preventDefault();
-
   return (
-    <div className="mt-2.5 flex gap-2 border-t border-zinc-200/90 pt-2.5 dark:border-zinc-700/80">
+    <>
       <button
         type="button"
         className={presetBtn}
@@ -303,11 +305,19 @@ function RangePresets() {
         type="button"
         className={presetBtn}
         onMouseDown={preventFocusSteal}
-        onClick={() => dispatch({ type: "SET_RANGE", start: null, end: null })}
+        onClick={() => selectRange(today(), today())}
       >
-        Clear
+        Today
       </button>
-    </div>
+    </>
+  );
+}
+
+function RangePresets() {
+  return (
+    <KenosDatePicker.Presets className="mt-2.5 flex gap-2 border-t border-zinc-200/90 pt-2.5 dark:border-zinc-700/80">
+      <RangePresetButtons />
+    </KenosDatePicker.Presets>
   );
 }
 
@@ -1173,6 +1183,83 @@ export function DatePickerRTLDemo() {
   );
 }
 
+export function DatePickerGranularityDemo() {
+  const [value, setValue] = useState<Date | null>(new Date(2026, 5, 15, 14, 30));
+  return (
+    <KenosDatePicker.Root
+      granularity="minute"
+      hourCycle={24}
+      value={value}
+      onValueChange={setValue}
+    >
+      <div className={fieldWrap()}>
+        <KenosDatePicker.Label className={labelCls}>Appointment</KenosDatePicker.Label>
+        <KenosDatePicker.Input className={inputCls} />
+        <p className="mt-1.5 text-[12px] text-zinc-500 dark:text-zinc-400">
+          {value
+            ? value.toLocaleString("en-US", {
+                dateStyle: "medium",
+                timeStyle: "short",
+                hour12: false,
+              })
+            : "No value"}
+        </p>
+      </div>
+    </KenosDatePicker.Root>
+  );
+}
+
+export function DatePickerNonContiguousRangeDemo() {
+  const [range, setRange] = useState<DateRange>({ start: null, end: null });
+
+  return (
+    <div className="flex w-full max-w-sm flex-col gap-2">
+      <p className="text-[13px] text-zinc-500 dark:text-zinc-400">
+        Weekends are unavailable but you can still book Mon → Fri with{" "}
+        <code className="text-xs">allowsNonContiguousRanges</code>.
+      </p>
+      <KenosDatePicker.Root
+        mode="range"
+        unavailable={weekendUnavailable}
+        allowsNonContiguousRanges
+        value={range}
+        onValueChange={setRange}
+        defaultOpen
+        closeOnSelect={false}
+      >
+        <div className={fieldWrap()}>
+          <KenosDatePicker.Label className={labelCls}>Stay</KenosDatePicker.Label>
+          <div className={DP_CONTROL_ROW_CLS}>
+            <KenosDatePicker.Input index={0} className={rangeInputCls} />
+            <span className="shrink-0 text-zinc-500" aria-hidden>
+              →
+            </span>
+            <KenosDatePicker.Input index={1} className={rangeInputCls} />
+            <KenosDatePicker.Trigger className={triggerCls} aria-label="Open calendar">
+              <CalIcon />
+            </KenosDatePicker.Trigger>
+          </div>
+          <KenosDatePicker.Content
+            portal
+            {...popoverAlign}
+            className={demoShell("default")}
+            role="dialog"
+            aria-label="Stay"
+            data-cal-size="default"
+          >
+            <DemoRangeCalendarBody size="default" />
+          </KenosDatePicker.Content>
+        </div>
+      </KenosDatePicker.Root>
+      <p className="text-[12px] text-zinc-500 dark:text-zinc-400">
+        {range.start && range.end
+          ? `${range.start.toLocaleDateString()} → ${range.end.toLocaleDateString()}`
+          : "Select a range"}
+      </p>
+    </div>
+  );
+}
+
 export function DatePickerRangeEscapeDemo() {
   return (
     <div className="flex w-full max-w-sm flex-col gap-2">
@@ -1188,7 +1275,12 @@ export function DatePickerMultipleDemo() {
   const [dates, setDates] = useState<Date[]>([]);
   return (
     <div className="flex w-full max-w-sm flex-col gap-3">
-      <KenosDatePicker.Root mode="multiple" onValueChange={setDates} closeOnSelect={false}>
+      <KenosDatePicker.Root
+        mode="multiple"
+        value={dates}
+        onValueChange={setDates}
+        closeOnSelect={false}
+      >
         <div className={fieldWrap()}>
           <KenosDatePicker.Label className={labelCls}>Select dates</KenosDatePicker.Label>
           <div className={DP_CONTROL_ROW_CLS}>
