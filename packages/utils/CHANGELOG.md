@@ -1,7 +1,5 @@
 # @kenos-ui/utils
 
-
-
 ## 0.0.2
 
 ### Minor Changes
