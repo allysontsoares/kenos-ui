@@ -228,5 +228,8 @@ export function Content({
     </div>
   );
 
-  return portal ? createPortal(content, document.body) : content;
+  if (portal && typeof document !== "undefined") {
+    return createPortal(content, document.body);
+  }
+  return content;
 }
