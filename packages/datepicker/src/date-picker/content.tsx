@@ -9,7 +9,7 @@ import {
   captureActiveElement,
 } from "@kenos-ui/utils";
 import { useDatePickerContext } from "./context";
-import { formatMonthYear, formatYear } from "../utils/locale";
+import { useDatePickerAnnouncer } from "./use-date-picker-announcer";
 
 export interface ContentProps extends React.HTMLAttributes<HTMLDivElement> {
   forceMount?: boolean;
@@ -179,12 +179,7 @@ export function Content({
     firstFocusable?.focus();
   }, [isOpen, state.openSource]);
 
-  const announcement =
-    state.view === "day"
-      ? formatMonthYear(new Date(state.focusedYear, state.focusedMonth, 1), config.locale)
-      : state.view === "month"
-        ? formatYear(state.focusedYear, config.locale)
-        : `${state.yearPageStart}–${state.yearPageStart + 11}`;
+  const liveRegionProps = useDatePickerAnnouncer(state, config, isOpen);
 
   if (!shouldRender) return null;
 
@@ -211,8 +206,7 @@ export function Content({
       {...props}
     >
       <span
-        aria-live="polite"
-        aria-atomic="true"
+        {...liveRegionProps}
         style={{
           position: "absolute",
           width: 1,
@@ -221,9 +215,7 @@ export function Content({
           clip: "rect(0,0,0,0)",
           whiteSpace: "nowrap",
         }}
-      >
-        {isOpen ? announcement : ""}
-      </span>
+      />
       {children}
     </div>
   );

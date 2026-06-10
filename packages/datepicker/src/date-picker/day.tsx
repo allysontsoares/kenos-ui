@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useCallback } from "react";
 import { useDatePickerContext } from "./context";
 import {
   isSameDay,
@@ -10,6 +10,8 @@ import {
 } from "../utils/date";
 import { formatDayAriaLabel } from "../utils/day-aria";
 import type { DayCellMeta } from "../types";
+
+const TOUCH_DRAG_DELAY_MS = 200;
 
 export interface DayProps {
   date: Date;
@@ -23,6 +25,9 @@ export function Day({ date, children, className, style }: DayProps) {
   const today = startOfDay(new Date());
   const disabled = isDateDisabled(date, config);
   const unavailable = isDateUnavailable(date, config);
+  const dragActiveRef = useRef(false);
+  const suppressClickRef = useRef(false);
+  const touchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const meta: DayCellMeta = {
     date,
@@ -53,6 +58,106 @@ export function Day({ date, children, className, style }: DayProps) {
     isOutsideMonth: !meta.isCurrentMonth,
   });
 
+  const clearTouchTimer = useCallback(() => {
+    if (touchTimerRef.current) {
+      clearTimeout(touchTimerRef.current);
+      touchTimerRef.current = null;
+    }
+  }, []);
+
+  const beginRangeDrag = useCallback(
+    (target: HTMLElement, pointerId: number) => {
+      if (config.mode !== "range" || !canSelect) return;
+      dragActiveRef.current = true;
+      if (typeof target.setPointerCapture === "function") {
+        target.setPointerCapture(pointerId);
+      }
+      dispatch({ type: "ANCHOR_DATE", date });
+    },
+    [config.mode, canSelect, dispatch, date],
+  );
+
+  const handleClick = useCallback(
+    (e: React.MouseEvent<HTMLTableCellElement>) => {
+      if (suppressClickRef.current) return;
+      if (!canSelect) return;
+      if (config.mode === "multiple" && (e.ctrlKey || e.metaKey)) {
+        dispatch({ type: "TOGGLE_DATE", date });
+        return;
+      }
+      dispatch({ type: "SELECT_DATE", date });
+    },
+    [canSelect, config.mode, dispatch, date],
+  );
+
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent<HTMLTableCellElement>) => {
+      if (config.mode !== "range" || config.readOnly || e.button > 0) return;
+      if (!canSelect) return;
+
+      if (e.pointerType === "touch") {
+        clearTouchTimer();
+        touchTimerRef.current = setTimeout(() => {
+          beginRangeDrag(e.currentTarget, e.pointerId);
+        }, TOUCH_DRAG_DELAY_MS);
+        return;
+      }
+
+      beginRangeDrag(e.currentTarget, e.pointerId);
+    },
+    [config.mode, config.readOnly, canSelect, clearTouchTimer, beginRangeDrag],
+  );
+
+  const handlePointerUp = useCallback(
+    (e: React.PointerEvent<HTMLTableCellElement>) => {
+      clearTouchTimer();
+      if (!dragActiveRef.current) return;
+      dragActiveRef.current = false;
+      if (
+        typeof e.currentTarget.hasPointerCapture === "function" &&
+        e.currentTarget.hasPointerCapture(e.pointerId)
+      ) {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      }
+      if (
+        config.mode === "range" &&
+        state.rangeStart &&
+        !state.rangeEnd &&
+        state.hoverDate &&
+        canSelect
+      ) {
+        dispatch({ type: "SELECT_DATE", date: state.hoverDate });
+      }
+      suppressClickRef.current = true;
+      requestAnimationFrame(() => {
+        suppressClickRef.current = false;
+      });
+    },
+    [
+      clearTouchTimer,
+      config.mode,
+      state.rangeStart,
+      state.rangeEnd,
+      state.hoverDate,
+      canSelect,
+      dispatch,
+    ],
+  );
+
+  const handlePointerCancel = useCallback(
+    (e: React.PointerEvent<HTMLTableCellElement>) => {
+      clearTouchTimer();
+      dragActiveRef.current = false;
+      if (
+        typeof e.currentTarget.hasPointerCapture === "function" &&
+        e.currentTarget.hasPointerCapture(e.pointerId)
+      ) {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      }
+    },
+    [clearTouchTimer],
+  );
+
   return (
     <td
       role="gridcell"
@@ -71,14 +176,17 @@ export function Day({ date, children, className, style }: DayProps) {
       data-range-start={meta.isRangeStart || undefined}
       data-range-end={meta.isRangeEnd || undefined}
       data-in-range={meta.isInRange || undefined}
-      onClick={() => {
-        if (canSelect) dispatch({ type: "SELECT_DATE", date });
-      }}
+      onClick={handleClick}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerCancel}
       onMouseEnter={() => {
         if (config.mode === "range") dispatch({ type: "HOVER_DATE", date });
       }}
       onMouseLeave={() => {
-        if (config.mode === "range") dispatch({ type: "HOVER_DATE", date: null });
+        if (config.mode === "range" && !dragActiveRef.current) {
+          dispatch({ type: "HOVER_DATE", date: null });
+        }
       }}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {

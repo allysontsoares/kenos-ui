@@ -1,9 +1,10 @@
-import React, { useRef, useEffect } from "react";
-import { focusWithoutScrolling } from "@kenos-ui/utils";
+import React, { useRef, useEffect, useMemo, useCallback } from "react";
+import { focusWithoutScrolling, useGridNavigation } from "@kenos-ui/utils";
+import type { GridNavigationKey } from "@kenos-ui/utils";
 import { useDatePickerContext } from "./context";
 import { buildCalendarGrid } from "../utils/calendar";
 import { getWeekStartDay, formatMonthYear } from "../utils/locale";
-import { addMonths, findNextFocusableDate } from "../utils/date";
+import { addMonths, findNextFocusableDate, isSameDay } from "../utils/date";
 import { Day } from "./day";
 
 export interface GridProps {
@@ -28,8 +29,109 @@ export function Grid({ children, header, className }: GridProps) {
 
   const weekStartDay = getWeekStartDay(config.locale, config.weekStartsOn);
   const weeks = buildCalendarGrid(state.focusedYear, state.focusedMonth, weekStartDay);
+  const flatDates = useMemo(() => weeks.flat(), [weeks]);
   const label = formatMonthYear(new Date(state.focusedYear, state.focusedMonth, 1), config.locale);
   const rtl = config.dir === "rtl";
+
+  const focusedIndex = useMemo(() => {
+    if (!state.focusedDate) return 0;
+    const idx = flatDates.findIndex((d) => isSameDay(d, state.focusedDate));
+    return idx >= 0 ? idx : 0;
+  }, [flatDates, state.focusedDate]);
+
+  const onFocusedIndexChange = useCallback(
+    (index: number) => {
+      const date = flatDates[index];
+      if (date) dispatch({ type: "FOCUS_DATE", date });
+    },
+    [flatDates, dispatch],
+  );
+
+  const getNextIndex = useCallback(
+    (current: number, key: GridNavigationKey): number | null => {
+      const date = flatDates[current] ?? state.focusedDate;
+      if (!date) return null;
+
+      let nextDate: Date;
+      switch (key) {
+        case "ArrowRight":
+          nextDate = findNextFocusableDate(date, rtl ? -1 : 1, config);
+          break;
+        case "ArrowLeft":
+          nextDate = findNextFocusableDate(date, rtl ? 1 : -1, config);
+          break;
+        case "ArrowDown":
+          nextDate = findNextFocusableDate(date, 7, config);
+          break;
+        case "ArrowUp":
+          nextDate = findNextFocusableDate(date, -7, config);
+          break;
+        case "Home": {
+          const d = new Date(date);
+          const diff = (d.getDay() - weekStartDay + 7) % 7;
+          nextDate = findNextFocusableDate(d, -diff || 0, config);
+          break;
+        }
+        case "End": {
+          const d = new Date(date);
+          const diff = (weekStartDay + 6 - d.getDay() + 7) % 7;
+          nextDate = findNextFocusableDate(d, diff || 0, config);
+          break;
+        }
+        default:
+          return null;
+      }
+
+      const idx = flatDates.findIndex((d) => isSameDay(d, nextDate));
+      return idx >= 0 ? idx : current;
+    },
+    [flatDates, state.focusedDate, rtl, config, weekStartDay],
+  );
+
+  const { onKeyDown } = useGridNavigation({
+    columns: 7,
+    itemCount: flatDates.length,
+    focusedIndex,
+    direction: config.dir,
+    onFocusedIndexChange,
+    getNextIndex: (current, key) => getNextIndex(current, key),
+    onPageUp: (event) => {
+      if (!state.focusedDate) return;
+      if (event?.shiftKey) {
+        dispatch({ type: "FOCUS_DATE", date: addMonths(state.focusedDate, -12) });
+      } else {
+        dispatch({ type: "NAV_PREV" });
+      }
+    },
+    onPageDown: (event) => {
+      if (!state.focusedDate) return;
+      if (event?.shiftKey) {
+        dispatch({ type: "FOCUS_DATE", date: addMonths(state.focusedDate, 12) });
+      } else {
+        dispatch({ type: "NAV_NEXT" });
+      }
+    },
+    onSelect: () => {
+      if (state.focusedDate) dispatch({ type: "SELECT_DATE", date: state.focusedDate });
+    },
+    enabled: Boolean(state.focusedDate),
+  });
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLTableElement>) => {
+      if (!state.focusedDate) return;
+      if (e.key === "Escape") {
+        if (config.mode === "range" && state.rangeStart && !state.rangeEnd) {
+          e.preventDefault();
+          e.stopPropagation();
+          dispatch({ type: "CANCEL_RANGE_ANCHOR" });
+        }
+        return;
+      }
+      onKeyDown(e);
+    },
+    [state.focusedDate, config.mode, state.rangeStart, state.rangeEnd, dispatch, onKeyDown],
+  );
 
   const focusedDateStr = state.focusedDate?.toDateString();
   useEffect(() => {
@@ -43,101 +145,6 @@ export function Grid({ children, header, className }: GridProps) {
       focusWithoutScrolling(focused);
     }
   }, [focusedDateStr, state.openSource]);
-
-  function handleKeyDown(e: React.KeyboardEvent<HTMLTableElement>) {
-    if (!state.focusedDate) return;
-
-    switch (e.key) {
-      case "ArrowRight": {
-        e.preventDefault();
-        dispatch({
-          type: "FOCUS_DATE",
-          date: findNextFocusableDate(state.focusedDate, rtl ? -1 : 1, config),
-        });
-        return;
-      }
-      case "ArrowLeft": {
-        e.preventDefault();
-        dispatch({
-          type: "FOCUS_DATE",
-          date: findNextFocusableDate(state.focusedDate, rtl ? 1 : -1, config),
-        });
-        return;
-      }
-      case "ArrowDown": {
-        e.preventDefault();
-        dispatch({
-          type: "FOCUS_DATE",
-          date: findNextFocusableDate(state.focusedDate, 7, config),
-        });
-        return;
-      }
-      case "ArrowUp": {
-        e.preventDefault();
-        dispatch({
-          type: "FOCUS_DATE",
-          date: findNextFocusableDate(state.focusedDate, -7, config),
-        });
-        return;
-      }
-      case "PageDown":
-        e.preventDefault();
-        if (e.shiftKey) {
-          dispatch({
-            type: "FOCUS_DATE",
-            date: addMonths(state.focusedDate, 12),
-          });
-        } else {
-          dispatch({ type: "NAV_NEXT" });
-        }
-        return;
-      case "PageUp":
-        e.preventDefault();
-        if (e.shiftKey) {
-          dispatch({
-            type: "FOCUS_DATE",
-            date: addMonths(state.focusedDate, -12),
-          });
-        } else {
-          dispatch({ type: "NAV_PREV" });
-        }
-        return;
-      case "Home": {
-        e.preventDefault();
-        const d = new Date(state.focusedDate);
-        const diff = (d.getDay() - weekStartDay + 7) % 7;
-        dispatch({
-          type: "FOCUS_DATE",
-          date: findNextFocusableDate(d, -diff || 0, config),
-        });
-        return;
-      }
-      case "End": {
-        e.preventDefault();
-        const d = new Date(state.focusedDate);
-        const diff = (weekStartDay + 6 - d.getDay() + 7) % 7;
-        dispatch({
-          type: "FOCUS_DATE",
-          date: findNextFocusableDate(d, diff || 0, config),
-        });
-        return;
-      }
-      case "Escape":
-        if (config.mode === "range" && state.rangeStart && !state.rangeEnd) {
-          e.preventDefault();
-          e.stopPropagation();
-          dispatch({ type: "CANCEL_RANGE_ANCHOR" });
-        }
-        return;
-      case "Enter":
-      case " ":
-        e.preventDefault();
-        dispatch({ type: "SELECT_DATE", date: state.focusedDate });
-        return;
-      default:
-        return;
-    }
-  }
 
   const ariaMulti = config.mode === "range" || config.mode === "multiple" ? true : undefined;
 

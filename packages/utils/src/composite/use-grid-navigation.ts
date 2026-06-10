@@ -1,5 +1,13 @@
 import { useCallback, type KeyboardEvent } from "react";
 
+export type GridNavigationKey =
+  | "ArrowRight"
+  | "ArrowLeft"
+  | "ArrowDown"
+  | "ArrowUp"
+  | "Home"
+  | "End";
+
 export interface UseGridNavigationOptions {
   enabled?: boolean;
   columns: number;
@@ -9,9 +17,12 @@ export interface UseGridNavigationOptions {
   isItemDisabled?: (index: number) => boolean;
   direction?: "ltr" | "rtl";
   onSelect?: (index: number) => void;
-  onPageUp?: () => void;
-  onPageDown?: () => void;
-  onEscape?: () => void;
+  onPageUp?: (event: KeyboardEvent) => void;
+  onPageDown?: (event: KeyboardEvent) => void;
+  /** Return false to leave Escape for parent handlers. */
+  onEscape?: () => boolean | void;
+  /** Override arrow/home/end movement. Return the next index, or null to skip. */
+  getNextIndex?: (current: number, key: GridNavigationKey, event: KeyboardEvent) => number | null;
 }
 
 function clamp(value: number, min: number, max: number): number {
@@ -30,6 +41,7 @@ export function useGridNavigation({
   onPageUp,
   onPageDown,
   onEscape,
+  getNextIndex,
 }: UseGridNavigationOptions) {
   const moveTo = useCallback(
     (next: number) => {
@@ -48,34 +60,42 @@ export function useGridNavigation({
 
       switch (event.key) {
         case "ArrowRight":
-          next = focusedIndex + (rtl ? -1 : 1);
-          break;
         case "ArrowLeft":
-          next = focusedIndex + (rtl ? 1 : -1);
-          break;
         case "ArrowDown":
-          next = focusedIndex + columns;
-          break;
         case "ArrowUp":
-          next = focusedIndex - columns;
-          break;
         case "Home":
-          next = 0;
+        case "End": {
+          const custom = getNextIndex?.(focusedIndex, event.key, event);
+          if (custom !== undefined && custom !== null) {
+            event.preventDefault();
+            moveTo(custom);
+            return;
+          }
+          if (event.key === "ArrowRight") next = focusedIndex + (rtl ? -1 : 1);
+          else if (event.key === "ArrowLeft") next = focusedIndex + (rtl ? 1 : -1);
+          else if (event.key === "ArrowDown") next = focusedIndex + columns;
+          else if (event.key === "ArrowUp") next = focusedIndex - columns;
+          else if (event.key === "Home") next = 0;
+          else next = itemCount - 1;
           break;
-        case "End":
-          next = itemCount - 1;
-          break;
+        }
         case "PageUp":
-          onPageUp?.();
-          event.preventDefault();
+          if (onPageUp) {
+            onPageUp(event);
+            event.preventDefault();
+          }
           return;
         case "PageDown":
-          onPageDown?.();
-          event.preventDefault();
+          if (onPageDown) {
+            onPageDown(event);
+            event.preventDefault();
+          }
           return;
         case "Escape":
-          onEscape?.();
-          event.preventDefault();
+          if (onEscape) {
+            const handled = onEscape();
+            if (handled !== false) event.preventDefault();
+          }
           return;
         case "Enter":
         case " ":
@@ -103,6 +123,7 @@ export function useGridNavigation({
       onEscape,
       onSelect,
       isItemDisabled,
+      getNextIndex,
     ],
   );
 

@@ -1,5 +1,16 @@
 # @kenos-ui/react-datepicker
 
+## Unreleased
+
+### Minor Changes
+
+- Refactor day, month, and year grids to use `useGridNavigation` from `@kenos-ui/utils`.
+- Range drag selection with pointer events (200ms touch delay).
+- Clicking an existing range endpoint re-anchors the selection.
+- Ctrl/Cmd+click toggles dates in `multiple` mode without clearing the input.
+- `useDatePickerAnnouncer` for month, selection, and range-complete screen reader updates.
+- Remove duplicate `use-roving-tabindex.ts` (use `@kenos-ui/utils`).
+
 ## 0.4.2
 
 ### Patch Changes

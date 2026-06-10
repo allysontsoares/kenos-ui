@@ -173,6 +173,13 @@ export function datePickerReducer(
       }
 
       if (config.mode === "range") {
+        if (
+          state.rangeEnd &&
+          state.rangeStart &&
+          (isSameDay(d, state.rangeStart) || isSameDay(d, state.rangeEnd))
+        ) {
+          return { ...state, rangeStart: d, rangeEnd: null, hoverDate: null };
+        }
         if (!state.rangeStart || state.rangeEnd) {
           return { ...state, rangeStart: d, rangeEnd: null, hoverDate: null };
         }

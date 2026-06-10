@@ -51,7 +51,11 @@ export {
   type SelectCollectionFilterFn,
 } from "./composite/use-select-collection";
 
-export { useGridNavigation, type UseGridNavigationOptions } from "./composite/use-grid-navigation";
+export {
+  useGridNavigation,
+  type UseGridNavigationOptions,
+  type GridNavigationKey,
+} from "./composite/use-grid-navigation";
 
 export {
   useKeyboardShortcuts,
