@@ -288,8 +288,26 @@ export const DATE_PICKER_API: ApiGroup[] = [
       { name: "Home / End", desc: "First / last day of focused week." },
       { name: "Enter / Space", desc: "Select focused date." },
       {
+        name: "Tab / Shift+Tab",
+        desc: "Move between the day grid and header controls (Prev, month/year label, Next).",
+      },
+      {
         name: "Escape",
         desc: "Close popover. In range mode with pending start, cancels anchor instead.",
+      },
+    ],
+  },
+  {
+    group: "Keyboard — Header controls",
+    keys: true,
+    props: [
+      {
+        name: "Tab / Shift+Tab",
+        desc: "Move between Prev, ViewTrigger, Next, and the active grid.",
+      },
+      {
+        name: "Enter / Space",
+        desc: "Activate Prev/Next (change month or year page) or ViewTrigger (switch day → month → year view).",
       },
     ],
   },
@@ -365,8 +383,12 @@ const [range, setRange] = useState<DateRange>({ start: null, end: null });
 <DatePicker.Root>
   <DatePicker.Calendar />
 </DatePicker.Root>`,
-  localization: `<DatePicker.Root locale="pt-BR">
+  localization: `// One Root: the segmented input and the calendar share state and
+// stay in sync. Segment order, separators, weekday names and week start
+// all derive from the locale via Intl — no bundled locale data.
+<DatePicker.Root locale="pt-BR">
   <DatePicker.Input />
+  <DatePicker.Calendar />
 </DatePicker.Root>`,
   minMax: `const min = new Date(2026, 0, 1);
 const max = new Date(2026, 11, 31);

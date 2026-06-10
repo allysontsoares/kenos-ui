@@ -34,6 +34,7 @@ import {
   DatePickerTanStackFormDemo,
   DateRangePicker,
   InlineCalendar,
+  LocalizedDatePickerDemo,
 } from "./demos";
 import { docsTableClass } from "./docs-prose";
 import { Eyebrow, H2, H3, InlineCode, Lead, P, PageIntro, PageTitle } from "./pages";
@@ -236,8 +237,7 @@ export function DatePickerPage() {
           <TabsContent key={v} value={v} className="mt-4">
             <Example code={DATE_PICKER_SNIPPETS.localization} lang="tsx" previewTall>
               <div className="flex flex-wrap items-start justify-center gap-6">
-                <DateField locale={v} label="Date field" />
-                <InlineCalendar locale={v} defaultValue={new Date()} />
+                <LocalizedDatePickerDemo locale={v} label="Date" />
               </div>
             </Example>
           </TabsContent>
