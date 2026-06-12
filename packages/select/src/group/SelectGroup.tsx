@@ -1,4 +1,4 @@
-import React, { useId } from "react";
+import React, { useId, useMemo } from "react";
 import { GroupContext } from "./GroupContext";
 
 export type GroupProps = React.HTMLAttributes<HTMLDivElement>;
@@ -6,9 +6,10 @@ export type GroupProps = React.HTMLAttributes<HTMLDivElement>;
 export function Group({ children, ...props }: GroupProps) {
   const groupId = useId();
   const labelId = `${groupId}-label`;
+  const contextValue = useMemo(() => ({ labelId }), [labelId]);
 
   return (
-    <GroupContext.Provider value={{ labelId }}>
+    <GroupContext.Provider value={contextValue}>
       <div role="group" aria-labelledby={labelId} {...props}>
         {children}
       </div>

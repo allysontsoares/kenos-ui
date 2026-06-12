@@ -7,8 +7,8 @@ export function buildCalendarGrid(year: number, month: number, weekStartDay: num
   const totalDays = new Date(year, month + 1, 0).getDate();
   const rows = offset + totalDays <= 35 ? 5 : 6;
 
-  return Array.from({ length: rows }, (_, row) =>
-    Array.from({ length: 7 }, (_, col) => new Date(year, month, 1 - offset + row * 7 + col)),
+  return Array.from({ length: rows }, (_row, row) =>
+    Array.from({ length: 7 }, (_col, col) => new Date(year, month, 1 - offset + row * 7 + col)),
   );
 }
 

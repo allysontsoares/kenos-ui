@@ -154,14 +154,15 @@ describe("clampDate", () => {
   });
 });
 
+const isWeekend = (d: Date) => d.getDay() === 0 || d.getDay() === 6;
+
 describe("isDateDisabled", () => {
   it("returns true when disabled is true", () => {
     expect(isDateDisabled(new Date(), { disabled: true })).toBe(true);
   });
   it("returns true when disabled function returns true", () => {
-    const weekend = (d: Date) => d.getDay() === 0 || d.getDay() === 6;
-    expect(isDateDisabled(new Date(2024, 0, 6), { disabled: weekend })).toBe(true); // Saturday
-    expect(isDateDisabled(new Date(2024, 0, 8), { disabled: weekend })).toBe(false); // Monday
+    expect(isDateDisabled(new Date(2024, 0, 6), { disabled: isWeekend })).toBe(true); // Saturday
+    expect(isDateDisabled(new Date(2024, 0, 8), { disabled: isWeekend })).toBe(false); // Monday
   });
   it("returns true when before minDate", () => {
     const minDate = new Date(2024, 5, 1);

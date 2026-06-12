@@ -17,13 +17,11 @@
   Headless, accessible, composable Select primitive for React 19+, fully unstyled.
 
   **Compound API**
-
   - Parts: `Root`, `Label`, `Trigger`, `Value`, `Icon`, `Content`, `List`, `Item`, `ItemText`, `ItemIndicator`
   - `Group`, `GroupLabel`, `HiddenSelect`, `Portal`, `Positioner`, `Backdrop`, `ClearTrigger`
   - `ScrollUpButton`, `ScrollDownButton` for long lists
 
   **Selection & forms**
-
   - Single and multiple selection (`multiple` on Root)
   - `items` prop for value→label maps without mounting every `Item`
   - `isItemEqualToValue` for custom equality
@@ -31,7 +29,6 @@
   - `onValueChange`, `onOpenChange`, `onOpenChangeComplete`
 
   **Popup policy (interop-first)**
-
   - Defaults: `modal={false}`, `portal={false}` — safe inside Dialogs
   - Opt-in `modal={true}` with `Backdrop` + focus trap
   - `portal` + `container` on Content; Floating UI positioning (`side`, `align`, `sameWidth`)
@@ -39,13 +36,11 @@
   - Escape `stopPropagation` — dismisses Select without closing parent Dialog
 
   **Keyboard & a11y**
-
   - List navigation (↑↓, Home, End), typeahead, Enter/Space select
   - Store-based item registry; `role="combobox"` / `role="listbox"` / `role="option"`
   - Test suite: ARIA, keyboard nav, forms, portal, presence, dialog interop, axe
 
   **Packaging**
-
   - Add `license: MIT` to `package.json` (fixes npm registry showing "no license")
 
 ## 0.2.1

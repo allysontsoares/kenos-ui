@@ -6,9 +6,11 @@ import * as Select from "../src/index.parts";
 
 // ── Shared fixture (Tier 2: multiple) ─────────────────────────────────────────
 
+const EMPTY_STRING_ARRAY: string[] = [];
+
 function MultipleSelect({
   defaultOpen = false,
-  defaultValue = [] as string[],
+  defaultValue = EMPTY_STRING_ARRAY,
   onValueChange,
 }: {
   defaultOpen?: boolean;

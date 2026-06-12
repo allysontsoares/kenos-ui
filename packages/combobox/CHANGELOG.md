@@ -17,11 +17,9 @@
   Headless, accessible, composable Combobox primitive for React 19+, fully unstyled.
 
   **Compound API**
-
   - Parts: `Root`, `Label`, `Input`, `Trigger`, `Content`, `List`, `Item`, `ItemText`, `Empty`, `Clear`
 
   **Filtering & selection**
-
   - Type-to-filter via `useSelectCollection` from `@kenos-ui/utils`
   - `ComboboxStore`: `open`, `value`, `inputValue`, `highlightedValue`, item registry
   - Keyboard: filter on type, arrow navigation, Enter to select
@@ -29,12 +27,10 @@
   - `Clear` resets value and input text
 
   **Popup policy**
-
   - Floating UI positioning on `Content`; `lazyMount` / dialog-interop patterns aligned with Select
   - Re-exported from `@kenos-ui/react` as `Combobox` namespace
 
   **Packaging**
-
   - Add `license: MIT` to `package.json` (fixes npm registry showing "no license")
 
 ## 0.2.0

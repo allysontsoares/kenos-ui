@@ -3,9 +3,44 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import * as DatePicker from "../src/date-picker/index";
 
+const DEFAULT_PICKER_VALUE = new Date(2024, 5, 15); // June 15, 2024
+
+function activeRole() {
+  return document.activeElement?.getAttribute("role");
+}
+
+function tabFromHeaderInto(grid: HTMLElement, nextName: RegExp) {
+  screen.getByRole("button", { name: nextName }).focus();
+  return grid;
+}
+
+function RangePicker({ onValueChange }: { onValueChange?: (r: unknown) => void }) {
+  return (
+    <DatePicker.Root
+      mode="range"
+      defaultOpen
+      closeOnSelect={false}
+      {...(onValueChange ? { onValueChange } : {})}
+    >
+      <DatePicker.Input index={0} />
+      <DatePicker.Input index={1} />
+      <DatePicker.Trigger>Open</DatePicker.Trigger>
+      <DatePicker.Content forceMount>
+        <DatePicker.Calendar />
+      </DatePicker.Content>
+    </DatePicker.Root>
+  );
+}
+
+function dayCell(n: number) {
+  return screen
+    .getAllByRole("gridcell")
+    .find((c) => c.textContent?.trim() === String(n) && !c.hasAttribute("data-outside-month"));
+}
+
 function BasicPicker({
   defaultOpen = true,
-  defaultValue = new Date(2024, 5, 15), // June 15, 2024
+  defaultValue = DEFAULT_PICKER_VALUE,
   onValueChange,
 }: {
   defaultOpen?: boolean;
@@ -465,17 +500,6 @@ describe("Month grid keyboard navigation", () => {
 });
 
 describe("Keyboard: header ↔ grid traversal across views", () => {
-  function activeRole() {
-    return document.activeElement?.getAttribute("role");
-  }
-
-  // The ViewControl order is Prev → ViewTrigger → Next, so the Next button is the
-  // last header tab stop; Tab from it must enter the grid below.
-  function tabFromHeaderInto(grid: HTMLElement, nextName: RegExp) {
-    screen.getByRole("button", { name: nextName }).focus();
-    return grid;
-  }
-
   it("Tab from a header button returns focus into the day grid", async () => {
     const user = userEvent.setup();
     render(<BasicPicker defaultOpen />);
@@ -569,30 +593,6 @@ describe("Grid keyboard — crossing month boundaries (FX-2)", () => {
 });
 
 describe("Range selection by click (FX-1)", () => {
-  function RangePicker({ onValueChange }: { onValueChange?: (r: unknown) => void }) {
-    return (
-      <DatePicker.Root
-        mode="range"
-        defaultOpen
-        closeOnSelect={false}
-        {...(onValueChange ? { onValueChange } : {})}
-      >
-        <DatePicker.Input index={0} />
-        <DatePicker.Input index={1} />
-        <DatePicker.Trigger>Open</DatePicker.Trigger>
-        <DatePicker.Content forceMount>
-          <DatePicker.Calendar />
-        </DatePicker.Content>
-      </DatePicker.Root>
-    );
-  }
-
-  function dayCell(n: number) {
-    return screen
-      .getAllByRole("gridcell")
-      .find((c) => c.textContent?.trim() === String(n) && !c.hasAttribute("data-outside-month"));
-  }
-
   it("first click anchors, second click completes the range", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();

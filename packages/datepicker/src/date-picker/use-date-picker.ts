@@ -282,7 +282,7 @@ export function useDatePicker(props: DatePickerRootProps) {
       controlledMultipleValue
         ? controlledMultipleValue
             .map((d) => d.getTime())
-            .sort((a, b) => a - b)
+            .toSorted((a, b) => a - b)
             .join(",")
         : "",
     [controlledMultipleValue],
@@ -297,7 +297,7 @@ export function useDatePicker(props: DatePickerRootProps) {
 
     const stateSignature = state.selectedDates
       .map((d) => d.getTime())
-      .sort((a, b) => a - b)
+      .toSorted((a, b) => a - b)
       .join(",");
     if (propMultipleSignature === stateSignature) return;
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useDatePickerContext } from "./context";
 import { DatePickerViewContext } from "./context";
 import type { ViewMode } from "../types";
@@ -10,8 +10,9 @@ export interface ViewProps {
 
 export function View({ view, children }: ViewProps) {
   const { state } = useDatePickerContext();
+  const contextValue = useMemo(() => ({ view }), [view]);
   if (state.view !== view) return null;
   return (
-    <DatePickerViewContext.Provider value={{ view }}>{children}</DatePickerViewContext.Provider>
+    <DatePickerViewContext.Provider value={contextValue}>{children}</DatePickerViewContext.Provider>
   );
 }

@@ -84,10 +84,12 @@ describe("DatePicker dialog interop (popup-policy matrix)", () => {
     content.focus();
 
     const nextField = screen.getByTestId("next-field");
-    for (let i = 0; i < 40; i++) {
-      if (document.activeElement === nextField) break;
+    const tabUntilFocused = async (remaining: number): Promise<void> => {
+      if (document.activeElement === nextField || remaining <= 0) return;
       await user.tab();
-    }
+      return tabUntilFocused(remaining - 1);
+    };
+    await tabUntilFocused(40);
 
     expect(nextField).toHaveFocus();
     expect(screen.getByTestId("mock-dialog")).toBeInTheDocument();

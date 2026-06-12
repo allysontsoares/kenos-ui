@@ -3,13 +3,14 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import * as DatePicker from "../src/date-picker/index";
 
+const isUnavailableOn15th = (date: Date) => date.getDate() === 15;
+
 function UnavailablePicker({ defaultOpen = true }: { defaultOpen?: boolean }) {
-  const unavailable = (date: Date) => date.getDate() === 15;
   return (
     <DatePicker.Root
       defaultValue={new Date(2024, 5, 10)}
       defaultOpen={defaultOpen}
-      unavailable={unavailable}
+      unavailable={isUnavailableOn15th}
     >
       <DatePicker.Label>Date</DatePicker.Label>
       <DatePicker.Input />

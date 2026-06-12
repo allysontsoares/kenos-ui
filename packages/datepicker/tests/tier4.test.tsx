@@ -80,9 +80,23 @@ describe("Tier 4 — pageBehavior", () => {
   });
 });
 
-describe("Tier 4 — allowsNonContiguousRanges", () => {
-  const unavailable = (date: Date) => date.getDate() === 12;
+const unavailableOn12th = (date: Date) => date.getDate() === 12;
 
+function PresetButtons() {
+  const { selectToday, selectDaysFromToday } = useDatePickerActions();
+  return (
+    <>
+      <button type="button" onClick={selectToday}>
+        Today
+      </button>
+      <button type="button" onClick={() => selectDaysFromToday(7)}>
+        +7 days
+      </button>
+    </>
+  );
+}
+
+describe("Tier 4 — allowsNonContiguousRanges", () => {
   it("blocks range completion across unavailable dates by default", async () => {
     const onChange = vi.fn();
 
@@ -91,7 +105,7 @@ describe("Tier 4 — allowsNonContiguousRanges", () => {
         mode="range"
         defaultOpen
         placeholderDate={new Date(2024, 5, 1)}
-        unavailable={unavailable}
+        unavailable={unavailableOn12th}
         onValueChange={onChange}
         closeOnSelect={false}
       >
@@ -122,7 +136,7 @@ describe("Tier 4 — allowsNonContiguousRanges", () => {
         mode="range"
         defaultOpen
         placeholderDate={new Date(2024, 5, 1)}
-        unavailable={unavailable}
+        unavailable={unavailableOn12th}
         allowsNonContiguousRanges
         onValueChange={onChange}
         closeOnSelect={false}
@@ -149,20 +163,6 @@ describe("Tier 4 — allowsNonContiguousRanges", () => {
 });
 
 describe("Tier 4 — Presets", () => {
-  function PresetButtons() {
-    const { selectToday, selectDaysFromToday } = useDatePickerActions();
-    return (
-      <>
-        <button type="button" onClick={selectToday}>
-          Today
-        </button>
-        <button type="button" onClick={() => selectDaysFromToday(7)}>
-          +7 days
-        </button>
-      </>
-    );
-  }
-
   it("renders presets group and applies preset selection", async () => {
     const onChange = vi.fn();
     const today = new Date();

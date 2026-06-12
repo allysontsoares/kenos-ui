@@ -10,6 +10,16 @@ const ITEMS = Array.from({ length: 30 }, (_, index) => ({
   label: `Item ${index}`,
 }));
 
+function ScrollToIndexHarness() {
+  const { scrollToIndex } = useSelectContext();
+
+  return (
+    <button type="button" data-testid="scroll-btn" onClick={() => scrollToIndex(10)}>
+      Scroll
+    </button>
+  );
+}
+
 function mockListOverflow(list: HTMLElement, scrollTop = 0) {
   let currentScrollTop = scrollTop;
 
@@ -99,16 +109,6 @@ describe("scrollToIndex", () => {
   it("scrolls to the requested index via context helper", async () => {
     const scrollIntoView = vi.fn();
     Element.prototype.scrollIntoView = scrollIntoView;
-
-    function ScrollToIndexHarness() {
-      const { scrollToIndex } = useSelectContext();
-
-      return (
-        <button type="button" data-testid="scroll-btn" onClick={() => scrollToIndex(10)}>
-          Scroll
-        </button>
-      );
-    }
 
     render(
       <Select.Root defaultOpen>
