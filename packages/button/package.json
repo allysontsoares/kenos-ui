@@ -1,6 +1,6 @@
 {
   "name": "@kenos-ui/react-button",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "An augmented native <button> primitive.",
   "homepage": "https://kenos-ui.vercel.app/",
   "license": "MIT",
