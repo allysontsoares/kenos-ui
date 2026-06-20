@@ -1,5 +1,5 @@
 import React from "react";
-import { useGroupContext } from "../group/GroupContext";
+import { useGroupContext } from "../group/group-context";
 
 export type GroupLabelProps = React.HTMLAttributes<HTMLDivElement>;
 

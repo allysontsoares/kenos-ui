@@ -34,6 +34,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@kenos-ui/react-button": "workspace:*",
     "@kenos-ui/react-combobox": "workspace:*",
     "@kenos-ui/react-datepicker": "workspace:*",
     "@kenos-ui/react-select": "workspace:*"

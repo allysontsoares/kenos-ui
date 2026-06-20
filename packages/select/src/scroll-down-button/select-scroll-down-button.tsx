@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollButton } from "../scroll-button/SelectScrollButton";
+import { ScrollButton } from "../scroll-button/select-scroll-button";
 import type { SelectScrollButtonProps } from "../types";
 
 export type ScrollDownButtonProps = Omit<SelectScrollButtonProps, "direction">;

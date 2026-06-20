@@ -17,8 +17,8 @@ import {
 } from "@kenos-ui/utils";
 import { useSelectContext } from "../context";
 import { useSelectStore } from "../store";
-import { usePositionerContext } from "../positioner/PositionerContext";
-import { resolvePortalContainer, usePortalContext } from "../portal/SelectPortal";
+import { usePositionerContext } from "../positioner/positioner-context";
+import { resolvePortalContainer, usePortalContext } from "../portal/select-portal";
 import type { SelectContentProps } from "../types";
 import { useAlignItemWithTrigger } from "../utils/use-align-item-with-trigger";
 

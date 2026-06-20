@@ -1,5 +1,5 @@
 import React, { useId, useMemo } from "react";
-import { GroupContext } from "./GroupContext";
+import { GroupContext } from "./group-context";
 
 export type GroupProps = React.HTMLAttributes<HTMLDivElement>;
 

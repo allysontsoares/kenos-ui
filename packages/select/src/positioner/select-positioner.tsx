@@ -4,7 +4,7 @@ import { useSelectContext } from "../context";
 import { useSelectStore } from "../store";
 import type { SelectPositionerProps } from "../types";
 import { useAlignItemWithTrigger } from "../utils/use-align-item-with-trigger";
-import { PositionerContext } from "./PositionerContext";
+import { PositionerContext } from "./positioner-context";
 
 export function Positioner({
   children,

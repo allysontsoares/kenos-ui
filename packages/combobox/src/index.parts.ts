@@ -1,13 +1,13 @@
 // Parts barrel — exported as the `Combobox` namespace.
 // packages/combobox/src/index.parts.ts
 
-export { Root } from "./root/ComboboxRoot";
-export { Label } from "./label/ComboboxLabel";
-export { Input } from "./input/ComboboxInput";
-export { Trigger } from "./trigger/ComboboxTrigger";
-export { Content } from "./content/ComboboxContent";
-export { List } from "./list/ComboboxList";
-export { Item } from "./item/ComboboxItem";
-export { ItemText } from "./item-text/ComboboxItemText";
-export { Empty } from "./empty/ComboboxEmpty";
-export { Clear } from "./clear/ComboboxClear";
+export { Root } from "./root/combobox-root";
+export { Label } from "./label/combobox-label";
+export { Input } from "./input/combobox-input";
+export { Trigger } from "./trigger/combobox-trigger";
+export { Content } from "./content/combobox-content";
+export { List } from "./list/combobox-list";
+export { Item } from "./item/combobox-item";
+export { ItemText } from "./item-text/combobox-item-text";
+export { Empty } from "./empty/combobox-empty";
+export { Clear } from "./clear/combobox-clear";
