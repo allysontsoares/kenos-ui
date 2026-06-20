@@ -2,9 +2,18 @@
   "name": "@kenos-ui/react-button",
   "version": "0.1.0",
   "description": "An augmented native <button> primitive.",
+  "homepage": "https://kenos-ui.vercel.app/",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/allysontsoares/kenos-ui",
+    "directory": "packages/button"
+  },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
+  "type": "module",
   "sideEffects": false,
   "main": "dist/index.cjs",
   "module": "dist/index.js",
