@@ -1823,7 +1823,13 @@ export function LiveDemo({ kind, locale = "en-US" }: { kind: DemoKind; locale?: 
 
 // --- Button Demos ---
 
-import { Button } from "@kenos-ui/react-button";
+import {
+  Button,
+  useHapticFeedback,
+  useLongPress,
+  useHover,
+  composeEventHandlers,
+} from "@kenos-ui/react-button";
 
 export function ButtonDefaultDemo() {
   return (
@@ -1891,5 +1897,56 @@ export function ButtonRenderPropsDemo() {
         </button>
       )}
     />
+  );
+}
+
+export function ButtonHapticDemo() {
+  const haptic = useHapticFeedback();
+  return (
+    <Button
+      onClick={composeEventHandlers(
+        () => haptic.trigger("light"),
+        () => console.log("Saved!"),
+      )}
+      className="inline-flex h-10 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-all data-[hovered]:bg-zinc-800 data-[pressed]:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 dark:bg-white dark:text-zinc-900 dark:data-[hovered]:bg-zinc-200"
+    >
+      Save with Haptics
+    </Button>
+  );
+}
+
+export function ButtonLongPressDemo() {
+  const [action, setAction] = useState("Press and hold me");
+  const longPressProps = useLongPress({
+    delay: 500,
+    onLongPress: () => setAction("Long pressed!"),
+    onCancel: () => setAction("Press and hold me"),
+  });
+
+  return (
+    <Button
+      {...longPressProps}
+      className="inline-flex h-10 w-48 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-all data-[hovered]:bg-zinc-800 data-[pressed]:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 dark:bg-white dark:text-zinc-900 dark:data-[hovered]:bg-zinc-200"
+    >
+      {action}
+    </Button>
+  );
+}
+
+export function ButtonHoverDemo() {
+  const { isHovered, hoverProps } = useHover();
+
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <Button
+        {...hoverProps}
+        className="inline-flex h-10 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-all data-[hovered]:bg-zinc-800 data-[pressed]:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 dark:bg-white dark:text-zinc-900 dark:data-[hovered]:bg-zinc-200"
+      >
+        Hover me
+      </Button>
+      <div className="text-sm font-mono text-zinc-500 dark:text-zinc-400">
+        Status: {isHovered ? "Hovering" : "Idle"}
+      </div>
+    </div>
   );
 }

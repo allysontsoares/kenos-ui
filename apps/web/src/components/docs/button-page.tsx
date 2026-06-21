@@ -16,6 +16,9 @@ import {
   ButtonDisabledDemo,
   ButtonPendingDemo,
   ButtonRenderPropsDemo,
+  ButtonHapticDemo,
+  ButtonLongPressDemo,
+  ButtonHoverDemo,
 } from "./demos";
 import { docsTableClass } from "./docs-prose";
 import { Eyebrow, H2, H3, InlineCode, Lead, P, PageIntro, PageTitle } from "./pages";
@@ -137,30 +140,51 @@ export function ButtonPage() {
         <InlineCode>composeEventHandlers</InlineCode>. This keeps the component API lean while
         giving you full control over when and how these effects trigger.
       </P>
-      <P>
-        Available hooks include <InlineCode>useHapticFeedback</InlineCode>,{" "}
-        <InlineCode>useLongPress</InlineCode>, <InlineCode>useHover</InlineCode>, and{" "}
-        <InlineCode>usePointerPressure</InlineCode>.
-      </P>
-      <CodeBlock
-        tabs={[
-          {
-            label: "haptic-button.tsx",
-            lang: "tsx",
-            code: `import { Button, useHapticFeedback, composeEventHandlers } from "@kenos-ui/react-button";
 
-export function HapticButton({ onSave }: { onSave: () => void }) {
-  const haptic = useHapticFeedback();
+      <div className="mt-8 space-y-12">
+        <div>
+          <H3 id="haptic-feedback">useHapticFeedback</H3>
+          <P>
+            Triggers a vibration on supported devices. Combine it with your{" "}
+            <InlineCode>onClick</InlineCode> using <InlineCode>composeEventHandlers</InlineCode>.
+          </P>
+          <Example
+            code={`import { Button, useHapticFeedback, composeEventHandlers } from "@kenos-ui/react";\n\nexport function HapticDemo() {\n  const haptic = useHapticFeedback();\n  return (\n    <Button onClick={composeEventHandlers(() => haptic.trigger("light"), () => console.log("Saved!"))}>\n      Save with Haptics\n    </Button>\n  );\n}`}
+            lang="tsx"
+          >
+            <ButtonHapticDemo />
+          </Example>
+        </div>
 
-  return (
-    <Button onClick={composeEventHandlers(() => haptic.trigger('light'), onSave)}>
-      Save with Haptics
-    </Button>
-  );
-}`,
-          },
-        ]}
-      />
+        <div>
+          <H3 id="long-press">useLongPress</H3>
+          <P>
+            Tracks pointer events to trigger an action after a specified delay (default 500ms). It
+            automatically cancels if the pointer leaves or is released early, and prevents the
+            default click if the long press was successful.
+          </P>
+          <Example
+            code={`import { Button, useLongPress } from "@kenos-ui/react";\nimport { useState } from "react";\n\nexport function LongPressDemo() {\n  const [action, setAction] = useState("Press and hold me");\n  const longPressProps = useLongPress({\n    delay: 500,\n    onLongPress: () => setAction("Long pressed!"),\n    onCancel: () => setAction("Press and hold me"),\n  });\n\n  return (\n    <Button {...longPressProps}>\n      {action}\n    </Button>\n  );\n}`}
+            lang="tsx"
+          >
+            <ButtonLongPressDemo />
+          </Example>
+        </div>
+
+        <div>
+          <H3 id="hover">useHover</H3>
+          <P>
+            A utility hook that tracks hover state reliably across devices, avoiding "sticky hover"
+            on touch devices. It returns the current state and the props to spread onto the element.
+          </P>
+          <Example
+            code={`import { Button, useHover } from "@kenos-ui/react";\n\nexport function HoverDemo() {\n  const { isHovered, hoverProps } = useHover();\n\n  return (\n    <div className="flex flex-col items-center gap-4">\n      <Button {...hoverProps}>\n        Hover me\n      </Button>\n      <div>Status: {isHovered ? "Hovering" : "Idle"}</div>\n    </div>\n  );\n}`}
+            lang="tsx"
+          >
+            <ButtonHoverDemo />
+          </Example>
+        </div>
+      </div>
 
       <H2 id="accessibility">Accessibility</H2>
       <P>
