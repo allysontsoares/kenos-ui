@@ -53,7 +53,7 @@ export type ComponentMeta = {
   features?: ComponentDocFeatures;
 };
 
-export type DemoKind = "date-picker" | "select" | "combobox";
+export type DemoKind = "date-picker" | "select" | "combobox" | "button";
 
 export type NavItem = { label: string; route: string; soon?: boolean };
 export type NavGroup = { title: string; badge?: string; items: NavItem[] };
@@ -79,6 +79,7 @@ export const NAV: NavGroup[] = [
     title: "Primitives",
     badge: "New",
     items: [
+      { label: "Button", route: "button" },
       { label: "Date Picker", route: "date-picker" },
       { label: "Select", route: "select", soon: true },
       { label: "Combobox", route: "combobox", soon: true },
@@ -87,6 +88,15 @@ export const NAV: NavGroup[] = [
 ];
 
 export const COMPONENTS: Record<string, ComponentMeta> = {
+  button: {
+    name: "Button",
+    eyebrow: "Primitive",
+    desc: "An augmented native <button> primitive. Built with native-first press logic, keyboard support, and robust state-driven data attributes.",
+    demo: "button",
+    npmPackage: "@kenos-ui/react-button",
+    importName: "Button",
+    parts: [{ tag: "Button", leaf: true }],
+  },
   "date-picker": {
     name: "Date Picker",
     eyebrow: "Primitive",
@@ -208,6 +218,53 @@ export const COMPONENTS: Record<string, ComponentMeta> = {
 const rootGroup = { group: "Root props" };
 
 export const API: Record<string, ApiGroup[]> = {
+  button: [
+    {
+      ...rootGroup,
+      props: [
+        {
+          name: "isPending",
+          type: "boolean",
+          def: "false",
+          desc: "Loading state. Maintains focusability, blocks action, announces via aria-busy.",
+        },
+        {
+          name: "isDisabled",
+          type: "boolean",
+          def: "false",
+          desc: "Semantic equivalent to `disabled`, explicitly named for intent clarity. Uses aria-disabled internally.",
+        },
+        {
+          name: "excludeFromTabOrder",
+          type: "boolean",
+          def: "false",
+          desc: "Removes from tab order without using native `disabled`.",
+        },
+        {
+          name: "preventFocusOnPress",
+          type: "boolean",
+          def: "false",
+          desc: "Prevents focus from moving to the button on press (mouse/touch).",
+        },
+        {
+          name: "render",
+          type: "DOMRenderFunction",
+          desc: "Replaces the rendered DOM element, keeping behavior and props.",
+        },
+      ],
+    },
+    {
+      group: "Data attributes",
+      attrs: true,
+      props: [
+        { name: "[data-hovered]", desc: "Present when the button is hovered with mouse." },
+        { name: "[data-pressed]", desc: "Present when the button is actively pressed." },
+        { name: "[data-focused]", desc: "Present when the button has logical focus." },
+        { name: "[data-pending]", desc: "Present when the button is in a pending/loading state." },
+        { name: "[data-disabled]", desc: "Present when the button is semantically disabled." },
+      ],
+    },
+  ],
   select: [
     {
       ...rootGroup,
@@ -476,6 +533,12 @@ export const SEARCH: SearchEntry[] = [
     route: "installation",
     crumb: "Get Started",
     kind: "page",
+  },
+  {
+    title: "Button",
+    route: "button",
+    crumb: "Primitives",
+    kind: "comp",
   },
   {
     title: "Quick Start",

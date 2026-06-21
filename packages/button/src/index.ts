@@ -1,4 +1,4 @@
-export * as Button from "./index.parts";
+export { Button } from "./button";
 
-export type { ButtonRootProps, ButtonState } from "./types";
+export type { ButtonProps, ButtonState } from "./types";
 export { useButtonState } from "./utils/use-button-state";

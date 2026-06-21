@@ -26,6 +26,7 @@ export type ExampleSnippets = {
   css: string;
   tailwind: string;
   panda: string;
+  stylex?: string;
 };
 
 const calShellCss = `.cal-shell {
@@ -146,6 +147,143 @@ const rangeDayCss = `.cal-day[data-in-range] {
 }`;
 
 export const EXAMPLE_SNIPPETS: Record<string, ExampleSnippets> = {
+  button: {
+    unstyled: `import { Button } from "@kenos-ui/react-button";
+
+<Button onClick={() => console.log('Clicked')}>
+  Click me
+</Button>`,
+    css: `/* styles.css */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 8px;
+  background-color: #18181b;
+  color: #fff;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn[data-hovered] {
+  background-color: #27272a;
+}
+
+.btn[data-pressed] {
+  transform: scale(0.97);
+}
+
+.btn[data-focus-visible] {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+}
+
+.btn[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* App.tsx */
+import { Button } from "@kenos-ui/react-button";
+import "./styles.css";
+
+<Button className="btn" onClick={() => console.log('Clicked')}>
+  Click me
+</Button>`,
+    tailwind: `import { Button } from "@kenos-ui/react-button";
+
+<Button 
+  className="inline-flex h-10 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-all data-[hovered]:bg-zinc-800 data-[pressed]:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed dark:bg-white dark:text-zinc-900 dark:data-[hovered]:bg-zinc-200"
+  onClick={() => console.log('Clicked')}
+>
+  Click me
+</Button>`,
+    panda: `import { Button } from "@kenos-ui/react-button";
+import { css } from "styled-system/css";
+
+const btnStyle = css({
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  height: "40px",
+  paddingX: "16px",
+  borderRadius: "8px",
+  backgroundColor: { base: "zinc.900", _dark: "white" },
+  color: { base: "white", _dark: "zinc.900" },
+  fontWeight: "medium",
+  fontSize: "14px",
+  transition: "all 0.2s",
+  cursor: "pointer",
+  "&[data-hovered]": {
+    backgroundColor: { base: "zinc.800", _dark: "zinc.200" }
+  },
+  "&[data-pressed]": {
+    transform: "scale(0.95)"
+  },
+  "&[data-disabled]": {
+    opacity: 0.5,
+    cursor: "not-allowed"
+  }
+});
+
+<Button className={btnStyle} onClick={() => console.log('Clicked')}>
+  Click me
+</Button>`,
+    stylex: `import { Button } from "@kenos-ui/react-button";
+import * as stylex from "@stylexjs/stylex";
+
+const styles = stylex.create({
+  btn: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    height: "40px",
+    padding: "0 16px",
+    borderRadius: "8px",
+    backgroundColor: {
+      default: "#18181b",
+      "@media (prefers-color-scheme: dark)": "#fff",
+    },
+    color: {
+      default: "#fff",
+      "@media (prefers-color-scheme: dark)": "#18181b",
+    },
+    fontWeight: 500,
+    fontSize: "14px",
+    transition: "all 0.2s",
+    border: "none",
+    cursor: "pointer",
+  },
+  // StyleX uses pseudo-classes directly for hover/active/focus
+  // but if you want to use the primitive's data-attributes, you can do:
+  dynamicHover: {
+    backgroundColor: {
+      default: "#27272a",
+      "@media (prefers-color-scheme: dark)": "#e4e4e7",
+    }
+  },
+  dynamicPressed: {
+    transform: "scale(0.95)",
+  },
+  dynamicDisabled: {
+    opacity: 0.5,
+    cursor: "not-allowed",
+  }
+});
+
+<Button 
+  {...stylex.props(styles.btn)}
+  onClick={() => console.log('Clicked')}
+>
+  Click me
+</Button>`,
+  },
+
   calendar: {
     unstyled: `import { DatePicker } from "@kenos-ui/react-datepicker";
 

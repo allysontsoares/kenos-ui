@@ -32,7 +32,7 @@ import { Select as KenosSelect } from "@kenos-ui/react-select";
    the real library code (reducer, timescape, floating-ui, Intl, etc.).
    ============================================================ */
 
-export type DemoKind = "date-picker" | "select" | "combobox";
+export type DemoKind = "button" | "date-picker" | "select" | "combobox";
 export type CalSize = "default" | "compact";
 
 /* ---------------- icons (ported from old fake for visual match) ---------------- */
@@ -1809,6 +1809,9 @@ export function DatePickerTanStackFormDemo() {
 
 /* ---------------- LiveDemo dispatcher (used by component pages) ---------------- */
 export function LiveDemo({ kind, locale = "en-US" }: { kind: DemoKind; locale?: string }) {
+  if (kind === "button") {
+    return <ButtonDefaultDemo />;
+  }
   if (kind === "date-picker") {
     return <DatePicker locale={locale} label="Pick a date" />;
   }
@@ -1816,4 +1819,77 @@ export function LiveDemo({ kind, locale = "en-US" }: { kind: DemoKind; locale?: 
     return <SelectDemo />;
   }
   return <ComboboxDemo />;
+}
+
+// --- Button Demos ---
+
+import { Button } from "@kenos-ui/react-button";
+
+export function ButtonDefaultDemo() {
+  return (
+    <Button className="inline-flex h-10 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-all data-[hovered]:bg-zinc-800 data-[pressed]:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed dark:bg-white dark:text-zinc-900 dark:data-[hovered]:bg-zinc-200">
+      Click me
+    </Button>
+  );
+}
+
+export function ButtonPendingDemo() {
+  return (
+    <Button
+      isPending
+      className="inline-flex h-10 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-all data-[hovered]:bg-zinc-800 data-[pressed]:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed dark:bg-white dark:text-zinc-900 dark:data-[hovered]:bg-zinc-200"
+    >
+      <svg
+        className="mr-2 h-4 w-4 animate-spin"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        ></circle>
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        ></path>
+      </svg>
+      Saving...
+    </Button>
+  );
+}
+
+export function ButtonDisabledDemo() {
+  return (
+    <Button
+      isDisabled
+      className="inline-flex h-10 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-all data-[hovered]:bg-zinc-800 data-[pressed]:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed dark:bg-white dark:text-zinc-900 dark:data-[hovered]:bg-zinc-200"
+    >
+      Not allowed
+    </Button>
+  );
+}
+
+export function ButtonRenderPropsDemo() {
+  return (
+    <Button
+      render={(props, state) => (
+        <button
+          {...props}
+          className="inline-flex h-10 items-center justify-center rounded-lg border-2 border-indigo-500 bg-transparent px-4 text-sm font-medium text-indigo-500 transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+          style={{
+            backgroundColor: state.isHovered ? "rgba(99, 102, 241, 0.1)" : "transparent",
+            transform: state.isPressed ? "scale(0.95)" : "scale(1)",
+          }}
+        >
+          {state.isHovered ? "Hovered!" : "Hover me"}
+        </button>
+      )}
+    />
+  );
 }

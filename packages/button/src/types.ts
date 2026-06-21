@@ -14,7 +14,7 @@ export type DOMRenderFunction = (
   state: ButtonState,
 ) => React.ReactElement;
 
-export interface ButtonRootProps extends React.ComponentPropsWithoutRef<"button"> {
+export interface ButtonProps extends React.ComponentPropsWithoutRef<"button"> {
   /** Loading state. Maintains focusability, blocks action, announces via aria-busy. */
   isPending?: boolean;
 

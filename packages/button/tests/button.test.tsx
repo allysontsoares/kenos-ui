@@ -4,23 +4,23 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { Button } from "../src";
 
-describe("ButtonRoot", () => {
+describe("Button", () => {
   it("renders a button with correct text", () => {
-    render(<Button.Root>Click me</Button.Root>);
+    render(<Button>Click me</Button>);
     expect(screen.getByRole("button", { name: "Click me" })).toBeInTheDocument();
   });
 
   it("handles basic onClick", async () => {
     const user = userEvent.setup();
     const onClick = vi.fn();
-    render(<Button.Root onClick={onClick}>Click me</Button.Root>);
+    render(<Button onClick={onClick}>Click me</Button>);
     await user.click(screen.getByRole("button"));
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 
   describe("isPending state", () => {
     it("sets aria-disabled and aria-busy when pending", () => {
-      render(<Button.Root isPending>Pending Button</Button.Root>);
+      render(<Button isPending>Pending Button</Button>);
       const btn = screen.getByRole("button");
       expect(btn).toHaveAttribute("aria-disabled", "true");
       expect(btn).toHaveAttribute("aria-busy", "true");
@@ -28,7 +28,7 @@ describe("ButtonRoot", () => {
     });
 
     it("maintains focusability when pending (tabIndex not set to -1)", () => {
-      render(<Button.Root isPending>Pending Button</Button.Root>);
+      render(<Button isPending>Pending Button</Button>);
       const btn = screen.getByRole("button");
       expect(btn).not.toHaveAttribute("tabindex", "-1");
     });
@@ -37,9 +37,9 @@ describe("ButtonRoot", () => {
       const user = userEvent.setup();
       const onClick = vi.fn();
       render(
-        <Button.Root isPending onClick={onClick}>
+        <Button isPending onClick={onClick}>
           Pending Button
-        </Button.Root>,
+        </Button>,
       );
       await user.click(screen.getByRole("button"));
       expect(onClick).not.toHaveBeenCalled();
@@ -48,7 +48,7 @@ describe("ButtonRoot", () => {
 
   describe("isDisabled state", () => {
     it("sets aria-disabled and data-disabled when disabled", () => {
-      render(<Button.Root isDisabled>Disabled Button</Button.Root>);
+      render(<Button isDisabled>Disabled Button</Button>);
       const btn = screen.getByRole("button");
       expect(btn).toHaveAttribute("aria-disabled", "true");
       expect(btn).toHaveAttribute("data-disabled", "true");
@@ -56,7 +56,7 @@ describe("ButtonRoot", () => {
     });
 
     it("removes from tab order when disabled", () => {
-      render(<Button.Root isDisabled>Disabled Button</Button.Root>);
+      render(<Button isDisabled>Disabled Button</Button>);
       const btn = screen.getByRole("button");
       expect(btn).toHaveAttribute("tabindex", "-1");
     });
@@ -65,9 +65,9 @@ describe("ButtonRoot", () => {
       const user = userEvent.setup();
       const onClick = vi.fn();
       render(
-        <Button.Root isDisabled onClick={onClick}>
+        <Button isDisabled onClick={onClick}>
           Disabled Button
-        </Button.Root>,
+        </Button>,
       );
       await user.click(screen.getByRole("button"));
       expect(onClick).not.toHaveBeenCalled();
@@ -77,7 +77,7 @@ describe("ButtonRoot", () => {
   describe("data-* states", () => {
     it("sets data-hovered on pointer enter and removes on leave", async () => {
       const user = userEvent.setup();
-      render(<Button.Root>Hover me</Button.Root>);
+      render(<Button>Hover me</Button>);
       const btn = screen.getByRole("button");
       expect(btn).not.toHaveAttribute("data-hovered");
 
@@ -89,7 +89,7 @@ describe("ButtonRoot", () => {
     });
 
     it("sets data-pressed on pointer down and removes on pointer up", async () => {
-      render(<Button.Root>Press me</Button.Root>);
+      render(<Button>Press me</Button>);
       const btn = screen.getByRole("button");
 
       fireEvent.pointerDown(btn, { button: 0 });
@@ -104,8 +104,8 @@ describe("ButtonRoot", () => {
     it("warns if render returns a fragment", () => {
       const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
       render(
-        <Button.Root
-          render={(props) => (
+        <Button
+          render={(props: any) => (
             <React.Fragment>
               <button {...props}>1</button>
               <button {...props}>2</button>
@@ -113,10 +113,10 @@ describe("ButtonRoot", () => {
           )}
         >
           Render
-        </Button.Root>,
+        </Button>,
       );
       expect(warnSpy).toHaveBeenCalledWith(
-        "Button.Root: `render` prop must return a single valid React element.",
+        "Button: `render` prop must return a single valid React element.",
       );
       warnSpy.mockRestore();
     });
@@ -125,7 +125,7 @@ describe("ButtonRoot", () => {
       const user = userEvent.setup();
       const onClick = vi.fn();
       render(
-        <Button.Root
+        <Button
           onClick={onClick}
           render={(props: any) => (
             <a href="#" {...props}>
@@ -134,7 +134,7 @@ describe("ButtonRoot", () => {
           )}
         >
           Link
-        </Button.Root>,
+        </Button>,
       );
 
       const link = screen.getByRole("link");

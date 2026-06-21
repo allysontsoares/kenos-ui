@@ -1,9 +1,9 @@
 import React, { forwardRef, useState, isValidElement, useMemo } from "react";
-import { composeEventHandlers } from "../utils/compose-event-handlers";
-import { ButtonContext } from "../utils/use-button-state";
-import type { ButtonRootProps, ButtonState } from "../types";
+import { composeEventHandlers } from "./utils/compose-event-handlers";
+import { ButtonContext } from "./utils/use-button-state";
+import type { ButtonProps, ButtonState } from "./types";
 
-export const Root = forwardRef<HTMLButtonElement, ButtonRootProps>(
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       isPending = false,
@@ -134,7 +134,7 @@ export const Root = forwardRef<HTMLButtonElement, ButtonRootProps>(
       const rendered = render(domProps as any, buttonState);
       if (!isValidElement(rendered) || rendered.type === React.Fragment) {
         // eslint-disable-next-line no-console
-        console.warn("Button.Root: `render` prop must return a single valid React element.");
+        console.warn("Button: `render` prop must return a single valid React element.");
       }
     }
 
@@ -142,4 +142,4 @@ export const Root = forwardRef<HTMLButtonElement, ButtonRootProps>(
   },
 );
 
-Root.displayName = "Button.Root";
+Button.displayName = "Button";

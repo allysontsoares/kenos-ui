@@ -51,7 +51,7 @@ describe("Interop", () => {
     const user = userEvent.setup();
     render(
       <MockRadixTrigger asChild>
-        <Button.Root render={(props) => <button {...props}>Trigger</button>} />
+        <Button render={(props: any) => <button {...props}>Trigger</button>} />
       </MockRadixTrigger>,
     );
 
@@ -66,9 +66,7 @@ describe("Interop", () => {
 
   it("works as a trigger for Base UI (via render prop)", async () => {
     const user = userEvent.setup();
-    render(
-      <MockBaseUITrigger render={(props: any) => <Button.Root {...props}>Trigger</Button.Root>} />,
-    );
+    render(<MockBaseUITrigger render={(props: any) => <Button {...props}>Trigger</Button>} />);
 
     const btn = screen.getByRole("button");
     expect(screen.queryByTestId("base-content")).not.toBeInTheDocument();
@@ -83,7 +81,7 @@ describe("Interop", () => {
     const user = userEvent.setup();
     render(
       <MockRadixTrigger asChild>
-        <Button.Root>Trigger</Button.Root>
+        <Button>Trigger</Button>
       </MockRadixTrigger>,
     );
 

@@ -46,12 +46,16 @@ const CodeToggleIcon = () => (
 );
 
 function buildExampleTabs(snippets: ExampleSnippets): CodeTab[] {
-  return [
+  const tabs: CodeTab[] = [
     { label: "Unstyled", lang: "tsx", code: snippets.unstyled },
     { label: "CSS", lang: "tsx", code: snippets.css },
     { label: "Tailwind", lang: "tsx", code: snippets.tailwind },
     { label: "Panda CSS", lang: "tsx", code: snippets.panda },
   ];
+  if (snippets.stylex) {
+    tabs.push({ label: "StyleX", lang: "tsx", code: snippets.stylex });
+  }
+  return tabs;
 }
 
 /* ---------------- Example (Ark-style preview + collapsible multi-file code) ---------------- */

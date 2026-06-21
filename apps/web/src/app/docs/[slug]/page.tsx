@@ -9,6 +9,7 @@ import {
 } from "@/lib/docs-data";
 import { ComponentPage } from "@/components/docs/pages";
 import { DatePickerPage } from "@/components/docs/date-picker-page";
+import { ButtonPage } from "@/components/docs/button-page";
 import { Changelog } from "@/components/docs/changelog";
 import { Installation, QuickStart } from "@/components/docs/guides";
 
@@ -37,6 +38,7 @@ export default async function DocsSlugPage({ params }: { params: Promise<{ slug:
   const { slug } = await params;
   if (isSoonRoute(slug)) notFound();
   if (slug === "date-picker") return <DatePickerPage />;
+  if (slug === "button") return <ButtonPage />;
   if (slug === "changelog") return <Changelog />;
   if (COMPONENTS[slug]) return <ComponentPage slug={slug} />;
   const Guide = GUIDES[slug];

@@ -125,6 +125,9 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.4.0
         version: 5.4.0(react-hook-form@7.76.1(react@19.2.7))
+      '@kenos-ui/react-button':
+        specifier: workspace:*
+        version: link:../../packages/button
       '@kenos-ui/react-combobox':
         specifier: workspace:*
         version: link:../../packages/combobox
