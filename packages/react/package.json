@@ -1,6 +1,6 @@
 {
   "name": "@kenos-ui/react",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Kenos UI headless primitives for React — aggregator",
   "license": "MIT",
   "repository": {
