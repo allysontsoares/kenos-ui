@@ -43,7 +43,7 @@ The button intentionally avoids "magic props" for complex behaviors. Instead, we
 
 Available hooks:
 
-- `useHapticFeedback`
+- `useHaptics`
 - `useLongPress`
 - `useHover`
 - `usePointerPressure`
@@ -53,13 +53,13 @@ Available hooks:
 Use `composeEventHandlers` to merge the haptic trigger with your own event handlers.
 
 ```tsx
-import { Button, useHapticFeedback, composeEventHandlers } from "@kenos-ui/react-button";
+import { Button, useHaptics, composeEventHandlers } from "@kenos-ui/react-button";
 
 export function HapticButton({ onSave }) {
-  const haptic = useHapticFeedback();
+  const haptic = useHaptics();
 
   return (
-    <Button onClick={composeEventHandlers(() => haptic.trigger("light"), onSave)}>
+    <Button onClick={composeEventHandlers(() => haptic.trigger("save"), onSave)}>
       Save with Haptics
     </Button>
   );

@@ -1825,7 +1825,7 @@ export function LiveDemo({ kind, locale = "en-US" }: { kind: DemoKind; locale?: 
 
 import {
   Button,
-  useHapticFeedback,
+  useHaptics,
   useLongPress,
   useHover,
   composeEventHandlers,
@@ -1901,11 +1901,11 @@ export function ButtonRenderPropsDemo() {
 }
 
 export function ButtonHapticDemo() {
-  const haptic = useHapticFeedback();
+  const haptic = useHaptics();
   return (
     <Button
       onClick={composeEventHandlers(
-        () => haptic.trigger("light"),
+        () => haptic.trigger("save"),
         () => console.log("Saved!"),
       )}
       className="inline-flex h-10 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-all data-[hovered]:bg-zinc-800 data-[pressed]:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 dark:bg-white dark:text-zinc-900 dark:data-[hovered]:bg-zinc-200"

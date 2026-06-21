@@ -29,12 +29,19 @@ export {
   Button,
   useButtonState,
   useLongPress,
-  useHapticFeedback,
+  useHaptics,
+  getHapticsEnabled,
+  setHapticsEnabled,
   useHover,
   usePointerPressure,
   composeEventHandlers,
 } from "@kenos-ui/react-button";
-export type { ButtonProps, ButtonState, HapticIntensity } from "@kenos-ui/react-button";
+export type {
+  ButtonProps,
+  ButtonState,
+  HapticIntent,
+  UseHapticsResult,
+} from "@kenos-ui/react-button";
 
 export * as Combobox from "@kenos-ui/react-combobox";
 export {

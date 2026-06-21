@@ -140,16 +140,21 @@ export function ButtonPage() {
         <InlineCode>composeEventHandlers</InlineCode>. This keeps the component API lean while
         giving you full control over when and how these effects trigger.
       </P>
+      <P>
+        Available hooks include <InlineCode>useHaptics</InlineCode>,{" "}
+        <InlineCode>useLongPress</InlineCode>, <InlineCode>useHover</InlineCode>, and{" "}
+        <InlineCode>usePointerPressure</InlineCode>.
+      </P>
 
       <div className="mt-8 space-y-12">
         <div>
-          <H3 id="haptic-feedback">useHapticFeedback</H3>
+          <H3 id="haptics">useHaptics</H3>
           <P>
-            Triggers a vibration on supported devices. Combine it with your{" "}
+            Triggers a vibration on supported devices using semantic intents. Combine it with your{" "}
             <InlineCode>onClick</InlineCode> using <InlineCode>composeEventHandlers</InlineCode>.
           </P>
           <Example
-            code={`import { Button, useHapticFeedback, composeEventHandlers } from "@kenos-ui/react";\n\nexport function HapticDemo() {\n  const haptic = useHapticFeedback();\n  return (\n    <Button onClick={composeEventHandlers(() => haptic.trigger("light"), () => console.log("Saved!"))}>\n      Save with Haptics\n    </Button>\n  );\n}`}
+            code={`import { Button, useHaptics, composeEventHandlers } from "@kenos-ui/react";\n\nexport function HapticDemo() {\n  const haptic = useHaptics();\n  return (\n    <Button onClick={composeEventHandlers(() => haptic.trigger("save"), () => console.log("Saved!"))}>\n      Save with Haptics\n    </Button>\n  );\n}`}
             lang="tsx"
           >
             <ButtonHapticDemo />
