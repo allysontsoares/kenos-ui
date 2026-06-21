@@ -25,8 +25,16 @@ export {
   type SelectContextValue,
 } from "@kenos-ui/react-select";
 
-export { Button, useButtonState } from "@kenos-ui/react-button";
-export type { ButtonProps, ButtonState } from "@kenos-ui/react-button";
+export {
+  Button,
+  useButtonState,
+  useLongPress,
+  useHapticFeedback,
+  useHover,
+  usePointerPressure,
+  composeEventHandlers,
+} from "@kenos-ui/react-button";
+export type { ButtonProps, ButtonState, HapticIntensity } from "@kenos-ui/react-button";
 
 export * as Combobox from "@kenos-ui/react-combobox";
 export {

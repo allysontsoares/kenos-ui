@@ -130,6 +130,38 @@ export function ButtonPage() {
         <ButtonRenderPropsDemo />
       </Example>
 
+      <H3 id="advanced-behaviors">Advanced Behaviors</H3>
+      <P>
+        The button intentionally avoids &quot;magic props&quot; for complex behaviors. Instead, we
+        export specialized hooks that you can compose manually via{" "}
+        <InlineCode>composeEventHandlers</InlineCode>. This keeps the component API lean while
+        giving you full control over when and how these effects trigger.
+      </P>
+      <P>
+        Available hooks include <InlineCode>useHapticFeedback</InlineCode>,{" "}
+        <InlineCode>useLongPress</InlineCode>, <InlineCode>useHover</InlineCode>, and{" "}
+        <InlineCode>usePointerPressure</InlineCode>.
+      </P>
+      <CodeBlock
+        tabs={[
+          {
+            label: "haptic-button.tsx",
+            lang: "tsx",
+            code: `import { Button, useHapticFeedback, composeEventHandlers } from "@kenos-ui/react-button";
+
+export function HapticButton({ onSave }: { onSave: () => void }) {
+  const haptic = useHapticFeedback();
+
+  return (
+    <Button onClick={composeEventHandlers(() => haptic.trigger('light'), onSave)}>
+      Save with Haptics
+    </Button>
+  );
+}`,
+          },
+        ]}
+      />
+
       <H2 id="accessibility">Accessibility</H2>
       <P>
         Kenos enhances the native button accessibility. Roles, labels, and state management (like

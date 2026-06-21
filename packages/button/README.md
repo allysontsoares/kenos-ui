@@ -37,6 +37,35 @@ export function Example() {
 }
 ```
 
+## Advanced Behaviors
+
+The button intentionally avoids "magic props" for complex behaviors. Instead, we export specialized hooks that you can compose manually. This keeps the component API lean while giving you full control over when and how these effects trigger.
+
+Available hooks:
+
+- `useHapticFeedback`
+- `useLongPress`
+- `useHover`
+- `usePointerPressure`
+
+### Example: Haptic Feedback
+
+Use `composeEventHandlers` to merge the haptic trigger with your own event handlers.
+
+```tsx
+import { Button, useHapticFeedback, composeEventHandlers } from "@kenos-ui/react-button";
+
+export function HapticButton({ onSave }) {
+  const haptic = useHapticFeedback();
+
+  return (
+    <Button onClick={composeEventHandlers(() => haptic.trigger("light"), onSave)}>
+      Save with Haptics
+    </Button>
+  );
+}
+```
+
 ## API Reference
 
 Props and data attributes. Import from `@kenos-ui/react-button`.
