@@ -44,6 +44,7 @@ export function Trigger({
       aria-labelledby={ids.label ? `${ids.label} ${ids.trigger}` : undefined}
       aria-activedescendant={activeDescendantId}
       aria-disabled={isDisabled || isReadOnly || undefined}
+      data-kenos="select-trigger"
       data-disabled={isDisabled || isReadOnly ? "true" : undefined}
       data-open={open ? "true" : undefined}
       data-state={open ? "open" : "closed"}

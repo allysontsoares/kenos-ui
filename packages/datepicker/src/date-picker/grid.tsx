@@ -192,6 +192,7 @@ export function Grid({ children, header, className }: GridProps) {
       aria-label={label}
       aria-readonly={config.readOnly || undefined}
       aria-multiselectable={ariaMulti}
+      data-kenos="date-picker-grid"
       className={className}
       onKeyDownCapture={handleKeyDown}
     >

@@ -96,3 +96,4 @@ Props and data attributes. Import from `@kenos-ui/react-button`.
 | `[data-focused]`  | Button  | Present when the button has logical focus.             |
 | `[data-pending]`  | Button  | Present when the button is in a pending/loading state. |
 | `[data-disabled]` | Button  | Present when the button is semantically disabled.      |
+| `[data-kenos]`    | Button  | Stable Kenos UI fingerprint (`"button"`).              |

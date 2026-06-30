@@ -15,6 +15,7 @@ export function PrevTrigger({ children, onClick, ...props }: PrevTriggerProps) {
     <button
       type="button"
       aria-label={labels[state.view]}
+      data-kenos="date-picker-prev-trigger"
       onClick={(e) => {
         dispatch({ type: "NAV_PREV" });
         onClick?.(e);

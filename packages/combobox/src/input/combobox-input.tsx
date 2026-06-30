@@ -84,6 +84,7 @@ export function Input({ onChange, onFocus, onKeyDown, disabled, readOnly, ...pro
       aria-activedescendant={activeDescendantId}
       aria-disabled={isDisabled || isReadOnly || undefined}
       autoComplete="off"
+      data-kenos="combobox-input"
       data-disabled={isDisabled || isReadOnly ? "true" : undefined}
       data-open={open ? "true" : undefined}
       data-state={open ? "open" : "closed"}

@@ -33,6 +33,7 @@ export function HiddenInput({ name: nameProp }: HiddenInputProps) {
       value={value}
       required={config.required}
       aria-hidden="true"
+      data-kenos="date-picker-hidden-input"
       tabIndex={-1}
     />
   );

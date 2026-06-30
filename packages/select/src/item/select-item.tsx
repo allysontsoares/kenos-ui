@@ -75,6 +75,7 @@ export function Item({
       role="option"
       aria-selected={isSelected}
       aria-disabled={isDisabled || undefined}
+      data-kenos="select-item"
       data-highlighted={isHighlighted ? "true" : undefined}
       data-selected={isSelected ? "true" : undefined}
       data-disabled={isDisabled ? "true" : undefined}

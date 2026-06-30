@@ -21,6 +21,7 @@ export function MonthCell({ value, children, onClick, onKeyDown, ...props }: Mon
       role="gridcell"
       aria-selected={isFocused}
       tabIndex={isFocused ? 0 : -1}
+      data-kenos="date-picker-month-cell"
       data-selected={isFocused || undefined}
       onClick={(e) => {
         dispatch({ type: "SELECT_MONTH", month: value });

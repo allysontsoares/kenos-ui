@@ -6,7 +6,7 @@ export type LabelProps = React.LabelHTMLAttributes<HTMLLabelElement>;
 export function Label({ children, ...props }: LabelProps) {
   const { ids } = useComboboxContext();
   return (
-    <label id={ids.label} htmlFor={ids.input} {...props}>
+    <label id={ids.label} htmlFor={ids.input} data-kenos="combobox-label" {...props}>
       {children}
     </label>
   );

@@ -12,6 +12,7 @@ export function List({ children, ...props }: ListProps) {
       role="listbox"
       id={`${ids.content}-list`}
       aria-labelledby={ids.label}
+      data-kenos="combobox-list"
       {...props}
     >
       {children}

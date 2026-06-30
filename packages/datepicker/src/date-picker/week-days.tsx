@@ -14,9 +14,9 @@ export function WeekDays({ format = "short", className }: WeekDaysProps) {
   const days = buildWeekDays(config.locale, weekStartDay, format);
 
   return (
-    <tr className={className}>
+    <tr className={className} data-kenos="date-picker-week-days">
       {days.map((day) => (
-        <th key={day.ariaLabel} scope="col" abbr={day.ariaLabel}>
+        <th key={day.ariaLabel} scope="col" abbr={day.ariaLabel} data-kenos="date-picker-week-day">
           {day.label}
         </th>
       ))}

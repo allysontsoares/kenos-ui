@@ -10,7 +10,7 @@ export function Group({ children, ...props }: GroupProps) {
 
   return (
     <GroupContext.Provider value={contextValue}>
-      <div role="group" aria-labelledby={labelId} {...props}>
+      <div role="group" aria-labelledby={labelId} data-kenos="select-group" {...props}>
         {children}
       </div>
     </GroupContext.Provider>

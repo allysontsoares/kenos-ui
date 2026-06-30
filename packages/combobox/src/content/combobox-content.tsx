@@ -175,6 +175,7 @@ export function Content({
       <div
         ref={mergedRef}
         id={ids.content}
+        data-kenos="combobox-content"
         data-state={open ? "open" : "closed"}
         data-open={open ? "true" : undefined}
         data-empty={collection.isEmpty ? "true" : undefined}

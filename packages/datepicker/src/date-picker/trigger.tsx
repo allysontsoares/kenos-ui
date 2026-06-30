@@ -21,6 +21,7 @@ export function Trigger({ children, onClick, disabled, ...props }: TriggerProps)
       aria-controls={state.open ? ids.content : undefined}
       aria-label={children ? undefined : "Open date picker"}
       disabled={isDisabled || isReadOnly}
+      data-kenos="date-picker-trigger"
       data-disabled={isDisabled || isReadOnly ? "true" : undefined}
       onClick={(e) => {
         if (isDisabled || isReadOnly) return;

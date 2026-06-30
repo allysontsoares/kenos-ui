@@ -77,6 +77,7 @@ export function Item({
       aria-selected={isSelected}
       aria-disabled={isDisabled || undefined}
       aria-hidden={!isVisible ? true : undefined}
+      data-kenos="combobox-item"
       data-highlighted={isHighlighted ? "true" : undefined}
       data-selected={isSelected ? "true" : undefined}
       data-disabled={isDisabled ? "true" : undefined}

@@ -76,6 +76,7 @@ export function Day({ date, children, className, style }: DayProps) {
       tabIndex={isFocused && canFocus ? 0 : -1}
       className={className}
       style={style}
+      data-kenos="date-picker-day"
       data-selected={meta.isSelected || undefined}
       data-today={meta.isToday || undefined}
       data-disabled={meta.isDisabled || undefined}

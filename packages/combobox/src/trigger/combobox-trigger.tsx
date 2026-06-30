@@ -24,6 +24,7 @@ export function Trigger({ children, onClick, disabled, ...props }: TriggerProps)
       aria-controls={open ? ids.content : undefined}
       aria-label="Toggle suggestions"
       aria-disabled={isDisabled || isReadOnly || undefined}
+      data-kenos="combobox-trigger"
       data-disabled={isDisabled || isReadOnly ? "true" : undefined}
       data-open={open ? "true" : undefined}
       data-state={open ? "open" : "closed"}

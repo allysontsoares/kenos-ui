@@ -17,7 +17,7 @@ export interface CalendarProps {
 
 export function Calendar({ className }: CalendarProps) {
   return (
-    <div className={className}>
+    <div className={className} data-kenos="date-picker-calendar">
       <ViewControl>
         <PrevTrigger />
         <ViewTrigger />
@@ -31,7 +31,10 @@ export function Calendar({ className }: CalendarProps) {
       <View view="month">
         <MonthGrid>
           {({ months }) => (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)" }}>
+            <div
+              data-kenos="date-picker-month-grid-layout"
+              style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)" }}
+            >
               {months.map((m) => (
                 <MonthCell
                   key={m.value}
@@ -51,7 +54,10 @@ export function Calendar({ className }: CalendarProps) {
       <View view="year">
         <YearGrid>
           {({ years }) => (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)" }}>
+            <div
+              data-kenos="date-picker-year-grid-layout"
+              style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)" }}
+            >
               {years.map((y) => (
                 <YearCell key={y.value} value={y.value} disabled={y.isDisabled}>
                   {y.value}

@@ -175,3 +175,17 @@ describe("HiddenSelect", () => {
     expect(hidden.value).toBe("vue");
   });
 });
+
+describe("data-kenos fingerprints", () => {
+  it("sets stable fingerprints on key parts", () => {
+    render(<BasicSelect defaultOpen />);
+    expect(screen.getByRole("combobox")).toHaveAttribute("data-kenos", "select-trigger");
+    expect(screen.getByText("Framework")).toHaveAttribute("data-kenos", "select-label");
+    expect(screen.getByTestId("list")).toHaveAttribute("data-kenos", "select-list");
+    expect(screen.getByText("React").closest("li")).toHaveAttribute("data-kenos", "select-item");
+    expect(document.querySelector('select[name="framework"]')).toHaveAttribute(
+      "data-kenos",
+      "select-hidden-select",
+    );
+  });
+});

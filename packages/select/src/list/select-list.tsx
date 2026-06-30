@@ -24,6 +24,7 @@ export function List({ children, scrollToIndex, ...props }: ListProps) {
       id={`${ids.content}-list`}
       aria-labelledby={ids.label}
       aria-multiselectable={config.multiple ? true : undefined}
+      data-kenos="select-list"
       {...props}
     >
       {children}

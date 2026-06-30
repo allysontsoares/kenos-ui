@@ -15,6 +15,7 @@ export function NextTrigger({ children, onClick, ...props }: NextTriggerProps) {
     <button
       type="button"
       aria-label={labels[state.view]}
+      data-kenos="date-picker-next-trigger"
       onClick={(e) => {
         dispatch({ type: "NAV_NEXT" });
         onClick?.(e);

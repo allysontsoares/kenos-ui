@@ -73,6 +73,7 @@ export function YearGrid({ children, className }: YearGridProps) {
         ref={gridRef}
         role="grid"
         aria-label={`${state.yearPageStart}–${state.yearPageStart + 11}`}
+        data-kenos="date-picker-year-grid"
         className={className}
         onKeyDownCapture={handleKeyDown}
       >

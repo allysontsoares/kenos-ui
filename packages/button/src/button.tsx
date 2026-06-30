@@ -115,6 +115,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       "data-pressed": isPressed ? "true" : undefined,
       "data-focused": isFocused ? "true" : undefined,
       "data-slot": "button",
+      "data-kenos": "button",
     };
 
     const content = (

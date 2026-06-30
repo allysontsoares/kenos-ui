@@ -37,6 +37,7 @@ export function ClearTrigger({ onClick, ...props }: SelectClearTriggerProps) {
       role="button"
       tabIndex={0}
       aria-label="Clear selection"
+      data-kenos="select-clear-trigger"
       onClick={handleActivate}
       onKeyDown={handleKeyDown}
       {...props}

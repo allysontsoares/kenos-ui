@@ -63,6 +63,7 @@ export function MonthGrid({ children, className }: MonthGridProps) {
         ref={gridRef}
         role="grid"
         aria-label={String(state.focusedYear)}
+        data-kenos="date-picker-month-grid"
         className={className}
         onKeyDownCapture={handleKeyDown}
       >

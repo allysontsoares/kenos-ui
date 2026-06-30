@@ -194,6 +194,7 @@ export function Content({
     <div
       ref={mergedRef}
       id={ids.content}
+      data-kenos="select-content"
       data-state={open ? "open" : "closed"}
       data-open={open ? "true" : undefined}
       data-align-trigger={alignItemWithTriggerActive ? "true" : undefined}

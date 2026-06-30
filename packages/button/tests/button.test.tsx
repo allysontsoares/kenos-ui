@@ -10,6 +10,11 @@ describe("Button", () => {
     expect(screen.getByRole("button", { name: "Click me" })).toBeInTheDocument();
   });
 
+  it("sets data-kenos fingerprint", () => {
+    render(<Button>Click me</Button>);
+    expect(screen.getByRole("button")).toHaveAttribute("data-kenos", "button");
+  });
+
   it("handles basic onClick", async () => {
     const user = userEvent.setup();
     const onClick = vi.fn();

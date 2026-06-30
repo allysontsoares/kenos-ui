@@ -15,7 +15,7 @@ export function Empty({ children = "No results found", ...props }: EmptyProps) {
   }
 
   return (
-    <div role="status" aria-live="polite" data-empty="true" {...props}>
+    <div role="status" aria-live="polite" data-kenos="combobox-empty" data-empty="true" {...props}>
       {children}
     </div>
   );

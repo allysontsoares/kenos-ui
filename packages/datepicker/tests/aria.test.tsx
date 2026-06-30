@@ -272,3 +272,16 @@ describe("ErrorMessage", () => {
     expect(document.getElementById(errorId!)).toHaveTextContent("Please select a valid date");
   });
 });
+
+describe("data-kenos fingerprints", () => {
+  it("sets stable fingerprints on key parts", () => {
+    render(<BasicPicker defaultOpen />);
+    expect(screen.getByText("Date").closest("label")).toHaveAttribute("data-kenos", "date-picker-label");
+    expect(getInputGroup()).toHaveAttribute("data-kenos", "date-picker-input");
+    expect(screen.getByRole("button", { name: "Open" })).toHaveAttribute(
+      "data-kenos",
+      "date-picker-trigger",
+    );
+    expect(screen.getByRole("dialog")).toHaveAttribute("data-kenos", "date-picker-content");
+  });
+});

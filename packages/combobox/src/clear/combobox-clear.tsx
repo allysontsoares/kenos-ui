@@ -39,6 +39,7 @@ export function Clear({ onClick, ...props }: ComboboxClearProps) {
       role="button"
       tabIndex={0}
       aria-label="Clear"
+      data-kenos="combobox-clear"
       onClick={handleActivate}
       onKeyDown={handleKeyDown}
       {...props}

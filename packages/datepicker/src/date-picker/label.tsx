@@ -19,7 +19,7 @@ export function Label({ children, onClick, ...props }: LabelProps) {
   );
 
   return (
-    <label id={ids.label} htmlFor={ids.input} onClick={handleClick} {...props}>
+    <label id={ids.label} htmlFor={ids.input} data-kenos="date-picker-label" onClick={handleClick} {...props}>
       {children}
     </label>
   );

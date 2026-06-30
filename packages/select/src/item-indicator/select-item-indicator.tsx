@@ -20,6 +20,7 @@ export function ItemIndicator({ value, children, style, ...props }: ItemIndicato
   return (
     <span
       aria-hidden="true"
+      data-kenos="select-item-indicator"
       data-state={isSelected ? "checked" : "unchecked"}
       style={{ visibility: isSelected ? undefined : "hidden", ...style }}
       {...props}

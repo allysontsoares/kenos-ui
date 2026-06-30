@@ -93,3 +93,16 @@ describe("Combobox basic", () => {
     expect(screen.getByRole("combobox")).toHaveValue("Rust");
   });
 });
+
+describe("data-kenos fingerprints", () => {
+  it("sets stable fingerprints on key parts", () => {
+    render(<BasicCombobox defaultOpen />);
+    expect(screen.getByTestId("input")).toHaveAttribute("data-kenos", "combobox-input");
+    expect(screen.getByTestId("trigger")).toHaveAttribute("data-kenos", "combobox-trigger");
+    expect(screen.getByText("Language")).toHaveAttribute("data-kenos", "combobox-label");
+    expect(screen.getByRole("option", { name: /typescript/i })).toHaveAttribute(
+      "data-kenos",
+      "combobox-item",
+    );
+  });
+});

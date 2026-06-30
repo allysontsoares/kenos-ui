@@ -48,6 +48,7 @@ export function ScrollButton({
       type="button"
       aria-hidden
       tabIndex={-1}
+      data-kenos="select-scroll-button"
       data-direction={direction}
       data-visible={visible ? "true" : "false"}
       style={{

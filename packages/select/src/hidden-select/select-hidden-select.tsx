@@ -51,6 +51,7 @@ export function HiddenSelect() {
           opacity: 0,
         }}
         data-part="hidden-select"
+        data-kenos="select-hidden-select"
       >
         {allOptionValues.map((optionValue) => {
           const record = registry.get(optionValue);
@@ -91,6 +92,7 @@ export function HiddenSelect() {
         opacity: 0,
       }}
       data-part="hidden-select"
+      data-kenos="select-hidden-select"
     >
       <option value="" disabled hidden />
       {optionValues.map((optionValue) => {

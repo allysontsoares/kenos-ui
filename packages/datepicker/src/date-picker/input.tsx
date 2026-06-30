@@ -157,6 +157,7 @@ function Segments({
         }
       }}
       onKeyDown={shortcutHandlers.onKeyDown}
+      data-kenos="date-picker-input"
       {...(config.readOnly ? { "data-readonly": "true" } : {})}
     >
       {segmentOrder.map((field, i) => {
@@ -169,7 +170,7 @@ function Segments({
         return (
           <React.Fragment key={field}>
             {i > 0 && (
-              <span aria-hidden="true" data-separator="true">
+              <span aria-hidden="true" data-kenos="date-picker-input-separator" data-separator="true">
                 {separator}
               </span>
             )}
@@ -177,6 +178,7 @@ function Segments({
               {...inputProps}
               ref={wrappedInputRef}
               aria-label={labels[field]}
+              data-kenos="date-picker-input-segment"
               data-segment={field}
               tabIndex={config.readOnly ? -1 : isTabStop ? 0 : -1}
               disabled={config.readOnly}
@@ -202,7 +204,12 @@ function Segments({
         );
       })}
       {timeSegments.length > 0 && (
-        <span aria-hidden="true" data-separator="true" style={{ marginInline: "0.25ch" }}>
+        <span
+          aria-hidden="true"
+          data-kenos="date-picker-input-separator"
+          data-separator="true"
+          style={{ marginInline: "0.25ch" }}
+        >
           {" "}
         </span>
       )}
@@ -218,6 +225,7 @@ function Segments({
               key={segmentKey}
               {...selectProps}
               aria-label={labels.ampm}
+              data-kenos="date-picker-input-segment"
               data-segment={field}
               tabIndex={config.readOnly ? -1 : isTabStop ? 0 : -1}
               disabled={config.readOnly}
@@ -245,7 +253,7 @@ function Segments({
         return (
           <React.Fragment key={segmentKey}>
             {i > 0 && (
-              <span aria-hidden="true" data-separator="true">
+              <span aria-hidden="true" data-kenos="date-picker-input-separator" data-separator="true">
                 :
               </span>
             )}
@@ -253,6 +261,7 @@ function Segments({
               {...inputProps}
               ref={wrappedInputRef}
               aria-label={labels[field]}
+              data-kenos="date-picker-input-segment"
               data-segment={field}
               tabIndex={config.readOnly ? -1 : isTabStop ? 0 : -1}
               disabled={config.readOnly}

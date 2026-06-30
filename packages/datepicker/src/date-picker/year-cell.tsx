@@ -21,6 +21,7 @@ export function YearCell({ value, children, onClick, onKeyDown, ...props }: Year
       role="gridcell"
       aria-selected={isFocused}
       tabIndex={isFocused ? 0 : -1}
+      data-kenos="date-picker-year-cell"
       data-selected={isFocused || undefined}
       onClick={(e) => {
         dispatch({ type: "SELECT_YEAR", year: value });

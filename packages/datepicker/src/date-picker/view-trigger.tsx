@@ -29,6 +29,7 @@ export function ViewTrigger({ children, onClick, ...props }: ViewTriggerProps) {
       type="button"
       aria-label={ariaLabel[state.view]}
       aria-live="polite"
+      data-kenos="date-picker-view-trigger"
       onClick={(e) => {
         dispatch({ type: "SET_VIEW", view: nextView[state.view] });
         onClick?.(e);

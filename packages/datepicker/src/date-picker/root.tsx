@@ -58,6 +58,7 @@ export function Root(props: RootProps) {
       <div
         id={picker.ids.root}
         dir={picker.config.dir}
+        data-kenos="date-picker-root"
         data-open={isOpen || undefined}
         data-invalid={picker.config.invalid || undefined}
         data-focus-within={focusWithin || undefined}

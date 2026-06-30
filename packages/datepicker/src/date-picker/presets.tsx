@@ -14,6 +14,7 @@ export function Presets({ children, className, style }: PresetsProps) {
     <div
       role="group"
       aria-label={config.messages.presets}
+      data-kenos="date-picker-presets"
       data-presets=""
       className={className}
       style={style}

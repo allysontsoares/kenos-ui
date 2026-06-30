@@ -197,6 +197,7 @@ export function Content({
       role="dialog"
       aria-modal={config.modal ? "true" : undefined}
       aria-labelledby={ids.label}
+      data-kenos="date-picker-content"
       data-state={isOpen ? "open" : "closed"}
       style={{
         ...floatingStyles,
@@ -213,6 +214,7 @@ export function Content({
       {...props}
     >
       <span
+        data-kenos="date-picker-announcer"
         {...liveRegionProps}
         style={{
           position: "absolute",

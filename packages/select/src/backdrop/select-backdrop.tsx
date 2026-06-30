@@ -15,6 +15,7 @@ export function Backdrop({ style, ...props }: SelectBackdropProps) {
     <div
       role="presentation"
       aria-hidden="true"
+      data-kenos="select-backdrop"
       data-state={open ? "open" : "closed"}
       style={{
         position: "fixed",
