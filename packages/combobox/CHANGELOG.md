@@ -1,5 +1,18 @@
 # @kenos-ui/react-combobox
 
+## 0.2.3
+
+### Patch Changes
+
+- 53e2d94: Add stable `data-kenos` DOM fingerprints to every public primitive part for tooling detection (e.g. Wappalyzer) without affecting styling or accessibility.
+
+  - **Button:** `data-kenos="button"`
+  - **Select:** `select-trigger`, `select-item`, `select-content`, and 12 other parts
+  - **Combobox:** `combobox-input`, `combobox-trigger`, `combobox-item`, and 6 other parts
+  - **Date Picker:** `date-picker-root`, `date-picker-input`, `date-picker-day`, and 18 other parts
+
+  Each fingerprint uses the `{component}-{part}` kebab-case convention and coexists with existing state `data-*` attributes.
+
 ## 0.2.2
 
 ### Patch Changes
@@ -17,9 +30,11 @@
   Headless, accessible, composable Combobox primitive for React 19+, fully unstyled.
 
   **Compound API**
+
   - Parts: `Root`, `Label`, `Input`, `Trigger`, `Content`, `List`, `Item`, `ItemText`, `Empty`, `Clear`
 
   **Filtering & selection**
+
   - Type-to-filter via `useSelectCollection` from `@kenos-ui/utils`
   - `ComboboxStore`: `open`, `value`, `inputValue`, `highlightedValue`, item registry
   - Keyboard: filter on type, arrow navigation, Enter to select
@@ -27,10 +42,12 @@
   - `Clear` resets value and input text
 
   **Popup policy**
+
   - Floating UI positioning on `Content`; `lazyMount` / dialog-interop patterns aligned with Select
   - Re-exported from `@kenos-ui/react` as `Combobox` namespace
 
   **Packaging**
+
   - Add `license: MIT` to `package.json` (fixes npm registry showing "no license")
 
 ## 0.2.0
