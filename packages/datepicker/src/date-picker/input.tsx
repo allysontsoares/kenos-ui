@@ -170,7 +170,11 @@ function Segments({
         return (
           <React.Fragment key={field}>
             {i > 0 && (
-              <span aria-hidden="true" data-kenos="date-picker-input-separator" data-separator="true">
+              <span
+                aria-hidden="true"
+                data-kenos="date-picker-input-separator"
+                data-separator="true"
+              >
                 {separator}
               </span>
             )}
@@ -253,7 +257,11 @@ function Segments({
         return (
           <React.Fragment key={segmentKey}>
             {i > 0 && (
-              <span aria-hidden="true" data-kenos="date-picker-input-separator" data-separator="true">
+              <span
+                aria-hidden="true"
+                data-kenos="date-picker-input-separator"
+                data-separator="true"
+              >
                 :
               </span>
             )}

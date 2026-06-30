@@ -26,7 +26,11 @@ export function Value({ placeholder = "", ...props }: ValueProps) {
   }, [config.multiple, config.items, registry, value]);
 
   return (
-    <span data-kenos="select-value" data-placeholder={label == null ? "true" : undefined} {...props}>
+    <span
+      data-kenos="select-value"
+      data-placeholder={label == null ? "true" : undefined}
+      {...props}
+    >
       {label ?? placeholder}
     </span>
   );

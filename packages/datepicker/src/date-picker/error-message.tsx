@@ -16,7 +16,12 @@ export function ErrorMessage(props: ErrorMessageProps) {
   if (!config.invalid || !config.errorMessage) return null;
 
   return (
-    <div aria-hidden="true" data-kenos="date-picker-error-message" data-date-picker-error {...props}>
+    <div
+      aria-hidden="true"
+      data-kenos="date-picker-error-message"
+      data-date-picker-error
+      {...props}
+    >
       {config.errorMessage}
     </div>
   );

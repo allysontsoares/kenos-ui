@@ -276,7 +276,10 @@ describe("ErrorMessage", () => {
 describe("data-kenos fingerprints", () => {
   it("sets stable fingerprints on key parts", () => {
     render(<BasicPicker defaultOpen />);
-    expect(screen.getByText("Date").closest("label")).toHaveAttribute("data-kenos", "date-picker-label");
+    expect(screen.getByText("Date").closest("label")).toHaveAttribute(
+      "data-kenos",
+      "date-picker-label",
+    );
     expect(getInputGroup()).toHaveAttribute("data-kenos", "date-picker-input");
     expect(screen.getByRole("button", { name: "Open" })).toHaveAttribute(
       "data-kenos",
