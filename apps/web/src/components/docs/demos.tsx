@@ -11,13 +11,25 @@ import {
   type DateRange,
 } from "@kenos-ui/react-datepicker";
 import {
+  DP_ACTIVE_NAV,
   DP_CAL_SHORTHAND_POPOVER_CLS,
   DP_CONTROL_ROW_CLS,
   DP_DATE_FIELD_INPUT_CLS,
   DP_DATE_FIELD_WRAP_CLS,
   DP_FIELD_WRAP_CLS,
+  DP_FOCUS_RING,
+  DP_HOVER_CELL,
+  DP_HOVER_CELL_OUTSIDE,
+  DP_HOVER_NAV,
+  DP_INPUT_FOCUS_WITHIN,
   DP_LABEL_CLS,
   DP_PICKER_INPUT_CLS,
+  DP_RANGE_ENDPOINT_CLS,
+  DP_RANGE_IN_CLS,
+  DP_SELECTED_CLS,
+  DP_SELECTED_TODAY_RING,
+  DP_SEGMENT_FOCUS,
+  DP_TODAY_UNSELECTED,
   DP_TRIGGER_CLS,
 } from "@/components/ui/date-picker.variants";
 import { Combobox as KenosCombobox } from "@kenos-ui/react-combobox";
@@ -67,14 +79,11 @@ const RightIcon = () => (
 const calTableLayout =
   "[&_table]:!table-fixed [&_table]:!w-full [&_table]:!border-collapse [&_table]:!border-spacing-0 [&_tr]:!table-row [&_td]:!table-cell [&_td]:!p-0 [&_td]:!text-center [&_th]:!table-cell [&_th]:!p-0 [&_th]:!text-center [&_thead]:!table-header-group [&_tbody]:!table-row-group";
 
-const focusRing =
-  "outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-50 dark:focus-visible:ring-offset-zinc-900";
+const focusRing = DP_FOCUS_RING;
 
-const segmentFocus =
-  "[&_input]:rounded-md [&_input]:transition-[background-color,color,box-shadow] [&_input:focus]:!bg-indigo-600 [&_input:focus]:!text-white dark:[&_input:focus]:!bg-indigo-500 dark:[&_input:focus]:!text-white [&_input:focus]:shadow-sm [&_input::selection]:bg-transparent [&_input::placeholder]:text-zinc-500 dark:[&_input::placeholder]:text-zinc-400 [&_[data-separator]]:font-medium [&_[data-separator]]:text-zinc-500 dark:[&_[data-separator]]:text-zinc-400";
+const segmentFocus = DP_SEGMENT_FOCUS;
 
-const inputFocusWithin =
-  "transition-[border-color,box-shadow,background-color] duration-150 focus-within:border-indigo-500 dark:focus-within:border-indigo-400 focus-within:bg-white dark:focus-within:bg-zinc-950 focus-within:shadow-[0_0_0_3px_rgb(99_102_241_/_0.18)] dark:focus-within:shadow-[0_0_0_3px_rgb(129_140_248_/_0.18)]";
+const inputFocusWithin = DP_INPUT_FOCUS_WITHIN;
 
 const DEMO_SHELL: Record<CalSize, string> = {
   default: `rounded-[14px] border border-zinc-200/90 dark:border-zinc-700/80 bg-zinc-50 dark:bg-zinc-900 p-3.5 shadow-lg shadow-zinc-900/5 dark:shadow-black/30 ${calTableLayout}`,
@@ -92,8 +101,8 @@ const DEMO_DAY_BASE: Record<CalSize, string> = {
   default: [
     "relative z-0 mx-auto grid size-[36px] cursor-default place-items-center rounded-lg text-[14px] font-medium tabular-nums",
     "transition-[background-color,color,box-shadow,transform] duration-150",
-    "hover:bg-indigo-50 hover:text-indigo-900 dark:hover:bg-indigo-500/15 dark:hover:text-indigo-100",
-    "data-[outside-month]:hover:bg-indigo-50/60 dark:data-[outside-month]:hover:bg-indigo-500/10",
+    DP_HOVER_CELL,
+    DP_HOVER_CELL_OUTSIDE,
     focusRing,
     "focus-visible:z-10 aria-selected:z-10",
     "active:scale-[0.97] aria-selected:active:scale-100",
@@ -101,8 +110,8 @@ const DEMO_DAY_BASE: Record<CalSize, string> = {
   compact: [
     "relative z-0 mx-auto grid size-[28px] cursor-default place-items-center rounded-md text-[12.5px] font-medium tabular-nums",
     "transition-[background-color,color,box-shadow,transform] duration-150",
-    "hover:bg-indigo-50 hover:text-indigo-900 dark:hover:bg-indigo-500/15 dark:hover:text-indigo-100",
-    "data-[outside-month]:hover:bg-indigo-50/60 dark:data-[outside-month]:hover:bg-indigo-500/10",
+    DP_HOVER_CELL,
+    DP_HOVER_CELL_OUTSIDE,
     focusRing,
     "focus-visible:z-10 aria-selected:z-10",
     "active:scale-[0.97] aria-selected:active:scale-100",
@@ -121,7 +130,7 @@ const DEMO_HEAD_NAV: Record<CalSize, string> = {
     "grid place-items-center w-[30px] h-[30px] shrink-0 rounded-lg",
     "text-zinc-600 dark:text-zinc-300",
     "transition-[background-color,color,transform,box-shadow] duration-150",
-    "hover:bg-indigo-50 hover:text-indigo-700 dark:hover:bg-indigo-500/15 dark:hover:text-indigo-300",
+    DP_HOVER_NAV,
     "active:scale-95 disabled:pointer-events-none disabled:opacity-35",
     focusRing,
   ].join(" "),
@@ -129,7 +138,7 @@ const DEMO_HEAD_NAV: Record<CalSize, string> = {
     "grid place-items-center w-[26px] h-[26px] shrink-0 rounded-md",
     "text-zinc-600 dark:text-zinc-300",
     "transition-[background-color,color,transform,box-shadow] duration-150",
-    "hover:bg-indigo-50 hover:text-indigo-700 dark:hover:bg-indigo-500/15 dark:hover:text-indigo-300",
+    DP_HOVER_NAV,
     "active:scale-95 disabled:pointer-events-none disabled:opacity-35",
     focusRing,
   ].join(" "),
@@ -139,15 +148,15 @@ const DEMO_HEAD_TITLE: Record<CalSize, string> = {
   default: [
     "rounded-lg px-2.5 py-1 text-[15px] font-[650] text-zinc-900 dark:text-zinc-100",
     "transition-[background-color,color,box-shadow] duration-150",
-    "hover:bg-indigo-50 hover:text-indigo-700 dark:hover:bg-indigo-500/15 dark:hover:text-indigo-300",
-    "active:bg-indigo-100/80 dark:active:bg-indigo-500/25",
+    DP_HOVER_NAV,
+    DP_ACTIVE_NAV,
     focusRing,
   ].join(" "),
   compact: [
     "rounded-md px-2 py-0.5 text-[13px] font-[650] text-zinc-900 dark:text-zinc-100",
     "transition-[background-color,color,box-shadow] duration-150",
-    "hover:bg-indigo-50 hover:text-indigo-700 dark:hover:bg-indigo-500/15 dark:hover:text-indigo-300",
-    "active:bg-indigo-100/80 dark:active:bg-indigo-500/25",
+    DP_HOVER_NAV,
+    DP_ACTIVE_NAV,
     focusRing,
   ].join(" "),
 };
@@ -158,21 +167,19 @@ const DEMO_MONTH_YEAR_GRID: Record<CalSize, string> = {
 };
 
 /** Today accent only when the cell is not selected — avoids clashing with the selected state. */
-const demoSelectedCls =
-  "aria-selected:bg-indigo-600 aria-selected:text-white aria-selected:font-semibold dark:aria-selected:bg-indigo-500 dark:aria-selected:text-white aria-selected:hover:bg-indigo-700 dark:aria-selected:hover:bg-indigo-400 aria-selected:shadow-sm aria-selected:shadow-indigo-600/25";
+const demoSelectedCls = DP_SELECTED_CLS;
 
-const demoTodayUnselected =
-  "data-[today]:font-bold data-[today]:[&:not([aria-selected=true])]:text-indigo-600 dark:data-[today]:[&:not([aria-selected=true])]:text-indigo-400 data-[today]:[&:not([aria-selected=true])]:ring-1 data-[today]:[&:not([aria-selected=true])]:ring-indigo-400/60 dark:data-[today]:[&:not([aria-selected=true])]:ring-indigo-400/50 data-[today]:[&:not([aria-selected=true])]:ring-inset";
+const demoTodayUnselected = DP_TODAY_UNSELECTED;
 
 const demoDayStates = [
-  "text-zinc-800 dark:text-zinc-100",
+  "[&:not([aria-selected=true])]:text-zinc-800 dark:[&:not([aria-selected=true])]:text-zinc-100",
   "data-disabled:cursor-not-allowed data-disabled:opacity-30 data-disabled:hover:bg-transparent",
   "data-unavailable:line-through data-unavailable:opacity-60 data-unavailable:hover:bg-transparent",
   demoSelectedCls,
   "aria-selected:focus-visible:ring-offset-zinc-200 dark:aria-selected:focus-visible:ring-offset-zinc-800",
   demoTodayUnselected,
-  "aria-selected:data-[today]:ring-2 aria-selected:data-[today]:ring-indigo-300/80 dark:aria-selected:data-[today]:ring-indigo-300/60 aria-selected:data-[today]:ring-inset",
-  "data-[outside-month]:text-zinc-400 dark:data-[outside-month]:text-zinc-500",
+  DP_SELECTED_TODAY_RING,
+  "data-[outside-month]:[&:not([aria-selected=true])]:text-zinc-400 dark:data-[outside-month]:[&:not([aria-selected=true])]:text-zinc-500",
 ].join(" ");
 
 const demoDayCls = (size: CalSize) => `${DEMO_DAY_BASE[size]} ${demoDayStates}`;
@@ -180,15 +187,11 @@ const demoDayCls = (size: CalSize) => `${DEMO_DAY_BASE[size]} ${demoDayStates}`;
 const demoRangeDayCls = (size: CalSize) =>
   [
     demoDayCls(size),
-    "data-[in-range]:bg-indigo-100 data-[in-range]:text-indigo-900 dark:data-[in-range]:bg-indigo-500/20 dark:data-[in-range]:text-indigo-100",
-    "data-[in-range]:hover:bg-indigo-200/80 dark:data-[in-range]:hover:bg-indigo-500/30",
+    DP_RANGE_IN_CLS,
     "data-[in-range]:rounded-none",
     "data-[range-start]:rounded-l-lg data-[range-end]:rounded-r-lg data-[range-start]:data-[range-end]:rounded-lg",
     "data-[range-start]:z-[1] data-[range-end]:z-[1]",
-    "data-[range-start]:bg-indigo-600 data-[range-end]:bg-indigo-600 data-[range-start]:text-white data-[range-end]:text-white",
-    "dark:data-[range-start]:bg-indigo-500 dark:data-[range-end]:bg-indigo-500 dark:data-[range-start]:text-white dark:data-[range-end]:text-white",
-    "data-[range-start]:font-semibold data-[range-end]:font-semibold",
-    "data-[range-start]:hover:bg-indigo-700 data-[range-end]:hover:bg-indigo-700 dark:data-[range-start]:hover:bg-indigo-400 dark:data-[range-end]:hover:bg-indigo-400",
+    DP_RANGE_ENDPOINT_CLS,
   ].join(" ");
 
 const DEMO_MONTH_YEAR_CELL: Record<CalSize, string> = {
@@ -196,7 +199,7 @@ const DEMO_MONTH_YEAR_CELL: Record<CalSize, string> = {
     "flex min-h-[44px] w-full min-w-0 items-center justify-center rounded-lg px-1.5 py-2",
     "text-center text-[13px] font-medium leading-tight text-zinc-800 dark:text-zinc-200",
     "transition-[background-color,color,box-shadow,transform] duration-150",
-    "hover:bg-indigo-50 hover:text-indigo-900 dark:hover:bg-indigo-500/15 dark:hover:text-indigo-100",
+    DP_HOVER_CELL,
     "active:scale-[0.98] aria-selected:active:scale-100",
     focusRing,
     demoSelectedCls,
@@ -206,7 +209,7 @@ const DEMO_MONTH_YEAR_CELL: Record<CalSize, string> = {
     "flex min-h-[36px] w-full min-w-0 items-center justify-center rounded-md px-1 py-1.5",
     "text-center text-[11.5px] font-medium leading-tight text-zinc-800 dark:text-zinc-200",
     "transition-[background-color,color,box-shadow,transform] duration-150",
-    "hover:bg-indigo-50 hover:text-indigo-900 dark:hover:bg-indigo-500/15 dark:hover:text-indigo-100",
+    DP_HOVER_CELL,
     "active:scale-[0.98] aria-selected:active:scale-100",
     focusRing,
     demoSelectedCls,
@@ -251,8 +254,8 @@ const presetBtn = [
   "min-h-[34px] flex-1 cursor-pointer rounded-lg border py-1.5 text-[12.5px] font-medium",
   "border-zinc-300/90 bg-zinc-100 text-zinc-800 dark:border-zinc-700 dark:bg-zinc-800/90 dark:text-zinc-200",
   "transition-[border-color,background-color,color,transform,box-shadow] duration-150",
-  "hover:border-indigo-400 hover:bg-indigo-50 hover:text-indigo-700 dark:hover:border-indigo-400/60 dark:hover:bg-indigo-500/15 dark:hover:text-indigo-300",
-  "active:scale-[0.98] active:bg-indigo-100 dark:active:bg-indigo-500/25",
+  "hover:border-[var(--kenos-accent)] hover:bg-[var(--kenos-accent-soft)] hover:text-[var(--kenos-text)]",
+  "active:scale-[0.98] active:bg-[var(--kenos-accent-muted)]",
   focusRing,
 ].join(" ");
 
@@ -939,7 +942,7 @@ export function SelectFormDemo() {
       <SelectDemo label="Country" name="country" defaultValue="react" />
       <button
         type="submit"
-        className="min-h-9 rounded-lg bg-indigo-600 px-4 text-sm font-medium text-white transition-colors hover:bg-indigo-700 dark:bg-indigo-500 dark:text-white dark:hover:bg-indigo-400"
+        className="min-h-9 rounded-full bg-zinc-900 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
       >
         Submit
       </button>
@@ -985,9 +988,9 @@ export function SelectPortalDemo() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full max-w-sm overflow-hidden rounded-xl border-2 border-indigo-400/60 bg-indigo-50/50 p-4 dark:border-indigo-500/40 dark:bg-indigo-950/20"
+      className="relative w-full max-w-sm overflow-hidden rounded-xl border-2 border-[var(--kenos-status-muted)] bg-[var(--kenos-status-muted)] p-4"
     >
-      <p className="mb-3 text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+      <p className="mb-3 text-xs font-semibold text-[var(--kenos-status)]">
         Dialog.Content (portal container)
       </p>
       <KenosSelect.Root name="country">
@@ -1260,7 +1263,7 @@ export function DatePickerFormNativeDemo() {
       </KenosDatePicker.Root>
       <button
         type="submit"
-        className="min-h-9 rounded-lg bg-indigo-600 px-4 text-sm font-medium text-white transition-colors hover:bg-indigo-700 dark:bg-indigo-500 dark:text-white dark:hover:bg-indigo-400"
+        className="min-h-9 rounded-full bg-zinc-900 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
       >
         Submit
       </button>
@@ -1446,7 +1449,7 @@ export function DatePickerMultipleDemo() {
         <div className={fieldWrap()}>
           <KenosDatePicker.Label className={labelCls}>Select dates</KenosDatePicker.Label>
           <KenosDatePicker.Trigger
-            className="flex h-[42px] w-full items-center justify-between gap-2 rounded-[10px] border border-zinc-300/90 bg-white px-3 text-sm text-zinc-700 transition-[border-color,box-shadow] duration-150 hover:border-indigo-400 aria-expanded:border-indigo-500 aria-expanded:ring-2 aria-expanded:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-200 dark:hover:border-indigo-400/70 dark:aria-expanded:border-indigo-400"
+            className="flex h-[42px] w-full items-center justify-between gap-2 rounded-[10px] border border-zinc-300/90 bg-white px-3 text-sm text-zinc-700 transition-[border-color,box-shadow] duration-150 hover:border-[var(--kenos-accent)] aria-expanded:border-[var(--kenos-accent)] aria-expanded:ring-2 aria-expanded:ring-[var(--kenos-accent-muted)] dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-200"
             aria-label="Open calendar"
           >
             <span className={dates.length ? "" : "text-zinc-400 dark:text-zinc-500"}>
@@ -1475,11 +1478,11 @@ export function DatePickerMultipleDemo() {
               <button
                 type="button"
                 onClick={() => removeDate(d)}
-                className="inline-flex items-center gap-1 rounded-md bg-indigo-50 py-1 pl-2 pr-1.5 text-[12px] font-medium text-indigo-700 ring-1 ring-inset ring-indigo-200/70 transition-colors hover:bg-indigo-100 dark:bg-indigo-500/15 dark:text-indigo-300 dark:ring-indigo-400/20 dark:hover:bg-indigo-500/25"
+                className="inline-flex items-center gap-1 rounded-md bg-[var(--kenos-status-muted)] py-1 pl-2 pr-1.5 text-[12px] font-medium text-[var(--kenos-status)] ring-1 ring-inset ring-[var(--kenos-status-muted)] transition-colors hover:opacity-90"
                 aria-label={`Remove ${d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`}
               >
                 {d.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                <span aria-hidden className="text-indigo-400 dark:text-indigo-400/70">
+                <span aria-hidden className="text-[var(--kenos-status)] opacity-70">
                   ×
                 </span>
               </button>
@@ -1534,7 +1537,7 @@ export function DatePickerRHFFormDemo() {
       <div className="flex gap-2">
         <button
           type="submit"
-          className="min-h-9 rounded-lg bg-indigo-600 px-4 text-sm font-medium text-white transition-colors hover:bg-indigo-700 dark:bg-indigo-500 dark:text-white dark:hover:bg-indigo-400"
+          className="min-h-9 rounded-full bg-zinc-900 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
         >
           Submit
         </button>
@@ -1652,7 +1655,7 @@ export function DatePickerRangeRHFFormDemo() {
       <div className="flex gap-2">
         <button
           type="submit"
-          className="min-h-9 rounded-lg bg-indigo-600 px-4 text-sm font-medium text-white transition-colors hover:bg-indigo-700 dark:bg-indigo-500 dark:text-white dark:hover:bg-indigo-400"
+          className="min-h-9 rounded-full bg-zinc-900 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
         >
           Submit
         </button>
@@ -1722,7 +1725,7 @@ export function DatePickerRangeTanStackFormDemo() {
       <div className="flex gap-2">
         <button
           type="submit"
-          className="min-h-9 rounded-lg bg-indigo-600 px-4 text-sm font-medium text-white transition-colors hover:bg-indigo-700 dark:bg-indigo-500 dark:text-white dark:hover:bg-indigo-400"
+          className="min-h-9 rounded-full bg-zinc-900 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
         >
           Submit
         </button>
@@ -1788,7 +1791,7 @@ export function DatePickerTanStackFormDemo() {
       <div className="flex gap-2">
         <button
           type="submit"
-          className="min-h-9 rounded-lg bg-indigo-600 px-4 text-sm font-medium text-white transition-colors hover:bg-indigo-700 dark:bg-indigo-500 dark:text-white dark:hover:bg-indigo-400"
+          className="min-h-9 rounded-full bg-zinc-900 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
         >
           Submit
         </button>
@@ -1833,7 +1836,7 @@ import {
 
 export function ButtonDefaultDemo() {
   return (
-    <Button className="inline-flex h-10 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-all data-[hovered]:bg-zinc-800 data-[pressed]:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed dark:bg-white dark:text-zinc-900 dark:data-[hovered]:bg-zinc-200">
+    <Button className="inline-flex h-10 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-all data-[hovered]:bg-zinc-800 data-[pressed]:scale-97 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--kenos-accent)] data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed dark:bg-white dark:text-zinc-900 dark:data-[hovered]:bg-zinc-200">
       Click me
     </Button>
   );
@@ -1843,7 +1846,7 @@ export function ButtonPendingDemo() {
   return (
     <Button
       isPending
-      className="inline-flex h-10 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-all data-[hovered]:bg-zinc-800 data-[pressed]:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed dark:bg-white dark:text-zinc-900 dark:data-[hovered]:bg-zinc-200"
+      className="inline-flex h-10 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-all data-[hovered]:bg-zinc-800 data-[pressed]:scale-97 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--kenos-accent)] data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed dark:bg-white dark:text-zinc-900 dark:data-[hovered]:bg-zinc-200"
     >
       <svg
         className="mr-2 h-4 w-4 animate-spin"
@@ -1874,7 +1877,7 @@ export function ButtonDisabledDemo() {
   return (
     <Button
       isDisabled
-      className="inline-flex h-10 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-all data-[hovered]:bg-zinc-800 data-[pressed]:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed dark:bg-white dark:text-zinc-900 dark:data-[hovered]:bg-zinc-200"
+      className="inline-flex h-10 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-all data-[hovered]:bg-zinc-800 data-[pressed]:scale-97 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--kenos-accent)] data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed dark:bg-white dark:text-zinc-900 dark:data-[hovered]:bg-zinc-200"
     >
       Not allowed
     </Button>
@@ -1887,10 +1890,10 @@ export function ButtonRenderPropsDemo() {
       render={(props, state) => (
         <button
           {...props}
-          className="inline-flex h-10 items-center justify-center rounded-lg border-2 border-indigo-500 bg-transparent px-4 text-sm font-medium text-indigo-500 transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+          className="inline-flex h-10 items-center justify-center rounded-lg border-2 border-[var(--kenos-status)] bg-transparent px-4 text-sm font-medium text-[var(--kenos-status)] transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--kenos-accent)]"
           style={{
-            backgroundColor: state.isHovered ? "rgba(99, 102, 241, 0.1)" : "transparent",
-            transform: state.isPressed ? "scale(0.95)" : "scale(1)",
+            backgroundColor: state.isHovered ? "var(--kenos-status-muted)" : "transparent",
+            transform: state.isPressed ? "scale(0.97)" : "scale(1)",
           }}
         >
           {state.isHovered ? "Hovered!" : "Hover me"}
@@ -1908,7 +1911,7 @@ export function ButtonHapticDemo() {
         () => haptic.trigger("save"),
         () => console.log("Saved!"),
       )}
-      className="inline-flex h-10 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-all data-[hovered]:bg-zinc-800 data-[pressed]:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 dark:bg-white dark:text-zinc-900 dark:data-[hovered]:bg-zinc-200"
+      className="inline-flex h-10 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-all data-[hovered]:bg-zinc-800 data-[pressed]:scale-97 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--kenos-accent)] dark:bg-white dark:text-zinc-900 dark:data-[hovered]:bg-zinc-200"
     >
       Save with Haptics
     </Button>
@@ -1926,7 +1929,7 @@ export function ButtonLongPressDemo() {
   return (
     <Button
       {...longPressProps}
-      className="inline-flex h-10 w-48 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-all data-[hovered]:bg-zinc-800 data-[pressed]:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 dark:bg-white dark:text-zinc-900 dark:data-[hovered]:bg-zinc-200"
+      className="inline-flex h-10 w-48 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-all data-[hovered]:bg-zinc-800 data-[pressed]:scale-97 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--kenos-accent)] dark:bg-white dark:text-zinc-900 dark:data-[hovered]:bg-zinc-200"
     >
       {action}
     </Button>
@@ -1940,7 +1943,7 @@ export function ButtonHoverDemo() {
     <div className="flex flex-col items-center gap-4">
       <Button
         {...hoverProps}
-        className="inline-flex h-10 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-all data-[hovered]:bg-zinc-800 data-[pressed]:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 dark:bg-white dark:text-zinc-900 dark:data-[hovered]:bg-zinc-200"
+        className="inline-flex h-10 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-all data-[hovered]:bg-zinc-800 data-[pressed]:scale-97 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--kenos-accent)] dark:bg-white dark:text-zinc-900 dark:data-[hovered]:bg-zinc-200"
       >
         Hover me
       </Button>

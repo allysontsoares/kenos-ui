@@ -73,7 +73,7 @@ export function Installation() {
         Nothing renders styled out of the box — you attach classes to each part. See the{" "}
         <Link
           href="/docs/date-picker#default"
-          className="text-zinc-900 dark:text-zinc-100 underline decoration-line-strong underline-offset-[3px] hover:text-indigo-600 hover:decoration-accent dark:hover:text-indigo-400"
+          className="text-zinc-900 dark:text-zinc-100 underline decoration-line-strong underline-offset-[3px] hover:text-zinc-600 hover:decoration-accent dark:hover:text-zinc-300"
         >
           Date Picker examples
         </Link>
@@ -142,14 +142,14 @@ export function QuickStart() {
         Next, explore each{" "}
         <Link
           href="/docs/date-picker"
-          className="text-zinc-900 dark:text-zinc-100 underline decoration-line-strong underline-offset-[3px] hover:text-indigo-600 hover:decoration-accent dark:hover:text-indigo-400"
+          className="text-zinc-900 dark:text-zinc-100 underline decoration-line-strong underline-offset-[3px] hover:text-zinc-600 hover:decoration-accent dark:hover:text-zinc-300"
         >
           primitive
         </Link>{" "}
         or read the{" "}
         <Link
           href="/docs/date-picker#accessibility"
-          className="text-zinc-900 dark:text-zinc-100 underline decoration-line-strong underline-offset-[3px] hover:text-indigo-600 hover:decoration-accent dark:hover:text-indigo-400"
+          className="text-zinc-900 dark:text-zinc-100 underline decoration-line-strong underline-offset-[3px] hover:text-zinc-600 hover:decoration-accent dark:hover:text-zinc-300"
         >
           accessibility section
         </Link>

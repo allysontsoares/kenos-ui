@@ -127,7 +127,7 @@ export function ButtonPage() {
         <InlineCode>state.isPressed</InlineCode>.
       </P>
       <Example
-        code={`<Button\n  render={(props, state) => (\n    <button\n      {...props}\n      style={{\n        transform: state.isPressed ? "scale(0.95)" : "scale(1)",\n      }}\n    >\n      {state.isHovered ? "Hovered!" : "Hover me"}\n    </button>\n  )}\n/>`}
+        code={`<Button\n  render={(props, state) => (\n    <button\n      {...props}\n      style={{\n        transform: state.isPressed ? "scale(0.97)" : "scale(1)",\n      }}\n    >\n      {state.isHovered ? "Hovered!" : "Hover me"}\n    </button>\n  )}\n/>`}
         lang="tsx"
       >
         <ButtonRenderPropsDemo />

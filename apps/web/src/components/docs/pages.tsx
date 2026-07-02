@@ -41,7 +41,7 @@ export const Eyebrow = ({ children }: { children: ReactNode }) => (
 );
 export const PageTitle = ({ children, action }: { children: ReactNode; action?: ReactNode }) => (
   <div className="flex items-start justify-between gap-4">
-    <h1 className="mb-2 text-[length:var(--text-page)] font-bold leading-[1.04] tracking-[-0.035em] text-zinc-900 dark:text-zinc-100 text-balance">
+    <h1 className="mb-2 scroll-mt-28 text-balance font-heading text-[length:var(--text-page)] font-medium leading-[1.04] tracking-tight text-zinc-900 lg:scroll-mt-24 dark:text-zinc-100">
       {children}
     </h1>
     {action}
@@ -55,7 +55,7 @@ export const Lead = ({ children }: { children: ReactNode }) => (
 export const H2 = ({ id, children }: { id: string; children: ReactNode }) => (
   <h2
     id={id}
-    className="mt-14 mb-4 scroll-mt-20 text-[length:var(--text-section)] font-bold tracking-[-0.025em] text-zinc-900 dark:text-zinc-100"
+    className="mt-14 mb-4 scroll-mt-28 font-heading text-[length:var(--text-section)] font-medium tracking-tight text-zinc-900 lg:scroll-mt-24 dark:text-zinc-100"
   >
     {children}
   </h2>
@@ -63,7 +63,7 @@ export const H2 = ({ id, children }: { id: string; children: ReactNode }) => (
 export const H3 = ({ id, children }: { id: string; children: ReactNode }) => (
   <h3
     id={id}
-    className="mt-9 mb-3 scroll-mt-20 text-[19px] font-[650] tracking-[-0.015em] text-zinc-900 dark:text-zinc-100"
+    className="mt-9 mb-3 scroll-mt-28 font-heading text-[19px] font-medium tracking-tight text-zinc-900 lg:scroll-mt-24 dark:text-zinc-100"
   >
     {children}
   </h3>

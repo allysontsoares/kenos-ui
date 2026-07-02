@@ -2,7 +2,6 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { HeroCircles } from "./hero-circles";
 import { KenosMark } from "./kenos-mark";
 
 const ArrowRight = () => (
@@ -31,10 +30,9 @@ const HERO_PILLS = [
 export function DocsHeroCard() {
   return (
     <section
-      className="relative isolate overflow-hidden rounded-2xl border border-zinc-200 bg-gradient-to-br from-indigo-50/40 via-white to-zinc-100 shadow-lg dark:border-zinc-800 dark:from-indigo-950/30 dark:via-zinc-950 dark:to-zinc-900"
+      className="relative isolate overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950"
       aria-labelledby="home-hero-title"
     >
-      <HeroCircles />
       <div className="relative z-10 p-6 sm:p-9">
         <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(140px,220px)] lg:gap-10 xl:grid-cols-[minmax(0,1fr)_260px] xl:gap-14">
           <div className="min-w-0">
@@ -46,7 +44,7 @@ export function DocsHeroCard() {
             </p>
             <h1
               id="home-hero-title"
-              className="mb-4 max-w-[16ch] text-[length:var(--text-hero)] font-bold leading-[1.02] tracking-[-0.04em] text-zinc-900 text-balance dark:text-zinc-100"
+              className="mb-4 max-w-[16ch] text-balance font-heading text-[length:var(--text-hero)] font-medium leading-[1.02] tracking-tight text-zinc-900 dark:text-zinc-100"
             >
               The space before design.
             </h1>
@@ -73,7 +71,10 @@ export function DocsHeroCard() {
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
           <Link
             href="/docs/installation"
-            className={cn(buttonVariants({ variant: "brand", size: "lg" }), "w-full sm:w-auto")}
+            className={cn(
+              buttonVariants({ variant: "default", size: "lg" }),
+              "w-full rounded-full sm:w-auto",
+            )}
           >
             Get started <ArrowRight />
           </Link>

@@ -393,7 +393,7 @@ export function ApiReference({ groups }: { groups: ApiGroup[] }) {
             <section key={gi}>
               <h2
                 id={id}
-                className="mt-14 mb-4 text-[clamp(1.4rem,1.1rem+0.8vw,1.6875rem)] font-bold tracking-tight text-zinc-900 dark:text-zinc-100 scroll-mt-20"
+                className="mt-14 mb-4 scroll-mt-28 font-heading text-[clamp(1.4rem,1.1rem+0.8vw,1.6875rem)] font-medium tracking-tight text-zinc-900 lg:scroll-mt-24 dark:text-zinc-100"
               >
                 {g.group}
               </h2>
@@ -425,7 +425,7 @@ export function ApiReference({ groups }: { groups: ApiGroup[] }) {
             <section key={gi}>
               <h2
                 id={id}
-                className="mt-14 mb-4 text-[clamp(1.4rem,1.1rem+0.8vw,1.6875rem)] font-bold tracking-tight text-zinc-900 dark:text-zinc-100 scroll-mt-20"
+                className="mt-14 mb-4 scroll-mt-28 font-heading text-[clamp(1.4rem,1.1rem+0.8vw,1.6875rem)] font-medium tracking-tight text-zinc-900 lg:scroll-mt-24 dark:text-zinc-100"
               >
                 {g.group}
               </h2>
@@ -456,7 +456,7 @@ export function ApiReference({ groups }: { groups: ApiGroup[] }) {
           <section key={gi}>
             <h2
               id={id}
-              className="mt-14 mb-4 text-[clamp(1.4rem,1.1rem+0.8vw,1.6875rem)] font-bold tracking-tight text-zinc-900 dark:text-zinc-100 scroll-mt-20"
+              className="mt-14 mb-4 scroll-mt-28 font-heading text-[clamp(1.4rem,1.1rem+0.8vw,1.6875rem)] font-medium tracking-tight text-zinc-900 lg:scroll-mt-24 dark:text-zinc-100"
             >
               {g.group}
             </h2>

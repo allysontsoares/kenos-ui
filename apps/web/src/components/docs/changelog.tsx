@@ -26,7 +26,7 @@ export async function Changelog() {
           <code className="font-mono text-[0.9em]">@kenos-ui/react-datepicker</code>. Rendered from{" "}
           <a
             href={CHANGELOG_URL}
-            className="font-semibold underline decoration-line-strong underline-offset-[3px] hover:text-indigo-600 hover:decoration-accent dark:hover:text-indigo-400"
+            className="font-semibold underline decoration-line-strong underline-offset-[3px] hover:text-zinc-600 hover:decoration-accent dark:hover:text-zinc-300"
             target="_blank"
             rel="noopener noreferrer"
           >
