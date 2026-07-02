@@ -198,7 +198,7 @@ import "./styles.css";
     tailwind: `import { Button } from "@kenos-ui/react-button";
 
 <Button 
-  className="inline-flex h-10 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-all data-[hovered]:bg-zinc-800 data-[pressed]:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed dark:bg-white dark:text-zinc-900 dark:data-[hovered]:bg-zinc-200"
+  className="inline-flex h-10 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-all data-[hovered]:bg-zinc-800 data-[pressed]:scale-97 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--kenos-accent)] data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed dark:bg-white dark:text-zinc-900 dark:data-[hovered]:bg-zinc-200"
   onClick={() => console.log('Clicked')}
 >
   Click me
@@ -223,7 +223,7 @@ const btnStyle = css({
     backgroundColor: { base: "zinc.800", _dark: "zinc.200" }
   },
   "&[data-pressed]": {
-    transform: "scale(0.95)"
+    transform: "scale(0.97)"
   },
   "&[data-disabled]": {
     opacity: 0.5,
@@ -268,7 +268,7 @@ const styles = stylex.create({
     }
   },
   dynamicPressed: {
-    transform: "scale(0.95)",
+    transform: "scale(0.97)",
   },
   dynamicDisabled: {
     opacity: 0.5,
@@ -364,7 +364,7 @@ import "./styles.css";
                 <DatePicker.Day
                   key={di}
                   date={day}
-                  className="grid size-[34px] place-items-center rounded-lg text-[13.5px] tabular-nums text-zinc-100 hover:bg-white/5 aria-selected:bg-indigo-600 aria-selected:text-white aria-selected:font-semibold data-[today]:font-bold data-[outside-month]:text-zinc-500"
+                  className="grid size-[34px] place-items-center rounded-lg text-[13.5px] tabular-nums text-zinc-100 hover:bg-white/5 aria-selected:bg-[var(--kenos-accent)] aria-selected:!text-[var(--kenos-signal-fg)] aria-selected:font-semibold data-[today]:font-bold data-[outside-month]:text-zinc-500"
                 />
               ))}
             </tr>
@@ -835,7 +835,7 @@ import type { DateRange } from "@kenos-ui/react-datepicker";
                 <DatePicker.Day
                   key={di}
                   date={day}
-                  className="grid size-[34px] place-items-center rounded-none text-[13.5px] tabular-nums text-zinc-100 hover:bg-white/5 data-[in-range]:bg-indigo-500/20 data-[range-start]:rounded-l-lg data-[range-end]:rounded-r-lg data-[range-start]:bg-indigo-600 data-[range-end]:bg-indigo-600 data-[range-start]:text-white data-[range-end]:text-white"
+                  className="grid size-[34px] place-items-center rounded-none text-[13.5px] tabular-nums text-zinc-100 hover:bg-white/5 data-[in-range]:bg-[var(--kenos-accent-muted)] data-[range-start]:rounded-l-lg data-[range-end]:rounded-r-lg data-[range-start]:bg-[var(--kenos-accent)] data-[range-end]:bg-[var(--kenos-accent)] data-[range-start]:text-[var(--kenos-signal-fg)] data-[range-end]:text-[var(--kenos-signal-fg)]"
                 />
               ))}
             </tr>

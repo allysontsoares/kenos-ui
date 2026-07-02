@@ -1,7 +1,7 @@
 export const DOCS_PREFIX = "/docs";
 
 export function routeToHref(route: string) {
-  return route === "" ? DOCS_PREFIX : `${DOCS_PREFIX}/${route}`;
+  return route === "" ? "/" : `${DOCS_PREFIX}/${route}`;
 }
 
 export function pathToRoute(pathname: string) {

@@ -9,12 +9,14 @@
 /* Kenos UI — docs layout + void tokens (see docs/brand.md) */
 @theme {
   --font-sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: var(--font-space-grotesk), var(--font-geist-sans), sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, monospace;
   --text-hero: clamp(2.125rem, 1.4rem + 3vw, 2.875rem);
   --text-page: clamp(2rem, 1.4rem + 2.6vw, 2.75rem);
   --text-section: clamp(1.625rem, 1.2rem + 1.6vw, 1.875rem);
   --ease-smooth: cubic-bezier(0.32, 0.72, 0, 1);
   --ease-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
+  --scale-97: 0.97;
   --animate-pop: kenos-pop 0.16s var(--ease-smooth);
   --animate-fade: kenos-fade 0.12s ease;
   --sidebar-w: 264px;
@@ -23,22 +25,31 @@
   --color-kenos-mark: #fafafa;
   --color-kenos-grid: rgb(255 255 255 / 0.06);
   --color-kenos-accent: var(--kenos-accent);
+  --color-kenos-status: var(--kenos-status);
 }
 
-/* Tailwind indigo — brand accent */
+/* Void Signal — monochrome CTA + void surfaces (see DESIGN.md) */
 
 :root {
   --radius: 0.45rem;
+  --void-ground: #000000;
+  --void-surface: #161616;
+  --void-elevated: #1c1c1c;
   --kenos-bg: #fafafa;
   --kenos-surface: #ffffff;
   --kenos-text: #09090b;
   --kenos-muted: #71717a;
+  --kenos-body: #52525b;
   --kenos-border: rgb(24 24 27 / 0.12);
   --kenos-grid: rgb(24 24 27 / 0.06);
   --kenos-mark: #18181b;
-  --kenos-accent: #4f46e5;
-  --kenos-accent-muted: rgb(79 70 229 / 0.14);
-  --kenos-accent-soft: rgb(79 70 229 / 0.08);
+  --kenos-signal-bg: #09090b;
+  --kenos-signal-fg: #fafafa;
+  --kenos-accent: #09090b;
+  --kenos-accent-muted: rgb(9 9 11 / 0.1);
+  --kenos-accent-soft: rgb(9 9 11 / 0.06);
+  --kenos-status: oklch(0.72 0.14 55);
+  --kenos-status-muted: oklch(0.72 0.14 55 / 0.15);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
   --border: oklch(0.922 0 0);
@@ -47,16 +58,19 @@
 
 .dark,
 [data-theme="dark"] {
-  --kenos-bg: #09090b;
-  --kenos-surface: #18181b;
+  --kenos-bg: var(--void-ground);
+  --kenos-surface: var(--void-surface);
   --kenos-text: #fafafa;
   --kenos-muted: #a1a1aa;
+  --kenos-body: #a1a1aa;
   --kenos-border: rgb(255 255 255 / 0.08);
   --kenos-grid: rgb(255 255 255 / 0.06);
   --kenos-mark: #fafafa;
-  --kenos-accent: #818cf8;
-  --kenos-accent-muted: rgb(129 140 248 / 0.2);
-  --kenos-accent-soft: rgb(99 102 241 / 0.12);
+  --kenos-signal-bg: #fafafa;
+  --kenos-signal-fg: #09090b;
+  --kenos-accent: #fafafa;
+  --kenos-accent-muted: rgb(250 250 250 / 0.14);
+  --kenos-accent-soft: rgb(250 250 250 / 0.08);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
   --border: oklch(1 0 0 / 10%);
@@ -64,7 +78,7 @@
 }
 
 @theme inline {
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-display);
   --font-sans: var(--font-sans);
   --color-destructive: var(--destructive);
   --color-border: var(--border);
@@ -124,7 +138,7 @@
     font-size: 15px;
     line-height: 1.65;
     text-rendering: optimizeLegibility;
-    @apply bg-white font-sans text-zinc-900 antialiased dark:bg-zinc-950 dark:text-zinc-100;
+    @apply bg-white font-sans text-zinc-900 antialiased dark:bg-black dark:text-zinc-100;
   }
   ::selection {
     background: var(--kenos-accent-muted);
@@ -154,6 +168,12 @@
   animation: kenos-corner-in 0.85s var(--ease-spring) both;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .kenos-corner-mark {
+    animation: none;
+  }
+}
+
 .kenos-corner-mark:hover {
   transform: scale(1.04);
   transition: transform 0.35s var(--ease-spring);
@@ -175,6 +195,18 @@
   font-family: var(--font-sans);
 }
 
+.landing-page :is(h1, h2, h3) {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+#docs-content :is(h1, h2, h3) {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
 .kenos-landing-dot-bg {
   background-image: radial-gradient(rgb(255 255 255 / 0.06) 1px, transparent 1px);
   background-size: 22px 22px;
@@ -184,20 +216,54 @@
   font-family: var(--font-mono);
   font-size: 0.6875rem;
   letter-spacing: 0.08em;
-  color: #71717a;
+  color: var(--kenos-status);
+  opacity: 0.85;
   text-transform: uppercase;
 }
 
+.kenos-landing-pill {
+  border: 1px solid var(--kenos-status-muted);
+  background: var(--kenos-status-muted);
+  color: var(--kenos-status);
+}
+
+.kenos-landing-topic {
+  color: var(--kenos-status);
+}
+
+.kenos-landing-check {
+  border-color: var(--kenos-status-muted);
+  background: var(--kenos-status-muted);
+  color: var(--kenos-status);
+}
+
+.kenos-landing-accent-dot {
+  background-color: var(--kenos-status);
+}
+
+.kenos-landing-accent-link {
+  color: var(--kenos-status);
+}
+
+.kenos-landing-accent-link:hover {
+  color: var(--kenos-accent);
+}
+
+.landing-code-block {
+  background: var(--void-elevated);
+}
+
 .landing-code-keyword {
-  color: #a1a1aa;
+  color: var(--kenos-muted);
 }
 
 .landing-code-highlight {
-  color: #d4d4d8;
+  color: var(--kenos-status);
 }
 
 .landing-code-string {
-  color: #a1a1aa;
+  color: var(--kenos-status);
+  opacity: 0.85;
 }
 
 @utility decoration-accent {
@@ -209,7 +275,15 @@
 }
 
 .kenos-cta {
-  @apply rounded-md bg-indigo-600 px-6 py-3 text-sm font-semibold text-white transition-all duration-200 hover:bg-indigo-500 hover:shadow-[0_0_24px_rgb(99_102_241/0.35)];
+  @apply inline-flex items-center justify-center rounded-full bg-zinc-100 px-6 py-3 text-sm font-semibold text-zinc-900 transition-colors duration-200 hover:bg-zinc-200;
+}
+
+.kenos-cta-ghost {
+  @apply inline-flex items-center justify-center rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-zinc-100 transition-colors duration-200 hover:border-white/25 hover:bg-zinc-900;
+}
+
+.kenos-status-badge {
+  @apply font-mono text-[10px] font-semibold uppercase tracking-wide text-[var(--kenos-status)];
 }
 *::-webkit-scrollbar-track {
   background: transparent;

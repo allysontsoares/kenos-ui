@@ -1,7 +1,15 @@
 import type { NextConfig } from "next";
 import path from "path";
 
-const DOC_SLUGS = ["installation", "quickstart", "changelog", "date-picker", "select", "combobox"];
+const DOC_SLUGS = [
+  "installation",
+  "quickstart",
+  "changelog",
+  "button",
+  "date-picker",
+  "select",
+  "combobox",
+];
 
 const LEGACY_DATEPICKER_REDIRECTS: { slug: string; hash: string }[] = [
   { slug: "calendar", hash: "composables" },

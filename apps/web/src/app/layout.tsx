@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { cn } from "@/lib/utils";
@@ -10,6 +10,14 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+/** Display / headings — swap to Universal Sans via --font-display when licensed */
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  subsets: ["latin"],
+  weight: ["500"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -70,6 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={cn(
         geistSans.variable,
         geistMono.variable,
+        spaceGrotesk.variable,
         "dark font-sans",
         "font-sans",
         geist.variable,

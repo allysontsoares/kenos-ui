@@ -9,7 +9,7 @@ export default function NotFound() {
         <Link href="/" className="text-zinc-500 hover:underline">
           Home
         </Link>
-        <Link href="/docs" className="text-zinc-500 hover:underline">
+        <Link href="/docs/installation" className="text-zinc-500 hover:underline">
           Documentation
         </Link>
       </div>
