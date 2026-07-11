@@ -33,6 +33,8 @@ export interface SelectContextValue {
   onOpenChangeComplete: ((open: boolean) => void) | undefined;
   /** Close the listbox and restore focus to the trigger. */
   close: () => void;
+  /** Open the listbox (`pointer` keeps focus on trigger; `keyboard` moves focus into content). */
+  open: (source: "pointer" | "keyboard") => void;
   /** Select a value (toggle in multiple mode, set + close in single mode). */
   selectValue: (value: string) => void;
   /** Alias for selectValue — kept for backward compatibility. */
@@ -41,6 +43,8 @@ export interface SelectContextValue {
   clearValue: () => void;
   /** Scroll the list to the item at the given index. */
   scrollToIndex: (index: number, options?: ScrollToIndexOptions) => void;
+  /** When true, Trigger must not reopen via openOnFocus (post-close restore). */
+  suppressOpenOnFocusRef: RefObject<boolean>;
 }
 
 export const SelectContext = createContext<SelectContextValue | null>(null);

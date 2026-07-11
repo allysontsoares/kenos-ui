@@ -10,3 +10,5 @@ export function ItemText({ children, ...props }: ItemTextProps) {
     </span>
   );
 }
+
+ItemText.displayName = "Select.ItemText";

@@ -1,6 +1,8 @@
-import React, { useRef, useLayoutEffect, useCallback } from "react";
+import React, { useRef, useLayoutEffect, useCallback, useMemo } from "react";
 import { useSelectContext } from "../context";
+import { useGroupContext } from "../group/group-context";
 import { useSelectStore } from "../store";
+import { ItemContext } from "./item-context";
 
 export interface ItemProps extends React.HTMLAttributes<HTMLLIElement> {
   value: string;
@@ -9,6 +11,23 @@ export interface ItemProps extends React.HTMLAttributes<HTMLLIElement> {
 }
 
 Item.displayName = "Select.Item";
+
+function extractItemTextLabel(children: React.ReactNode): string | null {
+  let label: string | null = null;
+
+  React.Children.forEach(children, (child) => {
+    if (label != null || !React.isValidElement(child)) return;
+    const type = child.type as { displayName?: string; name?: string };
+    const isItemText = type?.displayName === "Select.ItemText" || type?.name === "ItemText";
+    if (!isItemText) return;
+    const text = React.Children.toArray((child.props as { children?: React.ReactNode }).children)
+      .filter((c): c is string | number => typeof c === "string" || typeof c === "number")
+      .join("");
+    if (text) label = text;
+  });
+
+  return label;
+}
 
 export function Item({
   value,
@@ -20,6 +39,7 @@ export function Item({
   ...props
 }: ItemProps) {
   const { store, ids, config, selectValue } = useSelectContext();
+  const group = useGroupContext();
   const selectedValue = useSelectStore(store, (s) => s.value);
   const highlightedValue = useSelectStore(store, (s) => s.highlightedValue);
   const liRef = useRef<HTMLLIElement>(null);
@@ -32,20 +52,19 @@ export function Item({
   const isDisabled = disabled || config.disabled || config.readOnly;
 
   useLayoutEffect(() => {
-    const el = liRef.current;
-    const label = textValue ?? el?.textContent ?? value;
+    const label = textValue ?? extractItemTextLabel(children) ?? value;
 
     store.registerItem({
       value,
       label,
       textValue: textValue ?? label,
       disabled: isDisabled,
-      ref: el,
-      groupId: null,
+      ref: liRef.current,
+      groupId: group?.groupId ?? null,
     });
 
     return () => store.unregisterItem(value);
-  }, [value, isDisabled, store, textValue, children]);
+  }, [value, isDisabled, store, textValue, children, group?.groupId]);
 
   useLayoutEffect(() => {
     store.updateItemRef(value, liRef.current);
@@ -68,23 +87,27 @@ export function Item({
     [isDisabled, store, value, onPointerMove],
   );
 
+  const itemContext = useMemo(() => ({ value, isSelected }), [value, isSelected]);
+
   return (
-    <li
-      ref={liRef}
-      id={`${ids.content}-opt-${value}`}
-      role="option"
-      aria-selected={isSelected}
-      aria-disabled={isDisabled || undefined}
-      data-kenos="select-item"
-      data-highlighted={isHighlighted ? "true" : undefined}
-      data-selected={isSelected ? "true" : undefined}
-      data-disabled={isDisabled ? "true" : undefined}
-      tabIndex={-1}
-      onClick={handleClick}
-      onPointerMove={handlePointerMove}
-      {...props}
-    >
-      {children}
-    </li>
+    <ItemContext.Provider value={itemContext}>
+      <li
+        ref={liRef}
+        id={`${ids.content}-opt-${value}`}
+        role="option"
+        aria-selected={isSelected}
+        aria-disabled={isDisabled || undefined}
+        data-kenos="select-item"
+        data-highlighted={isHighlighted ? "true" : undefined}
+        data-selected={isSelected ? "true" : undefined}
+        data-disabled={isDisabled ? "true" : undefined}
+        tabIndex={-1}
+        onClick={handleClick}
+        onPointerMove={handlePointerMove}
+        {...props}
+      >
+        {children}
+      </li>
+    </ItemContext.Provider>
   );
 }

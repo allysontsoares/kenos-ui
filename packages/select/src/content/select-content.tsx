@@ -22,6 +22,23 @@ import { resolvePortalContainer, usePortalContext } from "../portal/select-porta
 import type { SelectContentProps } from "../types";
 import { useAlignItemWithTrigger } from "../utils/use-align-item-with-trigger";
 
+function resolveInitialHighlight(
+  value: string | string[] | null,
+  navItems: { value: string; disabled: boolean }[],
+): string | null {
+  if (typeof value === "string") {
+    const selected = navItems.find((item) => item.value === value && !item.disabled);
+    if (selected) return selected.value;
+  } else if (Array.isArray(value)) {
+    for (const selectedValue of value) {
+      const selected = navItems.find((item) => item.value === selectedValue && !item.disabled);
+      if (selected) return selected.value;
+    }
+  }
+
+  return navItems.find((item) => !item.disabled)?.value ?? null;
+}
+
 export function Content({
   children,
   forceMount,
@@ -110,6 +127,7 @@ export function Content({
   useEscapeKey({
     enabled: open,
     stopPropagation: true,
+    scopeRef: refs.contentRef,
     onEscape: close,
   });
 
@@ -170,13 +188,26 @@ export function Content({
   }, [open, isPositioned]);
 
   useEffect(() => {
-    if (!open || !refs.contentRef.current) return;
+    if (!open) return;
     const state = store.getState();
-    if (state.highlightedValue == null) {
-      const first = navItems.find((i) => !i.disabled);
-      if (first) store.setHighlightedValue(first.value);
+    if (state.highlightedValue == null && state.items.size > 0) {
+      const currentNav = Array.from(state.items.values()).map((item) => ({
+        value: item.value,
+        disabled: item.disabled,
+      }));
+      const initial = resolveInitialHighlight(state.value, currentNav);
+      if (initial) store.setHighlightedValue(initial);
     }
-    refs.contentRef.current.focus({ preventScroll: true });
+  }, [open, items, store]);
+
+  useEffect(() => {
+    if (!open) return;
+    // Keyboard / programmatic open: move focus into the listbox (popup-policy).
+    // Pointer open: leave focus on trigger.
+    if (store.getState().openSource !== "keyboard") return;
+    const list = refs.listRef.current;
+    const content = refs.contentRef.current;
+    (list ?? content)?.focus({ preventScroll: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only run on open
   }, [open]);
 

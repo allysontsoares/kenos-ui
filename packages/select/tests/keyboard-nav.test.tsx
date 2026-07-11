@@ -68,11 +68,8 @@ describe("Open/close via click", () => {
 // ── Keyboard navigation ───────────────────────────────────────────────────────
 
 describe("Keyboard navigation", () => {
-  it("ArrowDown highlights the first item when nothing is highlighted", async () => {
-    const user = userEvent.setup();
+  it("highlights the first enabled item on open", async () => {
     render(<BasicSelect defaultOpen />);
-    const content = screen.getByTestId("content");
-    await user.type(content, "{ArrowDown}");
     const tsOption = screen.getByRole("option", { name: /typescript/i });
     expect(tsOption).toHaveAttribute("data-highlighted", "true");
   });
@@ -81,7 +78,6 @@ describe("Keyboard navigation", () => {
     const user = userEvent.setup();
     render(<BasicSelect defaultOpen />);
     const content = screen.getByTestId("content");
-    await user.type(content, "{ArrowDown}");
     await user.type(content, "{ArrowDown}");
     const jsOption = screen.getByRole("option", { name: /javascript/i });
     expect(jsOption).toHaveAttribute("data-highlighted", "true");
@@ -94,7 +90,6 @@ describe("Keyboard navigation", () => {
     // ts → js → (skip py) → rs
     await user.type(content, "{ArrowDown}");
     await user.type(content, "{ArrowDown}");
-    await user.type(content, "{ArrowDown}");
     const rsOption = screen.getByRole("option", { name: /rust/i });
     expect(rsOption).toHaveAttribute("data-highlighted", "true");
   });
@@ -103,7 +98,6 @@ describe("Keyboard navigation", () => {
     const user = userEvent.setup();
     render(<BasicSelect defaultOpen />);
     const content = screen.getByTestId("content");
-    await user.type(content, "{ArrowDown}");
     await user.type(content, "{ArrowDown}");
     await user.type(content, "{ArrowUp}");
     const tsOption = screen.getByRole("option", { name: /typescript/i });
@@ -114,7 +108,6 @@ describe("Keyboard navigation", () => {
     const user = userEvent.setup();
     render(<BasicSelect defaultOpen />);
     const content = screen.getByTestId("content");
-    await user.type(content, "{ArrowDown}");
     await user.type(content, "{ArrowDown}");
     await user.type(content, "{Home}");
     const tsOption = screen.getByRole("option", { name: /typescript/i });
@@ -135,7 +128,6 @@ describe("Keyboard navigation", () => {
     const user = userEvent.setup();
     render(<BasicSelect defaultOpen onValueChange={onValueChange} />);
     const content = screen.getByTestId("content");
-    await user.type(content, "{ArrowDown}");
     await user.type(content, "{Enter}");
     expect(onValueChange).toHaveBeenCalledWith("ts");
     expect(screen.getByRole("combobox")).toHaveAttribute("aria-expanded", "false");
@@ -146,7 +138,6 @@ describe("Keyboard navigation", () => {
     const user = userEvent.setup();
     render(<BasicSelect defaultOpen onValueChange={onValueChange} />);
     const content = screen.getByTestId("content");
-    await user.type(content, "{ArrowDown}");
     await user.type(content, "{ }");
     expect(onValueChange).toHaveBeenCalledWith("ts");
   });
@@ -155,9 +146,30 @@ describe("Keyboard navigation", () => {
     const onValueChange = vi.fn();
     const user = userEvent.setup();
     render(<BasicSelect defaultOpen onValueChange={onValueChange} />);
+    screen.getByTestId("content").focus();
     await user.keyboard("{Escape}");
     expect(onValueChange).not.toHaveBeenCalled();
     expect(screen.getByRole("combobox")).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("ArrowDown on closed trigger opens the listbox", async () => {
+    const user = userEvent.setup();
+    render(<BasicSelect />);
+    const trigger = screen.getByRole("combobox");
+    trigger.focus();
+    await user.keyboard("{ArrowDown}");
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("listbox")).toHaveFocus();
+  });
+
+  it("highlights the selected value on open", async () => {
+    const user = userEvent.setup();
+    render(<BasicSelect defaultValue="js" />);
+    await user.click(screen.getByRole("combobox"));
+    expect(screen.getByRole("option", { name: /javascript/i })).toHaveAttribute(
+      "data-highlighted",
+      "true",
+    );
   });
 });
 

@@ -1,21 +1,29 @@
 import React from "react";
 import { useSelectContext } from "../context";
+import { useItemContext } from "../item/item-context";
 import { useSelectStore } from "../store";
 
 export interface ItemIndicatorProps extends React.HTMLAttributes<HTMLSpanElement> {
-  /** The item value to check — reads from the nearest Item when not provided. */
+  /**
+   * The item value to check. When omitted, reads from the nearest `Select.Item`.
+   */
   value?: string | undefined;
 }
 
 /**
- * Renders only when the parent item is selected.
- * Wrap a checkmark or any indicator icon as children.
+ * Visibility wrapper for a checkmark (or any indicator) when the item is selected.
  */
 export function ItemIndicator({ value, children, style, ...props }: ItemIndicatorProps) {
-  const { store } = useSelectContext();
-  const selectedValue = useSelectStore(store, (s) => s.value);
+  const item = useItemContext();
+  const { store, config } = useSelectContext();
+  // Subscribe so the indicator re-renders when selection changes.
+  useSelectStore(store, (s) => s.value);
 
-  const isSelected = value != null ? selectedValue === value : false;
+  const targetValue = value ?? item?.value;
+  const isSelected =
+    targetValue != null
+      ? store.isSelected(targetValue, config.multiple, config.isItemEqualToValue)
+      : false;
 
   return (
     <span

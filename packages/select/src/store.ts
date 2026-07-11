@@ -45,7 +45,7 @@ export class SelectStore {
 
   // ── Mutations ────────────────────────────────────────────────────────────
 
-  setOpen(open: boolean, source: "trigger" | null = null): void {
+  setOpen(open: boolean, source: "pointer" | "keyboard" | null = null): void {
     if (this.state.open === open) return;
     this.state = {
       ...this.state,

@@ -1,5 +1,5 @@
 import { useLayoutEffect, useState } from "react";
-import type { FloatingSide } from "@kenos-ui/utils";
+import { useIsSafariPinchZoomed, type FloatingSide } from "@kenos-ui/utils";
 import type { SelectRefs } from "../context";
 import { getAlignItemWithTriggerOffset, shouldDisableFlipForAlign } from "./align-with-trigger";
 
@@ -11,6 +11,10 @@ export interface AlignItemWithTriggerOptions {
   refs: SelectRefs;
 }
 
+/**
+ * Cover-trigger offset for Select Content.
+ * On Safari pinch-zoom, falls back to standard anchoring (Base UI #1139).
+ */
 export function useAlignItemWithTrigger({
   alignItemWithTrigger,
   side,
@@ -18,10 +22,12 @@ export function useAlignItemWithTrigger({
   open,
   refs,
 }: AlignItemWithTriggerOptions) {
+  const safariPinchZoomed = useIsSafariPinchZoomed();
+  const effectiveAlign = alignItemWithTrigger && !safariPinchZoomed;
   const [triggerHeight, setTriggerHeight] = useState(0);
 
   useLayoutEffect(() => {
-    if (!alignItemWithTrigger || !open) {
+    if (!effectiveAlign || !open) {
       setTriggerHeight(0);
       return;
     }
@@ -36,22 +42,22 @@ export function useAlignItemWithTrigger({
     observer.observe(trigger);
 
     return () => observer.disconnect();
-  }, [alignItemWithTrigger, open, refs.triggerRef]);
+  }, [effectiveAlign, open, refs.triggerRef]);
 
   const effectiveSideOffset = getAlignItemWithTriggerOffset(
-    alignItemWithTrigger,
+    effectiveAlign,
     side,
     triggerHeight,
     sideOffset,
   );
 
-  const avoidCollisionsOverride = shouldDisableFlipForAlign(alignItemWithTrigger)
-    ? false
-    : undefined;
+  const avoidCollisionsOverride = shouldDisableFlipForAlign(effectiveAlign) ? false : undefined;
 
   return {
-    alignItemWithTriggerActive: alignItemWithTrigger && triggerHeight > 0,
+    alignItemWithTriggerActive: effectiveAlign && triggerHeight > 0,
     effectiveSideOffset,
     avoidCollisionsOverride,
+    /** True when the requested align mode was disabled due to Safari pinch-zoom. */
+    alignItemWithTriggerFallback: alignItemWithTrigger && safariPinchZoomed,
   };
 }

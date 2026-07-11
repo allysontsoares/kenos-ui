@@ -8,6 +8,7 @@ import {
 } from "@floating-ui/react-dom";
 import type { Placement } from "@floating-ui/react-dom";
 import type { CSSProperties } from "react";
+import { useIsPinchZoomed } from "../browser/use-visual-viewport";
 
 export type FloatingSide = "top" | "bottom" | "left" | "right";
 export type FloatingAlign = "start" | "center" | "end";
@@ -46,6 +47,10 @@ export function useFloating({
   collisionPadding = 8,
   sameWidth = false,
 }: UseFloatingOptions): UseFloatingReturn {
+  // Base UI #4485: while pinch-zoomed, shift against the layout viewport ("document")
+  // so popups don't drift with the visual viewport.
+  const pinchZoomed = useIsPinchZoomed();
+
   const { refs, floatingStyles, isPositioned } = useFloatingUi({
     placement: toPlacement(side, align),
     strategy: "fixed",
@@ -53,7 +58,17 @@ export function useFloating({
     whileElementsMounted: autoUpdate,
     middleware: [
       offset({ mainAxis: sideOffset, crossAxis: alignOffset }),
-      ...(avoidCollisions ? [flip(), shift({ padding: collisionPadding })] : []),
+      ...(avoidCollisions
+        ? [
+            flip({
+              rootBoundary: pinchZoomed ? "document" : "viewport",
+            }),
+            shift({
+              padding: collisionPadding,
+              rootBoundary: pinchZoomed ? "document" : "viewport",
+            }),
+          ]
+        : []),
       ...(sameWidth
         ? [
             size({

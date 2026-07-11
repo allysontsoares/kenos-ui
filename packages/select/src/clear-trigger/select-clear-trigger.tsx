@@ -3,6 +3,10 @@ import { useSelectContext } from "../context";
 import { useSelectStore } from "../store";
 import type { SelectClearTriggerProps } from "../types";
 
+/**
+ * Clears the current selection.
+ * Place as a **sibling** of `<Select.Trigger>` (not nested inside the trigger button).
+ */
 export function ClearTrigger({ onClick, ...props }: SelectClearTriggerProps) {
   const { store, config, clearValue } = useSelectContext();
   const value = useSelectStore(store, (s) => s.value);

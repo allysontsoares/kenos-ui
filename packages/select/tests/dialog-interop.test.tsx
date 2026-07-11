@@ -54,6 +54,7 @@ describe("Select dialog interop (popup-policy matrix)", () => {
     render(<SelectInDialog defaultOpen />);
 
     expect(screen.getByRole("dialog", { name: /settings/i })).toBeInTheDocument();
+    screen.getByTestId("select-content").focus();
     await user.keyboard("{Escape}");
     expect(screen.getByRole("dialog", { name: /settings/i })).toBeInTheDocument();
     expect(screen.getByTestId("select-trigger")).toHaveAttribute("aria-expanded", "false");

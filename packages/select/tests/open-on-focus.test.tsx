@@ -69,4 +69,34 @@ describe("openOnFocus", () => {
 
     expect(trigger).toHaveAttribute("aria-expanded", "true");
   });
+
+  it("does not reopen after Escape restores focus to the trigger", async () => {
+    const user = userEvent.setup();
+    render(<OpenOnFocusSelect />);
+
+    const trigger = screen.getByRole("combobox");
+    await user.tab();
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+
+    const content = screen.getByTestId("content");
+    content.focus();
+    await user.keyboard("{Escape}");
+
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(trigger).toHaveFocus();
+  });
+
+  it("does not reopen after selecting an item restores focus", async () => {
+    const user = userEvent.setup();
+    render(<OpenOnFocusSelect />);
+
+    const trigger = screen.getByRole("combobox");
+    await user.tab();
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+
+    await user.click(screen.getByRole("option", { name: /alpha/i }));
+
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(trigger).toHaveFocus();
+  });
 });

@@ -31,6 +31,15 @@ export function restoreFocus({
       break;
   }
 
+  // Base UI floating-ui #4655: if the preferred target unmounted, fall back to
+  // another connected candidate instead of leaving focus on <body>.
+  if (!isFocusable(target)) {
+    if (isFocusable(trigger)) target = trigger;
+    else if (isFocusable(input)) target = input;
+    else if (isFocusable(previousActiveElement)) target = previousActiveElement;
+    else target = null;
+  }
+
   if (isFocusable(target)) {
     target.focus();
   }

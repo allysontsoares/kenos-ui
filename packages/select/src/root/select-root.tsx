@@ -62,6 +62,17 @@ export function Root(props: SelectRootProps) {
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const listRef = useRef<HTMLUListElement | null>(null);
+  const suppressOpenOnFocusRef = useRef(false);
+  const syncingValueFromPropsRef = useRef(false);
+  const syncingOpenFromPropsRef = useRef(false);
+  const valuePropRef = useRef(value);
+  valuePropRef.current = value;
+  const openPropRef = useRef(open);
+  openPropRef.current = open;
+  const isControlledValueRef = useRef(value !== undefined);
+  isControlledValueRef.current = value !== undefined;
+  const isControlledOpenRef = useRef(open !== undefined);
+  isControlledOpenRef.current = open !== undefined;
 
   const isControlledValue = value !== undefined;
   const isControlledOpen = open !== undefined;
@@ -78,7 +89,9 @@ export function Root(props: SelectRootProps) {
   if (!storeRef.current) {
     storeRef.current = new SelectStore({
       value: initialValue,
+      // Programmatic / defaultOpen behaves like keyboard (focus into content).
       open: isControlledOpen ? (open ?? false) : (defaultOpen ?? false),
+      openSource: (isControlledOpen ? open : defaultOpen) ? "keyboard" : null,
     });
   }
   const store = storeRef.current;
@@ -89,6 +102,7 @@ export function Root(props: SelectRootProps) {
     if (valuesEqual(value, prevControlledValue.current)) return;
     prevControlledValue.current = value;
 
+    syncingValueFromPropsRef.current = true;
     if (multiple) {
       store.setValues(Array.isArray(value) ? value : []);
     } else {
@@ -101,7 +115,25 @@ export function Root(props: SelectRootProps) {
     if (!isControlledOpen) return;
     if (open === prevControlledOpen.current) return;
     prevControlledOpen.current = open;
-    store.setOpen(open ?? false);
+
+    syncingOpenFromPropsRef.current = true;
+    const nextOpen = open ?? false;
+    if (!nextOpen) {
+      const state = store.getState();
+      store.setOpen(false);
+      if (state.open) {
+        suppressOpenOnFocusRef.current = true;
+        restoreFocus({
+          openSource: "trigger",
+          trigger: triggerRef.current,
+        });
+        requestAnimationFrame(() => {
+          suppressOpenOnFocusRef.current = false;
+        });
+      }
+    } else {
+      store.setOpen(true, "keyboard");
+    }
   }, [isControlledOpen, open, store]);
 
   const onValueChangeRef = useRef(onValueChange);
@@ -111,17 +143,40 @@ export function Root(props: SelectRootProps) {
   useEffect(() => {
     return store.subscribe(() => {
       const state = store.getState();
-      if (!valuesEqual(state.value, prevStoreValue.current)) {
+      if (valuesEqual(state.value, prevStoreValue.current)) return;
+
+      if (syncingValueFromPropsRef.current) {
+        syncingValueFromPropsRef.current = false;
         prevStoreValue.current = state.value;
-        if (multiple) {
-          (onValueChangeRef.current as ((value: string[]) => void) | undefined)?.(
-            Array.isArray(state.value) ? state.value : [],
-          );
-        } else {
-          (onValueChangeRef.current as ((value: string | null) => void) | undefined)?.(
-            typeof state.value === "string" ? state.value : null,
-          );
-        }
+        return;
+      }
+
+      prevStoreValue.current = state.value;
+
+      if (multiple) {
+        (onValueChangeRef.current as ((value: string[]) => void) | undefined)?.(
+          Array.isArray(state.value) ? state.value : [],
+        );
+      } else {
+        (onValueChangeRef.current as ((value: string | null) => void) | undefined)?.(
+          typeof state.value === "string" ? state.value : null,
+        );
+      }
+
+      // Controlled rollback: if parent ignored onValueChange, restore prop value.
+      if (isControlledValueRef.current) {
+        queueMicrotask(() => {
+          const propValue = valuePropRef.current;
+          const current = store.getState().value;
+          if (!valuesEqual(propValue, current)) {
+            syncingValueFromPropsRef.current = true;
+            if (multiple) {
+              store.setValues(Array.isArray(propValue) ? propValue : []);
+            } else {
+              store.setValue(typeof propValue === "string" ? propValue : null);
+            }
+          }
+        });
       }
     });
   }, [store, multiple]);
@@ -133,9 +188,26 @@ export function Root(props: SelectRootProps) {
   useEffect(() => {
     return store.subscribe(() => {
       const state = store.getState();
-      if (state.open !== prevStoreOpen.current) {
+      if (state.open === prevStoreOpen.current) return;
+
+      if (syncingOpenFromPropsRef.current) {
+        syncingOpenFromPropsRef.current = false;
         prevStoreOpen.current = state.open;
-        onOpenChangeRef.current?.(state.open);
+        return;
+      }
+
+      prevStoreOpen.current = state.open;
+      onOpenChangeRef.current?.(state.open);
+
+      if (isControlledOpenRef.current) {
+        queueMicrotask(() => {
+          const propOpen = openPropRef.current ?? false;
+          const current = store.getState().open;
+          if (propOpen !== current) {
+            syncingOpenFromPropsRef.current = true;
+            store.setOpen(propOpen, propOpen ? "keyboard" : null);
+          }
+        });
       }
     });
   }, [store]);
@@ -143,12 +215,24 @@ export function Root(props: SelectRootProps) {
   const close = useCallback(() => {
     const state = store.getState();
     if (!state.open) return;
+    suppressOpenOnFocusRef.current = true;
     store.setOpen(false);
     restoreFocus({
-      openSource: state.openSource ?? "trigger",
+      openSource: "trigger",
       trigger: triggerRef.current,
     });
+    requestAnimationFrame(() => {
+      suppressOpenOnFocusRef.current = false;
+    });
   }, [store]);
+
+  const openListbox = useCallback(
+    (source: "pointer" | "keyboard") => {
+      if (store.getState().open) return;
+      store.setOpen(true, source);
+    },
+    [store],
+  );
 
   const selectValue = useCallback(
     (itemValue: string) => {
@@ -211,10 +295,12 @@ export function Root(props: SelectRootProps) {
       isControlledOpen,
       onOpenChangeComplete,
       close,
+      open: openListbox,
       selectValue,
       selectAndClose: selectValue,
       clearValue,
       scrollToIndex,
+      suppressOpenOnFocusRef,
     }),
     [
       store,
@@ -224,6 +310,7 @@ export function Root(props: SelectRootProps) {
       isControlledOpen,
       onOpenChangeComplete,
       close,
+      openListbox,
       selectValue,
       clearValue,
       scrollToIndex,

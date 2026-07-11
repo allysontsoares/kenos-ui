@@ -9,6 +9,15 @@ export {
 } from "./floating/use-floating";
 
 export {
+  isAppleWebKit,
+  getVisualViewportScale,
+  isPinchZoomed,
+  isSafariPinchZoomed,
+} from "./browser/visual-viewport";
+
+export { useIsPinchZoomed, useIsSafariPinchZoomed } from "./browser/use-visual-viewport";
+
+export {
   usePresence,
   type UsePresenceOptions,
   type UsePresenceReturn,

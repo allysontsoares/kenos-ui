@@ -20,7 +20,13 @@ export type SelectItemEqualFn = (a: string, b: string) => boolean;
 
 export interface SelectStoreState {
   open: boolean;
-  openSource: "trigger" | null;
+  /**
+   * How the listbox was opened.
+   * - `pointer` — click/pointer; focus stays on trigger
+   * - `keyboard` — keyboard / programmatic; focus moves into content
+   * - `null` — closed
+   */
+  openSource: "pointer" | "keyboard" | null;
   value: string | string[] | null;
   highlightedValue: string | null;
   /** Item registry: populated as Select.Item mounts. */
@@ -108,8 +114,9 @@ export interface SelectPositionerProps {
   /** Match the trigger's width. Default: false. */
   sameWidth?: boolean | undefined;
   /**
-   * When true, positions content to cover the trigger.
-   * For `side="bottom"`, aligns the top of content with the top of the trigger.
+   * When true, positions content to cover the trigger (offset by trigger height).
+   * Does **not** scroll the selected item into alignment with the trigger.
+   * On Safari pinch-zoom (`visualViewport.scale !== 1`), falls back to standard anchoring.
    * **Default: false**
    */
   alignItemWithTrigger?: boolean | undefined;
@@ -170,8 +177,9 @@ export interface SelectContentProps {
   /** Match the trigger's width. Default: false. */
   sameWidth?: boolean | undefined;
   /**
-   * When true, positions content to cover the trigger.
-   * For `side="bottom"`, aligns the top of content with the top of the trigger.
+   * When true, positions content to cover the trigger (offset by trigger height).
+   * Does **not** scroll the selected item into alignment with the trigger.
+   * On Safari pinch-zoom (`visualViewport.scale !== 1`), falls back to standard anchoring.
    * **Default: false**
    */
   alignItemWithTrigger?: boolean | undefined;

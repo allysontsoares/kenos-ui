@@ -1,5 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import * as Select from "../src/index.parts";
 
@@ -155,7 +156,7 @@ describe("Value", () => {
 
   it("shows selected label when a value is set", () => {
     render(<BasicSelect defaultValue="react" />);
-    expect(screen.getByText("React")).toBeInTheDocument();
+    expect(screen.getByRole("combobox")).toHaveTextContent("React");
   });
 });
 
@@ -182,10 +183,45 @@ describe("data-kenos fingerprints", () => {
     expect(screen.getByRole("combobox")).toHaveAttribute("data-kenos", "select-trigger");
     expect(screen.getByText("Framework")).toHaveAttribute("data-kenos", "select-label");
     expect(screen.getByTestId("list")).toHaveAttribute("data-kenos", "select-list");
-    expect(screen.getByText("React").closest("li")).toHaveAttribute("data-kenos", "select-item");
+    expect(screen.getByRole("option", { name: /react/i })).toHaveAttribute(
+      "data-kenos",
+      "select-item",
+    );
     expect(document.querySelector('select[name="framework"]')).toHaveAttribute(
       "data-kenos",
       "select-hidden-select",
     );
+  });
+});
+
+describe("aria-activedescendant", () => {
+  it("sets aria-activedescendant on listbox when opened via keyboard", async () => {
+    const user = userEvent.setup();
+    render(<BasicSelect />);
+
+    const trigger = screen.getByRole("combobox");
+    trigger.focus();
+    await user.keyboard("{ArrowDown}");
+
+    const listbox = screen.getByRole("listbox");
+    expect(listbox).toHaveFocus();
+    const activeId = listbox.getAttribute("aria-activedescendant");
+    expect(activeId).toBeTruthy();
+    expect(document.getElementById(activeId!)).toHaveAttribute("role", "option");
+    expect(trigger).not.toHaveAttribute("aria-activedescendant");
+  });
+
+  it("sets aria-activedescendant on trigger when opened via pointer", async () => {
+    const user = userEvent.setup();
+    render(<BasicSelect />);
+
+    const trigger = screen.getByRole("combobox");
+    await user.click(trigger);
+
+    expect(trigger).toHaveFocus();
+    const activeId = trigger.getAttribute("aria-activedescendant");
+    expect(activeId).toBeTruthy();
+    expect(document.getElementById(activeId!)).toHaveAttribute("role", "option");
+    expect(screen.getByRole("listbox")).not.toHaveAttribute("aria-activedescendant");
   });
 });
