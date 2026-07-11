@@ -9,7 +9,8 @@ export type InputProps = Omit<
 >;
 
 export function Input({ onChange, onFocus, onKeyDown, disabled, readOnly, ...props }: InputProps) {
-  const { store, ids, refs, config, close, selectValue } = useComboboxContext();
+  const { store, ids, refs, config, close, selectValue, suppressOpenOnFocusRef } =
+    useComboboxContext();
   const open = useComboboxStore(store, (s) => s.open);
   const inputValue = useComboboxStore(store, (s) => s.inputValue);
   const highlightedValue = useComboboxStore(store, (s) => s.highlightedValue);
@@ -40,6 +41,7 @@ export function Input({ onChange, onFocus, onKeyDown, disabled, readOnly, ...pro
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "ArrowDown" || e.key === "ArrowUp") {
         if (!open) {
+          e.preventDefault();
           store.setOpen(true, "input");
         }
         onNavKeyDown(e);
@@ -80,9 +82,10 @@ export function Input({ onChange, onFocus, onKeyDown, disabled, readOnly, ...pro
       aria-expanded={open}
       aria-controls={open ? ids.content : undefined}
       aria-autocomplete="list"
-      aria-labelledby={ids.label ? `${ids.label} ${ids.input}` : undefined}
+      aria-labelledby={ids.label}
       aria-activedescendant={activeDescendantId}
       aria-disabled={isDisabled || isReadOnly || undefined}
+      aria-required={config.required || undefined}
       autoComplete="off"
       data-kenos="combobox-input"
       data-disabled={isDisabled || isReadOnly ? "true" : undefined}
@@ -94,11 +97,19 @@ export function Input({ onChange, onFocus, onKeyDown, disabled, readOnly, ...pro
       onChange={(e) => {
         if (isDisabled || isReadOnly) return;
         store.setInputValue(e.target.value);
-        store.setOpen(true, "input");
+        if (config.openOnChange && !store.getState().open) {
+          store.setOpen(true, "input");
+        }
         onChange?.(e);
       }}
       onFocus={(e) => {
-        if (!isDisabled && !isReadOnly) {
+        if (
+          config.openOnFocus &&
+          !suppressOpenOnFocusRef.current &&
+          !isDisabled &&
+          !isReadOnly &&
+          !store.getState().open
+        ) {
           store.setOpen(true, "input");
         }
         onFocus?.(e);

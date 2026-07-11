@@ -79,6 +79,7 @@ export const Uncontrolled: Story = {
             No languages found
           </Combobox.Empty>
         </Combobox.Content>
+        <Combobox.HiddenInput />
       </Combobox.Root>
     </div>
   ),

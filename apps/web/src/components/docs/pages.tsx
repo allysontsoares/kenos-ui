@@ -1,13 +1,16 @@
 "use client";
 
 import { type ReactNode, useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { API, COMPONENTS, type DemoKind } from "../../lib/docs-data";
 import { EXAMPLE_SNIPPETS } from "../../lib/example-snippets";
-import { ActionRow, Anatomy, ApiReference, CopyPage, DemoStage, Example, PageNav } from "./blocks";
+import { ActionRow, ApiReference, CopyPage, DemoStage, Example, PageNav } from "./blocks";
 import { CodeBlock } from "./code-block";
 import {
   ComboboxDialogDemo,
   ComboboxFilterDemo,
+  ComboboxFormDemo,
+  ComboboxPatientSearchCompositionDemo,
   DateField,
   DatePicker,
   DateRangePicker,
@@ -17,6 +20,8 @@ import {
   SelectFormDemo,
   SelectMultipleDemo,
   SelectPortalDemo,
+  SelectRHFFormDemo,
+  SelectTanStackFormDemo,
 } from "./demos";
 import { DocsHeroCard } from "./hero-card";
 import { HomeCtaBand, HomeHighlights, HomeQualities, HomeWhySection } from "./home-highlights";
@@ -122,6 +127,76 @@ const SELECT_FORMS_SNIPPET = `import { Select } from "@kenos-ui/react-select";
   <button type="submit">Save</button>
 </form>`;
 
+const SELECT_RHF_SNIPPET = `import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Select } from "@kenos-ui/react-select";
+
+const schema = z.object({
+  framework: z
+    .union([z.string(), z.null()])
+    .refine((v) => v !== null && v.length > 0, "Select a framework"),
+});
+
+const { control, handleSubmit } = useForm({
+  resolver: zodResolver(schema),
+  defaultValues: { framework: null },
+});
+
+<Controller
+  control={control}
+  name="framework"
+  render={({ field }) => (
+    <Select.Root value={field.value} onValueChange={field.onChange} name="framework">
+      <Select.Label>Framework</Select.Label>
+      <Select.Trigger>
+        <Select.Value placeholder="Choose…" />
+        <Select.Icon />
+      </Select.Trigger>
+      <Select.Content>
+        <Select.List>
+          <Select.Item value="react">React</Select.Item>
+          <Select.Item value="vue">Vue</Select.Item>
+          <Select.Item value="svelte">Svelte</Select.Item>
+        </Select.List>
+      </Select.Content>
+      <Select.HiddenSelect />
+    </Select.Root>
+  )}
+/>`;
+
+const SELECT_TANSTACK_SNIPPET = `import { useForm } from "@tanstack/react-form";
+import { Select } from "@kenos-ui/react-select";
+
+const form = useForm({
+  defaultValues: { framework: null as string | null },
+  onSubmit: ({ value }) => console.log(value),
+});
+
+<form.Field name="framework">
+  {(field) => (
+    <Select.Root
+      value={field.state.value}
+      onValueChange={field.handleChange}
+      name="framework"
+    >
+      <Select.Label>Framework</Select.Label>
+      <Select.Trigger>
+        <Select.Value placeholder="Choose…" />
+        <Select.Icon />
+      </Select.Trigger>
+      <Select.Content>
+        <Select.List>
+          <Select.Item value="react">React</Select.Item>
+          <Select.Item value="vue">Vue</Select.Item>
+          <Select.Item value="svelte">Svelte</Select.Item>
+        </Select.List>
+      </Select.Content>
+      <Select.HiddenSelect />
+    </Select.Root>
+  )}
+</form.Field>`;
+
 const SELECT_MULTIPLE_SNIPPET = `import { Select } from "@kenos-ui/react-select";
 
 <Select.Root name="tags" multiple defaultValue={["react"]}>
@@ -175,6 +250,60 @@ const COMBOBOX_DIALOG_SNIPPET = `import { Combobox } from "@kenos-ui/react-combo
   </Combobox.Root>
 </Dialog.Content>`;
 
+const COMBOBOX_FORMS_SNIPPET = `import { Combobox } from "@kenos-ui/react-combobox";
+
+<form>
+  <Combobox.Root name="language" defaultValue="ts">
+    <Combobox.Label>Language</Combobox.Label>
+    <Combobox.Input placeholder="Search…" />
+    <Combobox.Trigger>▼</Combobox.Trigger>
+    <Combobox.Content>
+      <Combobox.List>
+        <Combobox.Item value="ts">
+          <Combobox.ItemText>TypeScript</Combobox.ItemText>
+        </Combobox.Item>
+      </Combobox.List>
+    </Combobox.Content>
+    <Combobox.HiddenInput />
+  </Combobox.Root>
+  <button type="submit">Submit</button>
+</form>`;
+
+const COMBOBOX_COMPOSITION_SNIPPET = `import { useState } from "react";
+import { Button } from "@kenos-ui/react-button";
+import { Combobox } from "@kenos-ui/react-combobox";
+
+const [query, setQuery] = useState("");
+const [open, setOpen] = useState(false);
+const [inputValue, setInputValue] = useState("");
+
+{/* Free-text + Button (composition only; not a Combobox part) */}
+<label>Patient</label>
+<input value={query} onChange={(e) => setQuery(e.target.value)} />
+<Button
+  type="button"
+  onClick={() => {
+    setInputValue(query);
+    setOpen(true);
+  }}
+>
+  →
+</Button>
+
+{/* Independent Combobox — open / inputValue controlled from outside */}
+<Combobox.Root
+  open={open}
+  onOpenChange={setOpen}
+  inputValue={inputValue}
+  onInputValueChange={setInputValue}
+>
+  <Combobox.Input placeholder="Search patient by name or ID…" />
+  <Combobox.Trigger>▼</Combobox.Trigger>
+  <Combobox.Content>
+    <Combobox.List>{/* rich items */}</Combobox.List>
+  </Combobox.Content>
+</Combobox.Root>`;
+
 const SELECT_PORTAL_SNIPPET = `import { useRef } from "react";
 import { Select } from "@kenos-ui/react-select";
 
@@ -209,15 +338,6 @@ export function ComponentPage({ slug }: { slug: string }) {
         <Lead>{c.desc}</Lead>
         <ActionRow />
       </PageIntro>
-
-      <H2 id="anatomy">Anatomy</H2>
-      <P>
-        <InlineCode>{c.name}</InlineCode> is composed of independent parts. Import{" "}
-        <InlineCode>{`{ ${c.importName} }`}</InlineCode> from{" "}
-        <InlineCode>{c.npmPackage}</InlineCode> (or <InlineCode>@kenos-ui/react</InlineCode>) and
-        assemble only the pieces you need.
-      </P>
-      <Anatomy slug={slug} parts={c.parts} />
 
       <H2 id="examples">Examples</H2>
       <P>
@@ -272,8 +392,10 @@ export function ComponentPage({ slug }: { slug: string }) {
           <P>
             Kenos defaults to <InlineCode>portal=&#123;false&#125;</InlineCode> and{" "}
             <InlineCode>modal=&#123;false&#125;</InlineCode> so the listbox stays in the Dialog
-            subtree. Escape closes the Select only (<InlineCode>stopPropagation</InlineCode>) — the
-            parent dialog stays open.
+            subtree. Escape closes the Select only (<InlineCode>stopPropagation</InlineCode>, scoped
+            to content focus) — the parent dialog stays open. Pointer open keeps focus on the
+            trigger; keyboard open moves focus into the listbox with{" "}
+            <InlineCode>aria-activedescendant</InlineCode>.
           </P>
           <Example code={DIALOG_INTEROP_SNIPPET} lang="tsx" previewTall>
             <DemoStage tall>
@@ -305,13 +427,49 @@ export function ComponentPage({ slug }: { slug: string }) {
           <H3 id="dialog-interop">Inside a Dialog</H3>
           <P>
             Combobox Content is inline by default with{" "}
-            <InlineCode>modal=&#123;false&#125;</InlineCode> so the listbox stays in the Dialog
-            subtree. Escape closes the Combobox only (<InlineCode>stopPropagation</InlineCode>) —
-            the parent dialog stays open.
+            <InlineCode>modal=&#123;false&#125;</InlineCode> and{" "}
+            <InlineCode>portal=&#123;false&#125;</InlineCode> so the listbox stays in the Dialog
+            subtree. Focus stays on <InlineCode>Combobox.Input</InlineCode> (
+            <InlineCode>aria-activedescendant</InlineCode>). Escape closes the Combobox only — the
+            parent dialog stays open.
           </P>
           <Example code={COMBOBOX_DIALOG_SNIPPET} lang="tsx" previewTall>
             <DemoStage tall>
               <ComboboxDialogDemo />
+            </DemoStage>
+          </Example>
+        </>
+      )}
+
+      {features.forms && slug === "combobox" && (
+        <>
+          <H3 id="forms">Forms</H3>
+          <P>
+            Add <InlineCode>name</InlineCode> on <InlineCode>Combobox.Root</InlineCode> and render{" "}
+            <InlineCode>Combobox.HiddenInput</InlineCode> for native HTML submit.
+          </P>
+          <Example code={COMBOBOX_FORMS_SNIPPET} lang="tsx" previewTall>
+            <DemoStage tall>
+              <ComboboxFormDemo />
+            </DemoStage>
+          </Example>
+        </>
+      )}
+
+      {/* TODO: hidden from site — set features.compositionSearch true in docs-data when Patient search is ready */}
+      {features.compositionSearch && slug === "combobox" && (
+        <>
+          <H3 id="patient-search">Patient search</H3>
+          <P>
+            Composition only: a free-text field + <InlineCode>Button</InlineCode> beside an
+            independent <InlineCode>Combobox.Root</InlineCode>. Clicking the button sets controlled{" "}
+            <InlineCode>inputValue</InlineCode> and <InlineCode>open</InlineCode> — proving open ≠
+            typing. There is no <InlineCode>Combobox.ActionInput</InlineCode> or fused search
+            primitive.
+          </P>
+          <Example code={COMBOBOX_COMPOSITION_SNIPPET} lang="tsx" previewTall>
+            <DemoStage tall>
+              <ComboboxPatientSearchCompositionDemo />
             </DemoStage>
           </Example>
         </>
@@ -323,14 +481,38 @@ export function ComponentPage({ slug }: { slug: string }) {
           <P>
             Add <InlineCode>name</InlineCode> on <InlineCode>Select.Root</InlineCode> and render{" "}
             <InlineCode>Select.HiddenSelect</InlineCode> for native HTML submit and constraint
-            validation. Works with React Hook Form and TanStack Form via controlled{" "}
-            <InlineCode>value</InlineCode> + <InlineCode>onValueChange</InlineCode>.
+            validation.
           </P>
           <Example code={SELECT_FORMS_SNIPPET} lang="tsx" previewTall>
             <DemoStage tall>
               <SelectFormDemo />
             </DemoStage>
           </Example>
+          <H3 id="form-integration">Form Integration</H3>
+          <P>
+            Bind <InlineCode>value</InlineCode> and <InlineCode>onValueChange</InlineCode> to your
+            form library. All examples validate with Zod.
+          </P>
+          <Tabs defaultValue="tanstack" className="my-4">
+            <TabsList>
+              <TabsTrigger value="tanstack">TanStack Form</TabsTrigger>
+              <TabsTrigger value="rhf">React Hook Form</TabsTrigger>
+            </TabsList>
+            <TabsContent value="tanstack" className="mt-4">
+              <Example code={SELECT_TANSTACK_SNIPPET} lang="tsx" previewTall>
+                <DemoStage tall>
+                  <SelectTanStackFormDemo />
+                </DemoStage>
+              </Example>
+            </TabsContent>
+            <TabsContent value="rhf" className="mt-4">
+              <Example code={SELECT_RHF_SNIPPET} lang="tsx" previewTall>
+                <DemoStage tall>
+                  <SelectRHFFormDemo />
+                </DemoStage>
+              </Example>
+            </TabsContent>
+          </Tabs>
         </>
       )}
 

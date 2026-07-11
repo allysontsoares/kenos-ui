@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/date-picker.variants";
 import { Combobox as KenosCombobox } from "@kenos-ui/react-combobox";
 import { Select as KenosSelect } from "@kenos-ui/react-select";
+import { Button } from "@kenos-ui/react-button";
 
 /* ============================================================
    Real @kenos-ui/react-datepicker-powered demo components.
@@ -950,6 +951,172 @@ export function SelectFormDemo() {
   );
 }
 
+const selectFormSchema = z.object({
+  framework: z
+    .union([z.string(), z.null()])
+    .refine((v) => v !== null && v.length > 0, { message: "Select a framework" }),
+});
+
+type SelectFormValues = z.input<typeof selectFormSchema>;
+
+function SelectFieldControlled({
+  value,
+  onChange,
+  label = "Framework",
+  name = "framework",
+  options = selectFrameworkOptions,
+}: {
+  value: string | null;
+  onChange: (value: string | null) => void;
+  label?: string;
+  name?: string;
+  options?: ReadonlyArray<readonly [string, string]>;
+}) {
+  return (
+    <KenosSelect.Root name={name} value={value} onValueChange={onChange}>
+      <KenosSelect.Label className="mb-1.5 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
+        {label}
+      </KenosSelect.Label>
+      <KenosSelect.Trigger className={selectTriggerCls}>
+        <KenosSelect.Value placeholder="Choose…" />
+        <KenosSelect.Icon />
+      </KenosSelect.Trigger>
+      <KenosSelect.Content className={selectContentCls} sameWidth>
+        <KenosSelect.List>
+          {options.map(([itemValue, text]) => (
+            <KenosSelect.Item key={itemValue} value={itemValue} className={selectItemCls}>
+              <KenosSelect.ItemText>{text}</KenosSelect.ItemText>
+            </KenosSelect.Item>
+          ))}
+        </KenosSelect.List>
+      </KenosSelect.Content>
+      <KenosSelect.HiddenSelect />
+    </KenosSelect.Root>
+  );
+}
+
+export function SelectRHFFormDemo() {
+  const [result, setResult] = useState<string | null>(null);
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<SelectFormValues>({
+    resolver: zodResolver(selectFormSchema),
+    defaultValues: { framework: null },
+  });
+
+  return (
+    <form
+      className="flex w-full max-w-sm flex-col gap-3"
+      onSubmit={handleSubmit((data) => {
+        setResult(data.framework ?? "");
+      })}
+    >
+      <Controller
+        control={control}
+        name="framework"
+        render={({ field }) => (
+          <SelectFieldControlled value={field.value} onChange={field.onChange} label="Framework" />
+        )}
+      />
+      {errors.framework && (
+        <p className="text-[13px] text-red-600 dark:text-red-400">{errors.framework.message}</p>
+      )}
+      {result && (
+        <p className="text-[13px] text-emerald-700 dark:text-emerald-400">
+          Submitted: {result} — React Hook Form
+        </p>
+      )}
+      <div className="flex gap-2">
+        <button
+          type="submit"
+          className="min-h-9 rounded-full bg-zinc-900 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+        >
+          Submit
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            reset();
+            setResult(null);
+          }}
+          className="min-h-9 rounded-lg border border-zinc-300 px-4 text-sm font-medium dark:border-zinc-700"
+        >
+          Reset
+        </button>
+      </div>
+    </form>
+  );
+}
+
+export function SelectTanStackFormDemo() {
+  const [result, setResult] = useState<string | null>(null);
+  const form = useTanStackForm({
+    defaultValues: { framework: null as string | null },
+    validators: {
+      onSubmit: ({ value }) => {
+        if (!value.framework) return { fields: { framework: "Select a framework" } };
+        return undefined;
+      },
+    },
+    onSubmit: ({ value }) => {
+      setResult(value.framework ?? "");
+    },
+  });
+
+  return (
+    <form
+      className="flex w-full max-w-sm flex-col gap-3"
+      onSubmit={(e) => {
+        e.preventDefault();
+        void form.handleSubmit();
+      }}
+    >
+      <form.Field name="framework">
+        {(field) => (
+          <div>
+            <SelectFieldControlled
+              value={field.state.value}
+              onChange={field.handleChange}
+              label="Framework"
+            />
+            {field.state.meta.errors.length > 0 && (
+              <p className="mt-1 text-[13px] text-red-600 dark:text-red-400">
+                {String(field.state.meta.errors[0])}
+              </p>
+            )}
+          </div>
+        )}
+      </form.Field>
+      {result && (
+        <p className="text-[13px] text-emerald-700 dark:text-emerald-400">
+          Submitted: {result} — TanStack Form
+        </p>
+      )}
+      <div className="flex gap-2">
+        <button
+          type="submit"
+          className="min-h-9 rounded-full bg-zinc-900 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+        >
+          Submit
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            form.reset();
+            setResult(null);
+          }}
+          className="min-h-9 rounded-lg border border-zinc-300 px-4 text-sm font-medium dark:border-zinc-700"
+        >
+          Reset
+        </button>
+      </div>
+    </form>
+  );
+}
+
 const selectTagOptions = [
   ["react", "React"],
   ["vue", "Vue"],
@@ -1088,14 +1255,22 @@ const ChevronDownIcon = () => (
 export function ComboboxDemo({
   label = "Language",
   defaultValue = "ts",
+  name,
   options = comboboxLanguageOptions,
 }: {
   label?: string;
   defaultValue?: string;
+  name?: string;
   options?: ReadonlyArray<readonly [string, string]>;
 }) {
+  const items = Object.fromEntries(options);
   return (
-    <KenosCombobox.Root defaultValue={defaultValue}>
+    <KenosCombobox.Root
+      name={name}
+      defaultValue={defaultValue}
+      defaultInputValue={items[defaultValue]}
+      items={items}
+    >
       <KenosCombobox.Label className="mb-1.5 block text-sm font-semibold text-zinc-700 dark:text-zinc-200">
         {label}
       </KenosCombobox.Label>
@@ -1108,13 +1283,21 @@ export function ComboboxDemo({
       <KenosCombobox.Content className={selectContentCls} sameWidth>
         <KenosCombobox.List>
           {options.map(([value, text]) => (
-            <KenosCombobox.Item key={value} value={value} className={selectItemCls}>
+            <KenosCombobox.Item
+              key={value}
+              value={value}
+              className={`${selectItemCls} flex items-center gap-2`}
+            >
               <KenosCombobox.ItemText>{text}</KenosCombobox.ItemText>
+              <KenosCombobox.ItemIndicator className="ml-auto text-zinc-500">
+                ✓
+              </KenosCombobox.ItemIndicator>
             </KenosCombobox.Item>
           ))}
         </KenosCombobox.List>
         <KenosCombobox.Empty className={comboboxEmptyCls}>No languages found</KenosCombobox.Empty>
       </KenosCombobox.Content>
+      <KenosCombobox.HiddenInput />
     </KenosCombobox.Root>
   );
 }
@@ -1133,6 +1316,185 @@ export function ComboboxDialogDemo() {
     >
       <h3 className="mb-3 text-sm font-semibold text-zinc-900 dark:text-zinc-100">Settings</h3>
       <ComboboxDemo label="Language" defaultValue="js" />
+    </div>
+  );
+}
+
+export function ComboboxFormDemo() {
+  return (
+    <form
+      className="flex w-full max-w-sm flex-col gap-3"
+      onSubmit={(e) => {
+        e.preventDefault();
+      }}
+    >
+      <ComboboxDemo label="Language" name="language" defaultValue="ts" />
+      <button
+        type="submit"
+        className="min-h-9 rounded-full bg-zinc-900 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+      >
+        Submit
+      </button>
+    </form>
+  );
+}
+
+const patientOptions = [
+  {
+    value: "leandro",
+    name: "Leandro",
+    meta: "Born 09/25/2005 · biological sex M",
+    textValue: "Leandro Born 09/25/2005",
+  },
+  {
+    value: "leandro-barreiro",
+    name: "Leandro Barreiro teste 123",
+    meta: "ID 000.000.000-01 · Born 01/01/1988 · biological sex M",
+    textValue: "Leandro Barreiro teste 123 ID 000.000.000-01",
+  },
+  {
+    value: "leandro-barreiros",
+    name: "Leandro Barreiros",
+    meta: "ID 000.000.000-02 · Born 03/14/1992 · biological sex M",
+    textValue: "Leandro Barreiros ID 000.000.000-02",
+  },
+  {
+    value: "leanne",
+    name: "Leanne Carter",
+    meta: "ID 000.000.000-03 · Born 07/22/1990 · biological sex F",
+    textValue: "Leanne Carter ID 000.000.000-03",
+  },
+  {
+    value: "marcus",
+    name: "Marcus Webb",
+    meta: "ID 000.000.000-04 · Born 11/03/1985 · biological sex M",
+    textValue: "Marcus Webb ID 000.000.000-04",
+  },
+] as const;
+
+const ArrowRightIcon = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    strokeWidth={2}
+    fill="none"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden
+  >
+    <path d="M5 12h14" />
+    <path d="M13 5l7 7-7 7" />
+  </svg>
+);
+
+const EllipsisIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+    <circle cx="5" cy="12" r="1.75" />
+    <circle cx="12" cy="12" r="1.75" />
+    <circle cx="19" cy="12" r="1.75" />
+  </svg>
+);
+
+/**
+ * Docs composition story only — free-text field + Button beside an independent Combobox.
+ * Not a Combobox API. Controlled `open` / `inputValue` prove the external Button can open the list.
+ * TODO: deferred from public Combobox docs (compositionSearch=false) until polished.
+ */
+export function ComboboxPatientSearchCompositionDemo() {
+  const [query, setQuery] = useState("lean");
+  const [open, setOpen] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+
+  const freeInputCls = [
+    "h-10 w-[5.5rem] shrink-0 rounded-[10px] border border-zinc-200/90 bg-white px-2.5 text-sm text-zinc-900 shadow-sm",
+    "placeholder:text-zinc-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400/40",
+    "dark:border-zinc-700/80 dark:bg-zinc-950 dark:text-zinc-50 dark:placeholder:text-zinc-500",
+  ].join(" ");
+
+  const actionBtnCls = [
+    "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-zinc-900 text-white",
+    "transition-colors hover:bg-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400/40",
+    "dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200",
+  ].join(" ");
+
+  const items = Object.fromEntries(patientOptions.map((p) => [p.value, p.name]));
+
+  return (
+    <div className="flex w-full max-w-3xl flex-wrap items-center gap-2">
+      <label
+        htmlFor="patient-free-query"
+        className="shrink-0 text-sm font-semibold text-zinc-800 dark:text-zinc-100"
+      >
+        Patient
+      </label>
+      <input
+        id="patient-free-query"
+        className={freeInputCls}
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            setInputValue(query);
+            setOpen(true);
+          }
+        }}
+        placeholder="Query…"
+        aria-label="Free-text patient query"
+      />
+      <Button
+        type="button"
+        className={actionBtnCls}
+        aria-label="Search and open combobox"
+        onClick={() => {
+          setInputValue(query);
+          setOpen(true);
+        }}
+      >
+        <ArrowRightIcon />
+      </Button>
+      <div className="min-w-[14rem] flex-1">
+        <KenosCombobox.Root
+          items={items}
+          open={open}
+          onOpenChange={setOpen}
+          inputValue={inputValue}
+          onInputValueChange={setInputValue}
+        >
+          <div className="flex min-w-0">
+            <KenosCombobox.Input
+              className={comboboxInputCls}
+              placeholder="Search patient by name or ID…"
+            />
+            <KenosCombobox.Trigger className={comboboxTriggerCls} aria-label="Toggle list">
+              <ChevronDownIcon />
+            </KenosCombobox.Trigger>
+          </div>
+          <KenosCombobox.Content className={selectContentCls} sameWidth>
+            <KenosCombobox.List>
+              {patientOptions.map(({ value, name, meta, textValue }) => (
+                <KenosCombobox.Item
+                  key={value}
+                  value={value}
+                  textValue={textValue}
+                  className={`${selectItemCls} flex flex-col items-start gap-0.5`}
+                >
+                  <KenosCombobox.ItemText className="font-medium">{name}</KenosCombobox.ItemText>
+                  <span className="text-xs text-zinc-500 dark:text-zinc-400">{meta}</span>
+                </KenosCombobox.Item>
+              ))}
+            </KenosCombobox.List>
+            <KenosCombobox.Empty className={comboboxEmptyCls}>
+              No patients found
+            </KenosCombobox.Empty>
+          </KenosCombobox.Content>
+        </KenosCombobox.Root>
+      </div>
+      <Button type="button" className={actionBtnCls} aria-label="More actions">
+        <EllipsisIcon />
+      </Button>
     </div>
   );
 }
@@ -1826,13 +2188,7 @@ export function LiveDemo({ kind, locale = "en-US" }: { kind: DemoKind; locale?: 
 
 // --- Button Demos ---
 
-import {
-  Button,
-  useHaptics,
-  useLongPress,
-  useHover,
-  composeEventHandlers,
-} from "@kenos-ui/react-button";
+import { useHaptics, useLongPress, useHover, composeEventHandlers } from "@kenos-ui/react-button";
 
 export function ButtonDefaultDemo() {
   return (

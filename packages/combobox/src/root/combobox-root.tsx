@@ -28,10 +28,13 @@ export function Root(props: ComboboxRootProps) {
     defaultOpen,
     onOpenChange,
     onOpenChangeComplete,
+    name,
     disabled = false,
     required = false,
     readOnly = false,
     modal = false,
+    openOnFocus = false,
+    openOnChange = true,
     id,
     items = {},
     isItemEqualToValue = defaultIsItemEqualToValue,
@@ -56,6 +59,22 @@ export function Root(props: ComboboxRootProps) {
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const listRef = useRef<HTMLUListElement | null>(null);
+  const suppressOpenOnFocusRef = useRef(false);
+  const syncingValueFromPropsRef = useRef(false);
+  const syncingOpenFromPropsRef = useRef(false);
+  const syncingInputValueFromPropsRef = useRef(false);
+  const valuePropRef = useRef(value);
+  valuePropRef.current = value;
+  const openPropRef = useRef(open);
+  openPropRef.current = open;
+  const inputValuePropRef = useRef(inputValue);
+  inputValuePropRef.current = inputValue;
+  const isControlledValueRef = useRef(value !== undefined);
+  isControlledValueRef.current = value !== undefined;
+  const isControlledOpenRef = useRef(open !== undefined);
+  isControlledOpenRef.current = open !== undefined;
+  const isControlledInputValueRef = useRef(inputValue !== undefined);
+  isControlledInputValueRef.current = inputValue !== undefined;
 
   const isControlledValue = value !== undefined;
   const isControlledOpen = open !== undefined;
@@ -72,15 +91,32 @@ export function Root(props: ComboboxRootProps) {
       value: initialValue,
       inputValue: initialInputValue,
       open: isControlledOpen ? (open ?? false) : (defaultOpen ?? false),
+      openSource: (isControlledOpen ? open : defaultOpen) ? "input" : null,
     });
   }
   const store = storeRef.current;
+
+  // When items register, upgrade inputValue from the raw value key to the real label
+  // (initial resolveLabel falls back to the value string when the registry is empty).
+  useEffect(() => {
+    return store.subscribe(() => {
+      if (isControlledInputValueRef.current) return;
+      const state = store.getState();
+      if (typeof state.value !== "string") return;
+      const label = state.items.get(state.value)?.label ?? items[state.value] ?? null;
+      if (!label || label === state.value) return;
+      if (state.inputValue === state.value) {
+        store.setInputValue(label);
+      }
+    });
+  }, [store, items]);
 
   const prevControlledValue = useRef(value);
   useEffect(() => {
     if (!isControlledValue) return;
     if (value === prevControlledValue.current) return;
     prevControlledValue.current = value;
+    syncingValueFromPropsRef.current = true;
     store.setValue(typeof value === "string" ? value : null);
   }, [isControlledValue, value, store]);
 
@@ -89,6 +125,7 @@ export function Root(props: ComboboxRootProps) {
     if (!isControlledInputValue) return;
     if (inputValue === prevControlledInputValue.current) return;
     prevControlledInputValue.current = inputValue;
+    syncingInputValueFromPropsRef.current = true;
     store.setInputValue(inputValue ?? "");
   }, [isControlledInputValue, inputValue, store]);
 
@@ -97,7 +134,26 @@ export function Root(props: ComboboxRootProps) {
     if (!isControlledOpen) return;
     if (open === prevControlledOpen.current) return;
     prevControlledOpen.current = open;
-    store.setOpen(open ?? false);
+
+    syncingOpenFromPropsRef.current = true;
+    const nextOpen = open ?? false;
+    if (!nextOpen) {
+      const state = store.getState();
+      store.setOpen(false);
+      if (state.open) {
+        suppressOpenOnFocusRef.current = true;
+        restoreFocus({
+          openSource: "input",
+          input: inputRef.current,
+          trigger: triggerRef.current,
+        });
+        requestAnimationFrame(() => {
+          suppressOpenOnFocusRef.current = false;
+        });
+      }
+    } else {
+      store.setOpen(true, "input");
+    }
   }, [isControlledOpen, open, store]);
 
   const onValueChangeRef = useRef(onValueChange);
@@ -107,9 +163,26 @@ export function Root(props: ComboboxRootProps) {
   useEffect(() => {
     return store.subscribe(() => {
       const state = store.getState();
-      if (state.value !== prevStoreValue.current) {
+      if (state.value === prevStoreValue.current) return;
+
+      if (syncingValueFromPropsRef.current) {
+        syncingValueFromPropsRef.current = false;
         prevStoreValue.current = state.value;
-        onValueChangeRef.current?.(typeof state.value === "string" ? state.value : null);
+        return;
+      }
+
+      prevStoreValue.current = state.value;
+      onValueChangeRef.current?.(typeof state.value === "string" ? state.value : null);
+
+      if (isControlledValueRef.current) {
+        queueMicrotask(() => {
+          const propValue = valuePropRef.current;
+          const current = store.getState().value;
+          if (propValue !== current) {
+            syncingValueFromPropsRef.current = true;
+            store.setValue(typeof propValue === "string" ? propValue : null);
+          }
+        });
       }
     });
   }, [store]);
@@ -121,9 +194,26 @@ export function Root(props: ComboboxRootProps) {
   useEffect(() => {
     return store.subscribe(() => {
       const state = store.getState();
-      if (state.inputValue !== prevStoreInputValue.current) {
+      if (state.inputValue === prevStoreInputValue.current) return;
+
+      if (syncingInputValueFromPropsRef.current) {
+        syncingInputValueFromPropsRef.current = false;
         prevStoreInputValue.current = state.inputValue;
-        onInputValueChangeRef.current?.(state.inputValue);
+        return;
+      }
+
+      prevStoreInputValue.current = state.inputValue;
+      onInputValueChangeRef.current?.(state.inputValue);
+
+      if (isControlledInputValueRef.current) {
+        queueMicrotask(() => {
+          const propInputValue = inputValuePropRef.current ?? "";
+          const current = store.getState().inputValue;
+          if (propInputValue !== current) {
+            syncingInputValueFromPropsRef.current = true;
+            store.setInputValue(propInputValue);
+          }
+        });
       }
     });
   }, [store]);
@@ -135,9 +225,26 @@ export function Root(props: ComboboxRootProps) {
   useEffect(() => {
     return store.subscribe(() => {
       const state = store.getState();
-      if (state.open !== prevStoreOpen.current) {
+      if (state.open === prevStoreOpen.current) return;
+
+      if (syncingOpenFromPropsRef.current) {
+        syncingOpenFromPropsRef.current = false;
         prevStoreOpen.current = state.open;
-        onOpenChangeRef.current?.(state.open);
+        return;
+      }
+
+      prevStoreOpen.current = state.open;
+      onOpenChangeRef.current?.(state.open);
+
+      if (isControlledOpenRef.current) {
+        queueMicrotask(() => {
+          const propOpen = openPropRef.current ?? false;
+          const current = store.getState().open;
+          if (propOpen !== current) {
+            syncingOpenFromPropsRef.current = true;
+            store.setOpen(propOpen, propOpen ? "input" : null);
+          }
+        });
       }
     });
   }, [store]);
@@ -145,10 +252,16 @@ export function Root(props: ComboboxRootProps) {
   const close = useCallback(() => {
     const state = store.getState();
     if (!state.open) return;
+    suppressOpenOnFocusRef.current = true;
     store.setOpen(false);
+    // Input-first: always restore to the combobox input.
     restoreFocus({
-      openSource: state.openSource === "trigger" ? "trigger" : "input",
-      trigger: inputRef.current ?? triggerRef.current,
+      openSource: "input",
+      input: inputRef.current,
+      trigger: triggerRef.current,
+    });
+    requestAnimationFrame(() => {
+      suppressOpenOnFocusRef.current = false;
     });
   }, [store]);
 
@@ -173,8 +286,11 @@ export function Root(props: ComboboxRootProps) {
       required,
       readOnly,
       modal,
+      name,
       items,
       isItemEqualToValue,
+      openOnFocus,
+      openOnChange,
       filter:
         filter ??
         ((item, query) => {
@@ -186,7 +302,18 @@ export function Root(props: ComboboxRootProps) {
           );
         }),
     }),
-    [disabled, required, readOnly, modal, items, isItemEqualToValue, filter],
+    [
+      disabled,
+      required,
+      readOnly,
+      modal,
+      name,
+      items,
+      isItemEqualToValue,
+      openOnFocus,
+      openOnChange,
+      filter,
+    ],
   );
 
   const ctx = useMemo(
@@ -202,6 +329,7 @@ export function Root(props: ComboboxRootProps) {
       close,
       selectValue,
       clearValue,
+      suppressOpenOnFocusRef,
     }),
     [
       store,

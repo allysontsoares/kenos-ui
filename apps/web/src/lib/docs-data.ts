@@ -38,6 +38,11 @@ export type ComponentDocFeatures = {
   portal?: boolean;
   /** Type-to-filter example section (combobox). */
   filter?: boolean;
+  /**
+   * Free-text + Button beside Combobox composition story (not a Combobox API).
+   * Deferred / hidden from the public docs site until the Patient search demo is polished.
+   */
+  compositionSearch?: boolean;
 };
 
 export type ComponentMeta = {
@@ -59,7 +64,7 @@ export type NavItem = { label: string; route: string; soon?: boolean };
 export type NavGroup = { title: string; badge?: string; items: NavItem[] };
 
 /** Component doc routes that appear in nav but are not published yet. */
-export const SOON_ROUTES = ["select", "combobox"] as const;
+export const SOON_ROUTES = [] as const;
 export type SoonRoute = (typeof SOON_ROUTES)[number];
 
 export function isSoonRoute(route: string): route is SoonRoute {
@@ -81,8 +86,8 @@ export const NAV: NavGroup[] = [
     items: [
       { label: "Button", route: "button" },
       { label: "Date Picker", route: "date-picker" },
-      { label: "Select", route: "select", soon: true },
-      { label: "Combobox", route: "combobox", soon: true },
+      { label: "Select", route: "select" },
+      { label: "Combobox", route: "combobox" },
     ],
   },
 ];
@@ -109,7 +114,7 @@ export const COMPONENTS: Record<string, ComponentMeta> = {
   select: {
     name: "Select",
     eyebrow: "Primitive",
-    desc: "A headless select with combobox + listbox pattern. Interop-first defaults: modal={false}, portal={false}. Supports single and multiple selection, items prop for label maps, and Select.HiddenSelect for native form submission.",
+    desc: "A headless select with combobox + listbox pattern. Interop-first defaults: modal={false}, portal={false}. Pointer open keeps focus on the trigger; keyboard open moves focus into the listbox. Supports single and multiple selection, items prop for label maps, and Select.HiddenSelect for native form submission.",
     demo: "select",
     npmPackage: "@kenos-ui/react-select",
     importName: "Select",
@@ -129,11 +134,12 @@ export const COMPONENTS: Record<string, ComponentMeta> = {
             children: [
               { tag: "Select.Value", leaf: true },
               { tag: "Select.Icon", leaf: true },
-              {
-                tag: "Select.ClearTrigger",
-                note: "clears value without opening listbox",
-              },
             ],
+          },
+          {
+            tag: "Select.ClearTrigger",
+            note: "sibling of Trigger — clears value without opening",
+            leaf: true,
           },
           {
             tag: "Select.Portal",
@@ -154,6 +160,7 @@ export const COMPONENTS: Record<string, ComponentMeta> = {
                       { tag: "Select.ScrollUpButton", note: "long lists" },
                       {
                         tag: "Select.List",
+                        note: "role=listbox — focused on keyboard open",
                         children: [
                           {
                             tag: "Select.Item value=…",
@@ -176,11 +183,12 @@ export const COMPONENTS: Record<string, ComponentMeta> = {
   combobox: {
     name: "Combobox",
     eyebrow: "Primitive",
-    desc: "A headless combobox with type-to-filter, aria-activedescendant list navigation, and an Empty state when nothing matches. Interop-first defaults: modal={false}, inline Content anchored to the input.",
+    desc: "A headless combobox with type-to-filter, Input-first focus (aria-activedescendant), and an Empty state when nothing matches. open and inputValue are independent — Trigger toggles the list without clearing the query. Interop-first defaults: modal={false}, portal={false}, Content anchored to the Input.",
     demo: "combobox",
     npmPackage: "@kenos-ui/react-combobox",
     importName: "Combobox",
-    features: { filter: true, dialogInterop: true },
+    // TODO: re-enable compositionSearch when Patient search demo is ready for public docs
+    features: { filter: true, dialogInterop: true, forms: true, compositionSearch: false },
     parts: [
       {
         tag: "Combobox.Root",
@@ -188,19 +196,28 @@ export const COMPONENTS: Record<string, ComponentMeta> = {
           { tag: "Combobox.Label", leaf: true },
           {
             tag: "Combobox.Input",
-            note: "combobox role — typing filters the list",
+            note: "role=combobox — focus stays here; typing filters",
           },
           {
             tag: "Combobox.Trigger",
-            note: "opens list without clearing filter text",
+            note: "toggles open only; empty query → full list",
           },
           {
             tag: "Combobox.Content",
-            note: "floating listbox (inline, no portal)",
+            note: "floating listbox (portal=false default)",
             children: [
               {
                 tag: "Combobox.List",
-                children: [{ tag: "Combobox.Item value=…", note: "registers in store" }],
+                children: [
+                  {
+                    tag: "Combobox.Item value=…",
+                    note: "registers in store",
+                    children: [
+                      { tag: "Combobox.ItemText", leaf: true },
+                      { tag: "Combobox.ItemIndicator", leaf: true },
+                    ],
+                  },
+                ],
               },
               {
                 tag: "Combobox.Empty",
@@ -209,6 +226,7 @@ export const COMPONENTS: Record<string, ComponentMeta> = {
             ],
           },
           { tag: "Combobox.Clear", note: "clears value + input text" },
+          { tag: "Combobox.HiddenInput", note: "native hidden field when name is set" },
         ],
       },
     ],
@@ -308,14 +326,14 @@ export const API: Record<string, ApiGroup[]> = {
         },
         {
           name: "isItemEqualToValue",
-          type: "(item: string, value: string) => boolean",
-          desc: "Custom comparator for non-string or object-like values.",
+          type: "(a: string, b: string) => boolean",
+          desc: "Custom string comparator for selection matching (default: ===). Not for object values.",
         },
         {
           name: "openOnFocus",
           type: "boolean",
           def: "false",
-          desc: "Open the listbox when the trigger receives focus (keyboard users).",
+          desc: "Open the listbox when the trigger receives focus. Does not reopen after Escape/select restore focus.",
         },
       ],
     },
@@ -332,7 +350,7 @@ export const API: Record<string, ApiGroup[]> = {
           name: "alignItemWithTrigger",
           type: "boolean",
           def: "false",
-          desc: "Align popup edge with trigger (covers trigger on bottom side).",
+          desc: "Offset content to cover the trigger (by trigger height). Does not scroll the selected item into alignment. On Safari pinch-zoom, automatically falls back to standard anchoring.",
         },
         {
           name: "container",
@@ -362,7 +380,7 @@ export const API: Record<string, ApiGroup[]> = {
         {
           name: "Select.ClearTrigger",
           type: "span[role=button]",
-          desc: "Clears the current value without opening the listbox. Place inside Trigger.",
+          desc: "Clears the current value without opening the listbox. Place as a sibling of Trigger (not nested inside the button).",
         },
         {
           name: "Select.ScrollUpButton / ScrollDownButton",
@@ -390,13 +408,17 @@ export const API: Record<string, ApiGroup[]> = {
       group: "Keyboard",
       keys: true,
       props: [
+        {
+          name: "Arrow ↓ / Enter / Space (closed)",
+          desc: "Open the listbox and move focus into the list.",
+        },
         { name: "Arrow ↑ / ↓", desc: "Move highlight; skips disabled items." },
         { name: "Home / End", desc: "First / last enabled option." },
         { name: "Type characters", desc: "Typeahead match on textValue." },
         { name: "Enter / Space", desc: "Select highlighted option." },
         {
           name: "Escape",
-          desc: "Close listbox; stopPropagation for Dialog interop.",
+          desc: "Close listbox (when focus is in content or on trigger); stopPropagation for Dialog interop.",
         },
       ],
     },
@@ -419,6 +441,23 @@ export const API: Record<string, ApiGroup[]> = {
           name: "open / defaultOpen / onOpenChange",
           type: "boolean",
           desc: "Listbox open state.",
+        },
+        {
+          name: "name",
+          type: "string",
+          desc: "Native form field name for Combobox.HiddenInput.",
+        },
+        {
+          name: "openOnFocus",
+          type: "boolean",
+          def: "false",
+          desc: "Open when Input receives focus. Breaking vs 0.2.x (which always opened on focus).",
+        },
+        {
+          name: "openOnChange",
+          type: "boolean",
+          def: "true",
+          desc: "Open when typing while closed. Independent of Trigger toggle.",
         },
         {
           name: "disabled / required / readOnly",
@@ -453,7 +492,18 @@ export const API: Record<string, ApiGroup[]> = {
       props: [
         {
           name: "side / align / sameWidth",
-          desc: "Floating UI positioning via @kenos-ui/utils.",
+          desc: "Floating UI positioning via @kenos-ui/utils. Reference is always the Input.",
+        },
+        {
+          name: "portal",
+          type: "boolean",
+          def: "false",
+          desc: "Render Content in a portal. Default false for Dialog interop.",
+        },
+        {
+          name: "container",
+          type: "HTMLElement | RefObject | null",
+          desc: "Portal mount target when portal is true. Defaults to document.body.",
         },
         {
           name: "lazyMount",
@@ -480,6 +530,16 @@ export const API: Record<string, ApiGroup[]> = {
           name: "Combobox.Clear",
           type: "span[role=button]",
           desc: "Clears value and input text without opening the listbox.",
+        },
+        {
+          name: "Combobox.ItemIndicator",
+          type: "span",
+          desc: "Selected check; reads ItemContext or an explicit value prop.",
+        },
+        {
+          name: "Combobox.HiddenInput",
+          type: "input[type=hidden]",
+          desc: "Native hidden field when name is set on Root.",
         },
       ],
     },

@@ -1,4 +1,4 @@
-import { createContext, useContext, type RefObject } from "react";
+import { createContext, useContext, type MutableRefObject, type RefObject } from "react";
 import type { SelectCollectionFilterFn } from "@kenos-ui/utils";
 import type { ComboboxStore } from "./store";
 import type { ComboboxItemEqualFn } from "./types";
@@ -25,9 +25,12 @@ export interface ComboboxContextValue {
     required: boolean;
     readOnly: boolean;
     modal: boolean;
+    name: string | undefined;
     items: Record<string, string>;
     isItemEqualToValue: ComboboxItemEqualFn;
     filter: SelectCollectionFilterFn;
+    openOnFocus: boolean;
+    openOnChange: boolean;
   };
   isControlledOpen: boolean;
   isControlledValue: boolean;
@@ -39,6 +42,8 @@ export interface ComboboxContextValue {
   selectValue: (value: string) => void;
   /** Clear the current selection and input text. */
   clearValue: () => void;
+  /** Guard against reopen-on-focus after restoreFocus. */
+  suppressOpenOnFocusRef: MutableRefObject<boolean>;
 }
 
 export const ComboboxContext = createContext<ComboboxContextValue | null>(null);

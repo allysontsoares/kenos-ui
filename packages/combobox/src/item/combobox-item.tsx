@@ -1,7 +1,8 @@
-import React, { useRef, useLayoutEffect, useCallback } from "react";
+import React, { useRef, useLayoutEffect, useCallback, useMemo } from "react";
 import { useComboboxContext } from "../context";
 import { useComboboxStore } from "../store";
 import { useComboboxCollection } from "../collection-context";
+import { ItemContext } from "./item-context";
 
 export interface ItemProps extends React.HTMLAttributes<HTMLLIElement> {
   value: string;
@@ -10,6 +11,23 @@ export interface ItemProps extends React.HTMLAttributes<HTMLLIElement> {
 }
 
 Item.displayName = "Combobox.Item";
+
+function extractItemTextLabel(children: React.ReactNode): string | null {
+  let label: string | null = null;
+
+  React.Children.forEach(children, (child) => {
+    if (label != null || !React.isValidElement(child)) return;
+    const type = child.type as { displayName?: string; name?: string };
+    const isItemText = type?.displayName === "Combobox.ItemText" || type?.name === "ItemText";
+    if (!isItemText) return;
+    const text = React.Children.toArray((child.props as { children?: React.ReactNode }).children)
+      .filter((c): c is string | number => typeof c === "string" || typeof c === "number")
+      .join("");
+    if (text) label = text;
+  });
+
+  return label;
+}
 
 export function Item({
   value,
@@ -34,15 +52,15 @@ export function Item({
   const isDisabled = disabled || config.disabled || config.readOnly;
 
   useLayoutEffect(() => {
-    const el = liRef.current;
-    const label = textValue ?? el?.textContent ?? value;
+    const label = textValue ?? extractItemTextLabel(children) ?? value;
 
     store.registerItem({
       value,
       label,
       textValue: textValue ?? label,
       disabled: isDisabled,
-      ref: el,
+      ref: liRef.current,
+      groupId: null,
     });
 
     return () => store.unregisterItem(value);
@@ -69,29 +87,33 @@ export function Item({
     [isDisabled, store, value, onPointerMove],
   );
 
+  const itemContext = useMemo(() => ({ value, isSelected }), [value, isSelected]);
+
   return (
-    <li
-      ref={liRef}
-      id={`${ids.content}-opt-${value}`}
-      role="option"
-      aria-selected={isSelected}
-      aria-disabled={isDisabled || undefined}
-      aria-hidden={!isVisible ? true : undefined}
-      data-kenos="combobox-item"
-      data-highlighted={isHighlighted ? "true" : undefined}
-      data-selected={isSelected ? "true" : undefined}
-      data-disabled={isDisabled ? "true" : undefined}
-      data-hidden={!isVisible ? "true" : undefined}
-      tabIndex={-1}
-      style={{
-        ...style,
-        display: isVisible ? style?.display : "none",
-      }}
-      onClick={handleClick}
-      onPointerMove={handlePointerMove}
-      {...props}
-    >
-      {children}
-    </li>
+    <ItemContext.Provider value={itemContext}>
+      <li
+        ref={liRef}
+        id={`${ids.content}-opt-${value}`}
+        role="option"
+        aria-selected={isSelected}
+        aria-disabled={isDisabled || undefined}
+        aria-hidden={!isVisible ? true : undefined}
+        data-kenos="combobox-item"
+        data-highlighted={isHighlighted ? "true" : undefined}
+        data-selected={isSelected ? "true" : undefined}
+        data-disabled={isDisabled ? "true" : undefined}
+        data-hidden={!isVisible ? "true" : undefined}
+        tabIndex={-1}
+        style={{
+          ...style,
+          display: isVisible ? style?.display : "none",
+        }}
+        onClick={handleClick}
+        onPointerMove={handlePointerMove}
+        {...props}
+      >
+        {children}
+      </li>
+    </ItemContext.Provider>
   );
 }

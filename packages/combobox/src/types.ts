@@ -1,4 +1,4 @@
-import type { ReactNode, HTMLAttributes } from "react";
+import type { ReactNode, HTMLAttributes, RefObject } from "react";
 import type { SelectCollectionFilterFn } from "@kenos-ui/utils";
 
 // ── Item registry ──────────────────────────────────────────────────────────
@@ -12,6 +12,8 @@ export interface ComboboxItemRecord {
   disabled: boolean;
   /** The DOM element for the option — needed for aria-activedescendant. */
   ref: HTMLElement | null;
+  /** Group id when nested in Combobox.Group (Tier 3); null for now. */
+  groupId: string | null;
 }
 
 export type ComboboxItemEqualFn = (a: string, b: string) => boolean;
@@ -27,6 +29,10 @@ export interface ComboboxStoreState {
   /** Item registry: populated as Combobox.Item mounts. */
   items: Map<string, ComboboxItemRecord>;
 }
+
+// ── Portal container ───────────────────────────────────────────────────────
+
+export type ComboboxPortalContainer = HTMLElement | RefObject<HTMLElement | null> | null;
 
 // ── Root props ─────────────────────────────────────────────────────────────
 
@@ -48,6 +54,8 @@ export interface ComboboxRootProps {
   /** Uncontrolled default input text. */
   defaultInputValue?: string | undefined;
   onInputValueChange?: ((inputValue: string) => void) | undefined;
+  /** Native form field name for `Combobox.HiddenInput`. */
+  name?: string | undefined;
   disabled?: boolean | undefined;
   required?: boolean | undefined;
   readOnly?: boolean | undefined;
@@ -56,6 +64,16 @@ export interface ComboboxRootProps {
    * **Default: false** (interop-first per popup-policy).
    */
   modal?: boolean | undefined;
+  /**
+   * Open the listbox when the Input receives focus.
+   * **Default: false** (breaking vs 0.2.x which always opened on focus).
+   */
+  openOnFocus?: boolean | undefined;
+  /**
+   * Open the listbox when the user types in the Input while closed.
+   * **Default: true** — typing filters and may open; independent of Trigger toggle.
+   */
+  openOnChange?: boolean | undefined;
   /** Unique id prefix (auto-generated when omitted). */
   id?: string | undefined;
   /**
@@ -81,6 +99,16 @@ export interface ComboboxContentProps {
   alignOffset?: number | undefined;
   avoidCollisions?: boolean | undefined;
   collisionPadding?: number | undefined;
+  /**
+   * When true, the content renders in a portal appended to document.body.
+   * **Default: false** (interop-first per popup-policy).
+   */
+  portal?: boolean | undefined;
+  /**
+   * Portal mount target when `portal` is true.
+   * Defaults to `document.body`.
+   */
+  container?: ComboboxPortalContainer | undefined;
   /** Match the input's width. Default: false. */
   sameWidth?: boolean | undefined;
   /** Skip DOM until first open. Default: true. */

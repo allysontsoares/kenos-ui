@@ -74,14 +74,12 @@ const HIGHLIGHTS: Highlight[] = [
     title: "Select",
     desc: "Combobox + listbox with dialog-safe defaults — inline Content, Escape interop, HiddenSelect for forms.",
     demo: <HighlightSelect />,
-    soon: true,
   },
   {
     slug: "combobox",
     title: "Combobox",
     desc: "Type-to-filter with aria-activedescendant navigation, Empty state, and inline floating Content.",
     demo: <HighlightCombobox />,
-    soon: true,
   },
 ];
 

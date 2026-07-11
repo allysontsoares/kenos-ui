@@ -6,6 +6,7 @@ import React, {
   useMemo,
   type KeyboardEvent,
 } from "react";
+import { createPortal } from "react-dom";
 import {
   useFloating,
   usePresence,
@@ -18,7 +19,33 @@ import {
 import { useComboboxContext } from "../context";
 import { useComboboxStore } from "../store";
 import { ComboboxCollectionContext } from "../collection-context";
-import type { ComboboxContentProps } from "../types";
+import type { ComboboxContentProps, ComboboxPortalContainer } from "../types";
+
+function resolvePortalContainer(
+  container: ComboboxPortalContainer | undefined,
+): HTMLElement | null {
+  if (container == null) {
+    return typeof document !== "undefined" ? document.body : null;
+  }
+  if (typeof HTMLElement !== "undefined" && container instanceof HTMLElement) {
+    return container;
+  }
+  if (typeof container === "object" && "current" in container) {
+    return container.current;
+  }
+  return null;
+}
+
+function resolveInitialHighlight(
+  value: string | null,
+  navItems: { value: string; disabled: boolean }[],
+): string | null {
+  if (typeof value === "string") {
+    const selected = navItems.find((item) => item.value === value && !item.disabled);
+    if (selected) return selected.value;
+  }
+  return navItems.find((item) => !item.disabled)?.value ?? null;
+}
 
 export function Content({
   children,
@@ -29,6 +56,8 @@ export function Content({
   alignOffset = 0,
   avoidCollisions = true,
   collisionPadding = 8,
+  portal = false,
+  container = null,
   sameWidth = false,
   lazyMount = true,
   unmountOnExit = false,
@@ -84,6 +113,7 @@ export function Content({
     sameWidth,
   });
 
+  // Floating reference is always the Input (not Trigger).
   useLayoutEffect(() => {
     if (!open) return;
     setReference(refs.inputRef.current);
@@ -106,9 +136,11 @@ export function Content({
 
   useClickOutside([refs.contentRef, refs.inputRef, refs.triggerRef], close, open);
 
+  // Scope to content: Input handles Escape locally (focus stays on Input).
   useEscapeKey({
     enabled: open,
     stopPropagation: true,
+    scopeRef: refs.contentRef,
     onEscape: close,
   });
 
@@ -153,12 +185,15 @@ export function Content({
   useEffect(() => {
     if (!open) return;
     const state = store.getState();
-    if (state.highlightedValue == null) {
-      const first = navItems.find((i) => !i.disabled);
-      if (first) store.setHighlightedValue(first.value);
+    const stillVisible =
+      state.highlightedValue != null &&
+      navItems.some((item) => item.value === state.highlightedValue && !item.disabled);
+    if (state.highlightedValue == null || !stillVisible) {
+      const initial = resolveInitialHighlight(state.value, navItems);
+      if (initial) store.setHighlightedValue(initial);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only run on open/filter change
-  }, [open, inputValue, navItems.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- open / filter-driven
+  }, [open, inputValue, navItems.length, store]);
 
   useEffect(() => {
     if (!open || !highlightedValue) return;
@@ -170,7 +205,7 @@ export function Content({
 
   if (!present && !forceMount) return null;
 
-  return (
+  const content = (
     <ComboboxCollectionContext.Provider value={collectionValue}>
       <div
         ref={mergedRef}
@@ -195,4 +230,15 @@ export function Content({
       </div>
     </ComboboxCollectionContext.Provider>
   );
+
+  if (!portal) {
+    return content;
+  }
+
+  const mountNode = resolvePortalContainer(container);
+  if (!mountNode) {
+    return content;
+  }
+
+  return createPortal(content, mountNode);
 }

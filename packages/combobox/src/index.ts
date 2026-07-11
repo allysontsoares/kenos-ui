@@ -10,6 +10,7 @@ export type {
   ComboboxItemRecord,
   ComboboxStoreState,
   ComboboxClearProps,
+  ComboboxPortalContainer,
 } from "./types";
 export { useComboboxContext } from "./context";
 export type { ComboboxContextValue } from "./context";
