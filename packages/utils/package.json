@@ -1,6 +1,6 @@
 {
   "name": "@kenos-ui/utils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Shared internals for Kenos UI primitives — floating, presence, dismiss, focus",
   "license": "MIT",
   "repository": {

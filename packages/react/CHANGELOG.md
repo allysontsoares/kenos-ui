@@ -1,5 +1,14 @@
 # @kenos-ui/react
 
+## 0.7.3
+
+### Patch Changes
+
+- Updated dependencies [891e3a4]
+  - @kenos-ui/react-select@0.3.0
+  - @kenos-ui/react-combobox@0.3.1
+  - @kenos-ui/react-datepicker@0.5.2
+
 ## 0.7.2
 
 ### Patch Changes
