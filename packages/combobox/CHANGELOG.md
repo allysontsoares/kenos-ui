@@ -1,5 +1,12 @@
 # @kenos-ui/react-combobox
 
+## 0.3.1
+
+### Patch Changes
+
+- Updated dependencies [891e3a4]
+  - @kenos-ui/utils@1.0.1
+
 ## 0.3.0
 
 ### Minor Changes

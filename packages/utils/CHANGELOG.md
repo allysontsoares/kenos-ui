@@ -1,5 +1,15 @@
 # @kenos-ui/utils
 
+## 1.0.1
+
+### Patch Changes
+
+- 891e3a4: Harden Select to 0.3.0: ItemContext + ItemIndicator (multiple-safe), pointer vs keyboard focus model (`aria-activedescendant` on the focused node), controlled sync/rollback, `openOnFocus` reopen guard, Escape `scopeRef`, closed Trigger opens via ArrowDown/Enter/Space, labels via `ItemText`/`textValue`, `groupId` on groups.
+
+  **Utils (patch):** Safari pinch-zoom floating parity (`visualViewport`), `restoreFocus` fallback when preferred target is disconnected, `alignItemWithTrigger` disabled on pinch-zoom.
+
+  **Behavior notes:** Pointer open keeps focus on Trigger; keyboard open moves focus into List. Highlight on open prefers selected value when present in the list.
+
 ## 1.0.0
 
 ### Major Changes
@@ -21,21 +31,26 @@
   Internal hooks and helpers shared across Kenos UI headless components.
 
   **Floating & presence**
+
   - `useFloating` — Floating UI positioning (`side`, `align`, offsets, collision)
   - `usePresence` — mount/unmount lifecycle for animated overlays
 
   **Dismiss & focus**
+
   - `useClickOutside`, `useEscapeKey` (with `stopPropagation` for dialog interop)
   - `useFocusTrap`, `getFocusableElements`, `restoreFocus` with `OpenSource`
 
   **Composite / collection**
+
   - `useListNavigation`, `useTypeahead`
   - `useSelectCollection` — type-to-filter for Combobox (and similar patterns)
 
   **Popup policy**
+
   - `POPUP_POLICY_DEFAULTS` — interop-first defaults (`modal={false}`, `portal={false}`)
 
   **Packaging**
+
   - Add `license: MIT` to `package.json` (fixes npm registry showing "no license")
 
 ## 0.0.1
