@@ -7,6 +7,7 @@ import {
   useFloating,
   restoreFocus,
   captureActiveElement,
+  visuallyHiddenStyle,
 } from "@kenos-ui/utils";
 import { useDatePickerContext } from "./context";
 import { useDatePickerAnnouncer } from "./use-date-picker-announcer";
@@ -213,18 +214,7 @@ export function Content({
       onKeyDown={onKeyDown}
       {...props}
     >
-      <span
-        data-kenos="date-picker-announcer"
-        {...liveRegionProps}
-        style={{
-          position: "absolute",
-          width: 1,
-          height: 1,
-          overflow: "hidden",
-          clip: "rect(0,0,0,0)",
-          whiteSpace: "nowrap",
-        }}
-      />
+      <span data-kenos="date-picker-announcer" {...liveRegionProps} style={visuallyHiddenStyle} />
       {children}
     </div>
   );

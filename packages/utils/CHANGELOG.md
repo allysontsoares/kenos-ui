@@ -1,5 +1,13 @@
 # @kenos-ui/utils
 
+## 1.0.2
+
+### Patch Changes
+
+- Add `visuallyHiddenStyle` to `@kenos-ui/utils` — WCAG visually-hidden inline styles with no Tailwind/CSS framework dependency.
+
+  DatePicker Input replaces `className="sr-only"` on accessibility description spans with `visuallyHiddenStyle`, fixing visible assistive text ("Selected date: …") in projects without Tailwind. Content live announcer refactored to reuse the shared utility.
+
 ## 1.0.1
 
 ### Patch Changes
@@ -31,26 +39,21 @@
   Internal hooks and helpers shared across Kenos UI headless components.
 
   **Floating & presence**
-
   - `useFloating` — Floating UI positioning (`side`, `align`, offsets, collision)
   - `usePresence` — mount/unmount lifecycle for animated overlays
 
   **Dismiss & focus**
-
   - `useClickOutside`, `useEscapeKey` (with `stopPropagation` for dialog interop)
   - `useFocusTrap`, `getFocusableElements`, `restoreFocus` with `OpenSource`
 
   **Composite / collection**
-
   - `useListNavigation`, `useTypeahead`
   - `useSelectCollection` — type-to-filter for Combobox (and similar patterns)
 
   **Popup policy**
-
   - `POPUP_POLICY_DEFAULTS` — interop-first defaults (`modal={false}`, `portal={false}`)
 
   **Packaging**
-
   - Add `license: MIT` to `package.json` (fixes npm registry showing "no license")
 
 ## 0.0.1

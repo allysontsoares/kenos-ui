@@ -74,3 +74,4 @@ export {
 
 export { useDescription } from "./a11y/use-description";
 export { useLiveAnnouncer, type LivePoliteness } from "./a11y/use-live-announcer";
+export { visuallyHiddenStyle } from "./a11y/visually-hidden";

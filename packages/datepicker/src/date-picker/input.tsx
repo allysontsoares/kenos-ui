@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { useTimescape } from "timescape/react";
-import { createFocusManager, useKeyboardShortcuts } from "@kenos-ui/utils";
+import { createFocusManager, useKeyboardShortcuts, visuallyHiddenStyle } from "@kenos-ui/utils";
 import { isDateSelectable } from "../utils/date";
 import { formatSelectedDateDescription } from "../utils/day-aria";
 import { getSegmentInfo, getTimeSegments } from "../utils/locale";
@@ -401,17 +401,17 @@ export function Input({ index, segmentLabels, className, style }: InputProps) {
   return (
     <>
       {showDescription && sourceDate ? (
-        <span id={descriptionId} className="sr-only">
+        <span id={descriptionId} style={visuallyHiddenStyle}>
           {config.messages.selectedDate}: {formatSelectedDateDescription(sourceDate, config.locale)}
         </span>
       ) : null}
       {showDescription && config.mode === "range" && state.rangeStart && !state.rangeEnd ? (
-        <span id={rangeDescriptionId} className="sr-only">
+        <span id={rangeDescriptionId} style={visuallyHiddenStyle}>
           {config.messages.finishRangeSelection}
         </span>
       ) : null}
       {config.invalid && config.errorMessage ? (
-        <span id={`${ids.input}-error`} role="alert" className="sr-only">
+        <span id={`${ids.input}-error`} role="alert" style={visuallyHiddenStyle}>
           {config.errorMessage}
         </span>
       ) : null}

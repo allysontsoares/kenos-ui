@@ -87,6 +87,18 @@ describe("Input (segmented)", () => {
     expect(document.getElementById(labelId!)).toHaveTextContent("Date");
   });
 
+  it("hides selected-date description with inline visually-hidden styles (no sr-only class)", () => {
+    render(<BasicPicker />);
+    const description = screen.getByText(/Selected date:/i);
+    expect(description).not.toHaveClass("sr-only");
+    expect(description).toHaveStyle({
+      position: "absolute",
+      width: "1px",
+      height: "1px",
+      overflow: "hidden",
+    });
+  });
+
   it("segments show placeholder text when empty", () => {
     render(
       <DatePicker.Root>
@@ -264,7 +276,7 @@ describe("ErrorMessage", () => {
     expect(visible).toBeDefined();
     expect(visible).toHaveAttribute("aria-hidden", "true");
 
-    // The input group references an sr-only alert carrying the same message.
+    // The input group references a visually hidden alert carrying the same message.
     const group = screen.getByRole("group");
     const errorId = group.getAttribute("aria-errormessage");
     expect(errorId).toBeTruthy();

@@ -8,7 +8,7 @@ export type ErrorMessageProps = React.HTMLAttributes<HTMLDivElement>;
  * when the Root is `invalid`. It is the single source of truth for the message text.
  *
  * Accessibility is already handled by the Input group, which exposes the same message
- * to assistive tech via `aria-errormessage` → an `sr-only` `role="alert"` element.
+ * to assistive tech via `aria-errormessage` → a visually hidden `role="alert"` element.
  * To avoid a double announcement, this visible element is `aria-hidden`.
  */
 export function ErrorMessage(props: ErrorMessageProps) {
